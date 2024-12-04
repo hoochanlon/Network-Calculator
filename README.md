@@ -8,6 +8,13 @@
 
 ## 功能展示
 
+**快速体验** ***Take your heart*** 👉 <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="140" height="40"/></a>
+
+**下载地址**
+
+* 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
+* GitHub：https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1
+
 ### 计算功能
 
 网络和IP地址计算，以及主机数与子网掩码换算。
@@ -28,28 +35,16 @@
 
 ![pAo4Ac6.png](https://s21.ax1x.com/2024/12/04/pAo4Ac6.png)
 
-## 快速体验
-
-***Take your heart***
-
-**下载地址**
-
-* 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
-
-* GitHub：https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1
-
-👉 <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="140" height="40"/></a>
-
 ---
 
 <div align="center">
 <i>
 <a href="https://github.com/hoochanlon">
 <img src="https://img.picui.cn/free/2024/12/04/67507c422c62d.png" alt="github.png" title="github.png" width="50" height="50" />
-</a>
+</a>&nbsp;&nbsp;
 <a href="mailto:hoochanlon@outlook.com">
 <img src="https://img.yonrd.com/i/2024/12/04/uoim5m.png" alt="p5r" width="70" height="50"/>
-</a>
+</a>&nbsp;&nbsp;
 <a href="https://hoochanlon.github.io/assets/qr/wx.png">
   <img src="https://img.yonrd.com/i/2024/12/04/uoishh.png" alt="wechat" width="50" height="50"/>
 </a>
