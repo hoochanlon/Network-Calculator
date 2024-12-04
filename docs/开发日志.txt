@@ -1,0 +1,47 @@
+作者：hoochanlon
+
+一、更新记录
+
+ v1.0：
+1. ip地址计算器基础功能实现
+2. 解决计算A类网络卡顿，内存溢出问题
+
+ v1.1：
+1.命名调整
+2.添加主机数换算器
+3.在线知识库与在线工具
+
+ v1.2：
+1.移除反掩码二进制，新增进制转换器，功能迁移至进制转换器
+2.进制转换器支持二进制、十进制、十六进制的IP及掩码智能识别、一键转换，并且支持常规运算与逆运算结果。
+3.取消警告弹窗，错误信息输出在结果框
+
+ v1.3：
+1.界面调整，字体由"仿宋GB2312"调整为“仿宋"
+2.增加历史记录查看、搜索、记录导出与删除。
+3.只有正确的操作记录被保存，减少无效输出干扰。
+
+v1.3.1
+1. 历史记录相关计算器名称同一规范
+2. 调整历史记录GUI布局宽高布局
+3. 项目根目录由“IP规划计算器”调整为“Network-Calculator”，方便GitHub上传源码
+4. 源码上增加项目输出打包命令脚本，方便一键打包调试
+
+二、附录
+
+开发所用到的素材以及在线工具
+工具类：
+1.https://iiis.tsinghua.edu.cn/IP/
+2.https://www.calculator.io
+图标类：
+1.https://www.freepik.com 
+2.https://yesicon.app
+3.https://www.acon vert.com/cn/icon/png-to-ico/
+4.https://www.iloveimg.com/zh-cn/crop-image/crop-png
+文档类:
+1.文档压缩：https://www.youcompress.com/zh-cn
+2.文字排版：https:// v vsolo.github.io/
+3.字体选择：https://bbs.wps.cn/topic/14563
+图床类：
+1.https://img.yonrd.com/
+2.https://gjzs.sjtu.edu.cn/addons_x/nav/site/30
