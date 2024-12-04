@@ -36,9 +36,9 @@
 
 * 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
 
-* GitHub：
+* GitHub：https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1
 
-👉 <a href="https://wwxm.lanzouo.com/i4kIY2h82k9e"><img src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="140" height="40"/></a>
+👉 <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="140" height="40"/></a>
 
 ---
 
