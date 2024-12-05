@@ -37,11 +37,10 @@
 
 ## 其他说明
 
-关于 Windows Defender SmartScreen 拦截的解决方式。
+关于 Windows Defender SmartScreen 拦截的解决方式：
 
-1. 在程序属性点击解锁
-
-2. 设置->安全中心->应用和浏览器控制->基于声誉的保护
+* 方式一：在程序的属性中，点击解锁
+* 方式二：应用和浏览器控制->基于声誉的保护，关闭相关选项
 
 <details>
 <summary><b>点击详情</b></summary>
