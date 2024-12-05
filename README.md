@@ -37,7 +37,7 @@
 
 ## 其他说明
 
-Windows Defender SmartScreen 拦截的解决方式。
+关于 Windows Defender SmartScreen 拦截的解决方式。
 
 ![PixPin_2024-12-05_11-19-13](https://img.yonrd.com/i/2024/12/05/ijibf8.png)
 
