@@ -50,18 +50,17 @@
 ---
 
 <div align="center">
-<i>
 <a href="https://github.com/hoochanlon">
 <img src="https://img.picui.cn/free/2024/12/04/67507c422c62d.png" alt="github.png" title="github.png" width="50" height="50" />
-</a>  
+</a>
 <a href="mailto:hoochanlon@outlook.com">
 <img src="https://img.yonrd.com/i/2024/12/04/uoim5m.png" alt="p5r" width="70" height="50"/>
 </a>  
 <a href="https://hoochanlon.github.io/assets/qr/wx.png">
   <img src="https://img.yonrd.com/i/2024/12/04/uoishh.png" alt="wechat" width="50" height="50"/>
 </a>
-</i>
 </div>
+
 <!---
 <img src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download" />
 <img src="https://img.yonrd.com/i/2024/12/04/uoimh2.png" alt="email" />
