@@ -35,6 +35,12 @@
 
 ![pAo4Ac6.png](https://s21.ax1x.com/2024/12/04/pAo4Ac6.png)
 
+## 其他说明
+
+Windows Defender SmartScreen 拦截的问题解决方式。
+
+![PixPin_2024-12-05_11-19-13](https://img.yonrd.com/i/2024/12/05/ijibf8.png)
+
 ---
 
 <div align="center">
