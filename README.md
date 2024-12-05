@@ -37,7 +37,7 @@
 应用程序下载地址：
 
 * 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
-* GitHub：https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1
+* GitHub：[releases/tag/v1.3.1](https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1)
 
 也可下载源码运行，目录结构规则如下：
 
