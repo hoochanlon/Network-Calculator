@@ -1,7 +1,7 @@
 # pyinstaller_output_cmd.py
 import subprocess
 import os
-from calc_history_manager import clear_history
+from core.calc_history_manager import clear_history
 
 # 获取用户桌面路径
 Desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
