@@ -8,13 +8,6 @@
 
 ## 功能展示
 
-**快速体验** ***Take your heart***  <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img align="right" src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="130" height="40"/></a>
-
-**下载地址**
-
-* 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
-* GitHub：https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1
-
 ### 计算功能
 
 网络和IP地址计算，以及主机数与子网掩码换算。
@@ -35,21 +28,20 @@
 
 ![pAo4Ac6.png](https://s21.ax1x.com/2024/12/04/pAo4Ac6.png)
 
-## 其他说明
+##  ***快速体验 Take your heart*** <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img  src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="110" height="20"/></a>
 
-关于 Windows Defender SmartScreen 拦截的解决方式：
+应用程序下载地址：
 
-* 方式一：在程序的属性中，点击解锁
-* 方式二：应用和浏览器控制->基于声誉的保护，关闭相关选项
+* 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
+* GitHub：https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1
 
-<details>
-<summary><b>点击详情</b></summary>
+也可下载源码运行，目录结构规则如下：
 
-![PixPin_2024-12-05_11-19-13](https://img.yonrd.com/i/2024/12/05/ijibf8.png)
+```
+%USERPROFILE%\Desktop\Network-Calulator
+```
 
-![PixPin_2024-12-05_14-22-08](https://img.yonrd.com/i/2024/12/05/owaq4l.png)
-
-</details>
+运行 main.py 即可，也可通过 pyinstaller_output_cmd.py 一键生成程序到桌面。
 
 ---
 
