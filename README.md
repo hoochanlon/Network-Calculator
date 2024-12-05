@@ -8,7 +8,7 @@
 
 ## 功能展示
 
-**快速体验** ***Take your heart*** 👉 <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="140" height="40"/></a>
+**快速体验** ***Take your heart***  <a href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe"><img align="right" src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="130" height="40"/></a>
 
 **下载地址**
 

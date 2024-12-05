@@ -45,3 +45,5 @@ v1.3.1
 图床类：
 1.https://img.yonrd.com/
 2.https://gjzs.sjtu.edu.cn/addons_x/nav/site/30
+3.https://picui.cn/
+4.https://www.picgo.net/
