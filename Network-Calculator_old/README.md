@@ -39,14 +39,7 @@
 
 关于 Windows Defender SmartScreen 拦截的解决方式。
 
-<details>
-<summary><b>点击详情</b></summary>
-
 ![PixPin_2024-12-05_11-19-13](https://img.yonrd.com/i/2024/12/05/ijibf8.png)
-
-![PixPin_2024-12-05_14-22-08](https://img.yonrd.com/i/2024/12/05/owaq4l.png)
-
-</details>
 
 ---
 
@@ -54,10 +47,10 @@
 <i>
 <a href="https://github.com/hoochanlon">
 <img src="https://img.picui.cn/free/2024/12/04/67507c422c62d.png" alt="github.png" title="github.png" width="50" height="50" />
-</a>  
+</a>&nbsp;&nbsp;
 <a href="mailto:hoochanlon@outlook.com">
 <img src="https://img.yonrd.com/i/2024/12/04/uoim5m.png" alt="p5r" width="70" height="50"/>
-</a>  
+</a>&nbsp;&nbsp;
 <a href="https://hoochanlon.github.io/assets/qr/wx.png">
   <img src="https://img.yonrd.com/i/2024/12/04/uoishh.png" alt="wechat" width="50" height="50"/>
 </a>
