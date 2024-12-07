@@ -24,6 +24,10 @@
 
 ![pAoh7kj.png](https://s21.ax1x.com/2024/12/04/pAoh7kj.png)
 
+以及还有本地的 ipv4 子网速查表，极大提升了IP规划效率。
+
+![PixPin_2024-12-07_23-52-36](https://img.yonrd.com/i/2024/12/07/12yrjn7.png)
+
 并且提供了历史记录的查询、删除和导出功能，以满足用户对数据处理的多样化需求。
 
 ![pAo4Ac6.png](https://s21.ax1x.com/2024/12/04/pAo4Ac6.png)
