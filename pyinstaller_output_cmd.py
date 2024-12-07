@@ -27,7 +27,7 @@ def generate_pyinstaller_command():
         f'--onefile '
         f'--add-data "{docs_directory};docs" '
         f'--add-data "{images_directory};images" '
-        f'--name "IP地址规划计算器v1.3.1" '
+        f'--name "IP地址规划计算器v1.3.2" '
         f'--distpath "{dist_directory}" '
         f'"{main_file}"'
     )

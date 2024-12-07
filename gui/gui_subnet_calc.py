@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import tkinter as tk
 from core.calc_history_manager import save_to_history
-from subnet_utils import hosts_to_subnet_mask_and_hosts, cidr_or_subnet_mask_to_info, validate_subnet_mask, validate_cidr
+from core.subnet_utils import hosts_to_subnet_mask_and_hosts, cidr_or_subnet_mask_to_info, validate_subnet_mask, validate_cidr
 from gui.gui_right_menu import attach_result_right_click_menu
 import re
 
@@ -68,8 +68,7 @@ def subnet_calculator(frame):
                     subnet_mask_binary,
                     inverted_mask_binary,
                     subnet_mask_hex,
-                    inverted_mask_hex,
-                    network_class
+                    inverted_mask_hex
                 ) = hosts_to_subnet_mask_and_hosts(hosts)
 
                 if isinstance(subnet_mask, str) and "主机数" in subnet_mask:
@@ -80,7 +79,6 @@ def subnet_calculator(frame):
                         f"输入的主机数: {hosts}\n"
                         f"推算得出子网掩码: {subnet_mask}（{cidr}）\n"
                         f"基于子网掩码的实际可用主机数: {usable_hosts}\n"
-                        f"网络类别: {network_class}\n"
                         f"反掩码: {inverted_mask}\n\n"
                         f"子网掩码的二进制:\n{subnet_mask_binary}\n"
                         f"子网掩码的十六进制: {subnet_mask_hex}\n"
@@ -127,13 +125,11 @@ def subnet_calculator(frame):
                 inverted_mask_binary,
                 subnet_mask_hex,
                 inverted_mask_hex,
-                network_class
             ) = cidr_or_subnet_mask_to_info(subnet_input)
 
             output = (
                 f"输入的子网掩码或CIDR: {cidr_or_mask}\n"
                 f"可用主机数: {usable_hosts}\n"
-                f"网络类别: {network_class}\n"
                 f"通过常规掩码算出的CIDR: {cidr}\n"
                 f"通过CIDR算出的子网掩码: {subnet_mask}\n"
                 f"反掩码: {inverted_mask}\n\n"

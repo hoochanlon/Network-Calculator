@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 print(sys.path)
 import ipaddress
 import re
-from network_class_utils import get_network_class_by_cidr
+from core.network_class_utils import get_network_class_by_cidr
 
 # 根据IP地址和子网掩码计算网络和IP信息
 def calculate_ip_info(ip_address, subnet_mask):
@@ -55,7 +55,7 @@ def calculate_ip_info(ip_address, subnet_mask):
         reverse_subnet_mask = str(ipaddress.IPv4Address(int(ipaddress.IPv4Address(subnet_mask)) ^ 0xFFFFFFFF))
 
         # 网络类别
-        network_class = get_network_class_by_cidr(cidr)
+        network_class = get_network_class_by_cidr(f"{ip_address}{cidr}")
 
         # 总IP数量的计算方法
         total_ips = 2 ** (32 - network.prefixlen)

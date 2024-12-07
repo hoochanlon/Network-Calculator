@@ -1,6 +1,7 @@
 # gui_menu.py
 import tkinter as tk
 from tkinter import messagebox
+from tkinter import filedialog
 import webbrowser
 import os
 import sys
@@ -46,8 +47,6 @@ def show_word():
     except Exception as e:
         print(f"文档加载失败: {e}")
         messagebox.showerror("错误", f"无法加载文档: {e}")
-
-
 
 def show_about():
     # 创建新的Toplevel窗口
@@ -122,7 +121,7 @@ def show_about():
         avatar_label.pack(pady=20)  # 在顶部居中显示头像
 
     # ---------------- 关于部分 ----------------
-    about_text = "IP地址规划计算器 v1.3"
+    about_text = "IP地址规划计算器 v1.3.2"
     author_text = "Author: Hoochanlon"
     desc_text = (
         "这是一个功能强大的工具，帮助用户进行IP地址规划和计算。\n\n"
@@ -216,3 +215,16 @@ def show_about():
         wechat_image_label.bind("<Button-1>", lambda event: show_wechat_qr())  # 绑定点击事件
         wechat_image_label.grid(row=0, column=2, padx=5)  # 放在第0行，第2列，左右间距5
 
+
+
+def get_cheat_sheet_ipv4_en_pdf():
+        # 获取资源文件路径
+    if hasattr(sys, '_MEIPASS'):  # 如果是打包后的环境
+        current_dir = sys._MEIPASS
+    else:
+        Desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
+        current_dir = os.path.join(Desktop_dir, "Network-Calculator")
+    
+    doc_path = os.path.join(current_dir, "docs", "cheat_sheet_ipv4_en.pdf")
+
+    return doc_path

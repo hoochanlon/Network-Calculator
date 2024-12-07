@@ -2,7 +2,6 @@
 import ipaddress
 import math
 import re
-from network_class_utils import get_network_class_by_cidr
 
 # 根据主机数计算子网掩码相关信息
 def hosts_to_subnet_mask_and_hosts(hosts):
@@ -37,8 +36,6 @@ def hosts_to_subnet_mask_and_hosts(hosts):
     # 反掩码的十六进制表示
     inverted_mask_hex = ''.join(f"{int(octet):02X}" for octet in inverted_mask.split('.'))
 
-    # 网络类别
-    network_class = get_network_class_by_cidr(cidr)
 
     return (
             hosts,
@@ -49,8 +46,7 @@ def hosts_to_subnet_mask_and_hosts(hosts):
             subnet_mask_binary,
             inverted_mask_binary,
             subnet_mask_hex,
-            inverted_mask_hex,
-            network_class
+            inverted_mask_hex
         )
 
 
@@ -88,8 +84,6 @@ def cidr_or_subnet_mask_to_info(cidr_or_mask):
         # 反掩码的十六进制表示
         inverted_mask_hex = '.'.join(f"{int(octet):02X}" for octet in inverted_mask.split('.'))
 
-        # 网络类别
-        network_class = get_network_class_by_cidr(cidr)
 
         # 多行返回 
         return (
@@ -101,8 +95,7 @@ def cidr_or_subnet_mask_to_info(cidr_or_mask):
             subnet_mask_binary,
             inverted_mask_binary,
             subnet_mask_hex,
-            inverted_mask_hex,
-            network_class
+            inverted_mask_hex
         )
 
     except ValueError:
