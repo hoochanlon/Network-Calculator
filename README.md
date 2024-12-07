@@ -40,13 +40,20 @@
 
 应用程序下载地址：
 
-* 蓝奏云：https://wwxm.lanzouo.com/i4kIY2h82k9e
-* GitHub：[releases/tag/v1.3.1](https://github.com/hoochanlon/Network-Calculator/releases/tag/v1.3.1)
+* 蓝奏云：https://wwxm.lanzouo.com/i8dW92hhjtuf
+* GitHub：https://github.com/hoochanlon/Network-Calculator/releases
 
 也可下载源码运行，目录结构规则如下：
 
 ```
 %USERPROFILE%\Desktop\Network-Calulator
+```
+
+生成环境依赖，并安装环境依赖
+
+```
+pip freeze > requirements.txt
+pip install -r requirements.txt
 ```
 
 运行 main.py 即可，也可通过 pyinstaller_output_cmd.py 一键生成程序到桌面。
