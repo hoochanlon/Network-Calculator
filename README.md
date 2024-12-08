@@ -34,7 +34,7 @@
 
 ##  ***Take your heart*** 
 
-<a  href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.1/Network-Calculator.v1.3.1.exe">
+<a  href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.2/Network-Calculator.v1.3.2.exe">
 <img align="right" src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="320" height="120"/>
 </a>
 
