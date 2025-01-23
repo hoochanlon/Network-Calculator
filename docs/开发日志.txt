@@ -21,12 +21,24 @@
 2.增加历史记录查看、搜索、记录导出与删除。
 3.只有正确的操作记录被保存，减少无效输出干扰。
 
-v1.3.1
+v1.3.1：
 1. 历史记录相关计算器名称同一规范
 2. 调整历史记录GUI布局宽高布局
-3. 项目根目录由“IP规划计算器”调整为“Network-Calculator”，方便GitHub上传源码
-4. 源码上增加项目输出打包命令脚本，方便一键打包调试
+3. 源码上增加项目输出打包命令脚本，方便一键打包调试
 
+v1.3.2：
+1. 知识库新增本地 IP子网速查表。
+2. 优化网络类别判断逻辑。
+
+v1.4：
+1. 新增网段合并计算器
+2. 新增超网拆分计算器
+3. 修复历史记录查看器不显示输入值的问题
+
+v1.5：
+1. 新增IP包含检测器
+2. 移除部分在线工具链接，新增网络协议图
+3. 软件命名调整
 
 二、附录
 
@@ -34,10 +46,11 @@ v1.3.1
 工具类：
 1.https://iiis.tsinghua.edu.cn/IP/
 2.https://www.calculator.io
+3.http://tools.bugscaner.com/ipjuhe.html
 图标类：
 1.https://www.freepik.com 
 2.https://yesicon.app
-3.https://www.acon vert.com/cn/icon/png-to-ico/
+3.https://www.aconvert.com/cn/icon/png-to-ico/
 4.https://www.iloveimg.com/zh-cn/crop-image/crop-png
 文档类:
 1.文档压缩：https://www.youcompress.com/zh-cn

@@ -82,7 +82,7 @@ def ip_calculator(frame):
             ip_calc_state["result"] = output  # 保存输出结果
 
             # 保存历史记录
-            save_to_history("网络和IP地址计算器", {"ip": ip_address, "mask": subnet_mask}, output)
+            save_to_history("IP地址计算器", {"ip": ip_address, "mask": subnet_mask}, output)
 
         # 更新状态字典中的输入内容
         ip_calc_state["ip_address"] = ip_address

@@ -1,4 +1,4 @@
-# IP地址规划器
+# 多功能IP地址计算器
 
 ## 简介
 
@@ -6,17 +6,33 @@
 
 这是一款界面简洁、功能强大的网络计算工具，它不仅涵盖了网络和IP地址计算、基于主机数的子网划分、IP及掩码地址的进制转换等核心功能，还提供了便捷的历史记录操作，且计算结果的准确性与[清华大学交叉信息研究院 - ip地址在线计算器](https://iiis.tsinghua.edu.cn/ip/)相一致。
 
-## 功能展示
+## 核心功能
 
-### 计算功能
+**子网运算**
 
 网络和IP地址计算，以及主机数与子网掩码换算。
 
 ![pAohKS0.png](https://s21.ax1x.com/2024/12/04/pAohKS0.png)
 
+**进制转换**
+
 考虑到学习IP地址知识的过程必然会涉及点分十进制、二进制、十六进制的转换，为此特别增加了IP地址和子网掩码的进制转换功能，以满足用户在不同场景下的应急需求。
 
 ![pAoh5nS.png](https://s21.ax1x.com/2024/12/04/pAoh5nS.png)
+
+**路由聚合与超网拆分**
+
+路由聚合
+
+![PixPin_2025-01-21_19-14-31](https://img.yonrd.com/i/2025/01/21/vpkksc.png)
+
+超网拆分
+
+![PixPin_2025-01-23_11-31-33](https://img.yonrd.com/i/2025/01/23/iqqdqr.png)
+
+以及额外的IP包含检测
+
+![PixPin_2025-01-23_11-39-45](https://img.yonrd.com/i/2025/01/23/iw43fu.png)
 
 ### 辅助功能
 
@@ -32,15 +48,15 @@
 
 ![pAo4Ac6.png](https://s21.ax1x.com/2024/12/04/pAo4Ac6.png)
 
-##  ***Take your heart*** 
+## ***Take your heart***
 
-<a  href="https://github.com/hoochanlon/Network-Calculator/releases/download/v1.3.2/Network-Calculator.v1.3.2.exe">
+<a  href="https://wwxm.lanzouo.com/iFSv92lpw0gh">
 <img align="right" src="https://img.yonrd.com/i/2024/12/04/xans5s.png" alt="download"  width="320" height="120"/>
 </a>
 
 应用程序下载地址：
 
-* 蓝奏云：https://wwxm.lanzouo.com/i8dW92hhjtuf
+* 蓝奏云：https://wwxm.lanzouo.com/iFSv92lpw0gh
 * GitHub：https://github.com/hoochanlon/Network-Calculator/releases
 
 也可下载源码运行，目录结构规则如下：
@@ -65,11 +81,8 @@ pip install -r requirements.txt
 <img src="https://img.picui.cn/free/2024/12/04/67507c422c62d.png" alt="github.png" title="github.png" width="50" height="50" />
 </a>
 <a href="mailto:hoochanlon@outlook.com">
-<img src="https://img.yonrd.com/i/2024/12/04/uoim5m.png" alt="p5r" width="70" height="50"/>
+<img src="https://img.yonrd.com/i/2025/01/23/iyj6af.png" alt="email" width="50" height="50"/>
 </a>  
-<a href="https://hoochanlon.github.io/assets/qr/wx.png">
-  <img src="https://img.yonrd.com/i/2024/12/04/uoishh.png" alt="wechat" width="50" height="50"/>
-</a>
 </div>
 
 <!---

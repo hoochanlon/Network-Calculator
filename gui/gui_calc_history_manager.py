@@ -94,6 +94,11 @@ def show_history():
             mask = selected_record['inputs'].get('mask', None)
             hosts = selected_record['inputs'].get('hosts', None)
             subnet_input = selected_record['inputs'].get('subnet_input', None)
+            symbol = selected_record['inputs'].get('symbol', None)
+            network_merge_input = selected_record['inputs'].get('network_merge_input', None)
+            supernet_split_input = selected_record['inputs'].get('supernet_split_input', None)
+            checker_cidr_1 = selected_record['inputs'].get('checker_cidr_1', None)
+            checker_cidr_2 = selected_record['inputs'].get('checker_cidr_2', None)
 
             # 动态检查是否有值，若没有则跳过该字段
             inputs_str = ""
@@ -105,6 +110,16 @@ def show_history():
                 inputs_str += f"主机数: {hosts}\n"
             if subnet_input:
                 inputs_str += f"子网输入: {subnet_input}\n"
+            if symbol:
+                inputs_str += f"输入字符: {symbol}\n"
+            if network_merge_input:
+                inputs_str += f"需要合并的网段:\n{network_merge_input}\n"
+            if supernet_split_input:
+                inputs_str += f"需要拆分的超网及目标长度:\n{supernet_split_input}\n"
+            if checker_cidr_1:
+                inputs_str += f"需要验证的CIDR或IP：\n{checker_cidr_1}\n"
+            if checker_cidr_2:
+                inputs_str += f"目标CIDR网段： \n{checker_cidr_2}\n"
 
             # 如果没有任何输入信息，显示默认提示
             if not inputs_str:
@@ -174,6 +189,11 @@ def show_history():
                 mask = selected_record['inputs'].get('mask', None)
                 hosts = selected_record['inputs'].get('hosts', None)
                 subnet_input = selected_record['inputs'].get('subnet_input', None)
+                symbol = selected_record['inputs'].get('symbol', None)
+                network_merge_input = selected_record['inputs'].get('network_merge_input', None)
+                supernet_split_input = selected_record['inputs'].get('supernet_split_input', None)
+                checker_cidr_1 = selected_record['inputs'].get('checker_cidr_1', None)
+                checker_cidr_2 = selected_record['inputs'].get('checker_cidr_2', None)                
 
                 inputs_str = ""
                 if ip:
@@ -184,6 +204,16 @@ def show_history():
                     inputs_str += f"主机数: {hosts}\n"
                 if subnet_input:
                     inputs_str += f"子网输入: {subnet_input}\n"
+                if symbol:
+                    inputs_str += f"输入字符: {symbol}\n"
+                if network_merge_input:
+                    inputs_str += f"需要合并的网段:\n{network_merge_input}\n"
+                if supernet_split_input:
+                    inputs_str += f"需要拆分的超网及目标长度:\n{supernet_split_input}\n"
+                if checker_cidr_1:
+                    inputs_str += f"需要验证的CIDR或IP：\n{checker_cidr_1}\n"
+                if checker_cidr_2:
+                    inputs_str += f"目标CIDR网段： \n{checker_cidr_2}\n"
 
                 if not inputs_str:
                     inputs_str = "没有输入信息"

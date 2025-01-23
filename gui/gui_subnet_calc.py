@@ -92,7 +92,7 @@ def subnet_calculator(frame):
                     print(f"提取的主机数: {extracted_hosts}")
 
                     # 保存历史记录
-                    save_to_history("主机数与子网换算器", {"hosts": hosts_input}, output)
+                    save_to_history("子网掩码计算器", {"hosts": hosts_input}, output)
 
             except ValueError:
                 result_text.insert(tk.END, "请输入有效的主机数（数字）。\n", "error_font")
@@ -145,7 +145,7 @@ def subnet_calculator(frame):
             print(f"提取的子网掩码: {extracted_subnet}")
 
             # 保存历史记录
-            save_to_history("主机数与子网换算器", {"subnet_input": subnet_input}, output)
+            save_to_history("子网掩码计算器", {"subnet_input": subnet_input}, output)
 
     def clear_inputs():
         # 清空输入框和文本框
@@ -163,15 +163,15 @@ def subnet_calculator(frame):
         widget.destroy()
 
     # 输入框
-    tk.Label(frame, text="请输入主机数：").pack(pady=5)
-    hosts_entry = tk.Entry(frame, width=30)
-    hosts_entry.pack(pady=5)
-    hosts_entry.insert(0, subnet_calc_state["hosts_input"])
-
-    tk.Label(frame, text="或请输入子网掩码：").pack(pady=5)
+    tk.Label(frame, text="请输入子网掩码：").pack(pady=5)
     subnet_entry = tk.Entry(frame, width=30)
     subnet_entry.pack(pady=5)
     subnet_entry.insert(0, subnet_calc_state["subnet_input"])
+
+    tk.Label(frame, text="或请输入主机数：").pack(pady=5)
+    hosts_entry = tk.Entry(frame, width=30)
+    hosts_entry.pack(pady=5)
+    hosts_entry.insert(0, subnet_calc_state["hosts_input"])
 
     # 创建按钮框架
     button_frame = tk.Frame(frame)

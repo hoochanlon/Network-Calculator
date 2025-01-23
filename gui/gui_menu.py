@@ -54,7 +54,7 @@ def show_about():
     about_window.title("关于")
 
     # 设置窗口大小
-    about_window.geometry("330x500")  # 增加一些高度以便容纳头像
+    about_window.geometry("330x530")  # 增加一些高度以便容纳头像
     # 防止窗口被调整大小
     about_window.resizable(False, False)
 
@@ -66,15 +66,15 @@ def show_about():
         current_dir = os.path.join(Desktop_dir, "Network-Calculator")
 
     # 图标路径
-    email_img_path = os.path.join(current_dir, "images", "p5r.png")  
+    email_img_path = os.path.join(current_dir, "images", "email.png")  
     github_img_path = os.path.join(current_dir, "images", "github.png")  
-    wechat_img_path = os.path.join(current_dir, "images", "wechat.png")  
+    dianzan_img_path = os.path.join(current_dir, "images", "dianzan.png")  
     avatar_path = os.path.join(current_dir, "images", "avatar.png")  
     
     # 加载邮箱图标
     try:
         email_img = Image.open(email_img_path)  # 加载拼接后的路径
-        email_img = email_img.resize((70, 40))  # 调整图片大小
+        email_img = email_img.resize((40, 40))  # 调整图片大小
         email_img_tk = ImageTk.PhotoImage(email_img)  # 转换为Tkinter可识别的格式
     except Exception as e:
         print(f"邮箱图标加载失败: {e}")
@@ -89,14 +89,14 @@ def show_about():
         print(f"GitHub图标加载失败: {e}")
         github_img_tk = None  # 如果图片加载失败，则不显示图片
 
-    # 加载wechat图标
+    # 加载dianzan图标
     try:
-        wechat_img = Image.open(wechat_img_path)  # 加载拼接后的路径
-        wechat_img = wechat_img.resize((40, 40))  # 调整图片大小
-        wechat_img_tk = ImageTk.PhotoImage(wechat_img)  # 转换为Tkinter可识别的格式
+        dianzan_img = Image.open(dianzan_img_path)  # 加载拼接后的路径
+        dianzan_img = dianzan_img.resize((60, 60))  # 调整图片大小
+        dianzan_img_tk = ImageTk.PhotoImage(dianzan_img)  # 转换为Tkinter可识别的格式
     except Exception as e:
-        print(f"wechat图标加载失败: {e}")
-        wechat_img_tk = None  # 如果图片加载失败，则不显示图片
+        print(f"dianzan图标加载失败: {e}")
+        dianzan_img_tk = None  # 如果图片加载失败，则不显示图片
 
     # 加载头像并裁剪为圆形
     try:
@@ -121,14 +121,16 @@ def show_about():
         avatar_label.pack(pady=20)  # 在顶部居中显示头像
 
     # ---------------- 关于部分 ----------------
-    about_text = "IP地址规划计算器 v1.3.2"
+    about_text = "多功能IP地址计算器 v1.5"
     author_text = "Author: Hoochanlon"
     desc_text = (
         "这是一个功能强大的工具，帮助用户进行IP地址规划和计算。\n\n"
         "主要功能包括：\n"
-        "- 子网划分\n"
-        "- 主机数推算子网\n"
+        "- IP地址规划计算\n"
         "- IP地址进制转换\n"
+        "- IP地址归属网段检测\n"
+        "- 子网掩码与主机数换算\n"
+        "- 路由聚合及超网拆分\n"
         "- 计算历史记录管理\n\n"
         "该工具适合网络工程师、开发者和学习者。\n"
         "当前版本已优化用户界面并修复了一些问题。\n"
@@ -150,13 +152,13 @@ def show_about():
         padx=10, 
         wraplength=280  # 自动换行的宽度
     )
-    desc_label.pack(pady=5)
+    desc_label.pack(pady=3)
 
 
 
     # ---------------- 联系方式部分 ----------------
     contact_frame = tk.Frame(about_window)
-    contact_frame.pack(pady=5)
+    contact_frame.pack(pady=3)
 
     # 使用 grid 方法确保图标都在同一行
     # 如果 GitHub 图片存在，将其显示并设置为可点击
@@ -178,42 +180,42 @@ def show_about():
         email_image_label.grid(row=0, column=1, padx=5)  # 放在第0行，第0列，左右间距5
 
 
-    if wechat_img_tk:
-        def show_wechat_qr():
+    if dianzan_img_tk:
+        def show_dianzan_thankyou():
             # 创建新的Toplevel窗口
-            wechat_window = tk.Toplevel()
-            wechat_window.title("微信二维码")
+            dianzan_window = tk.Toplevel()
+            dianzan_window.title("感谢小窗口")
             
             # 设置窗口大小和防止调整大小
-            wechat_window.geometry("250x300")
-            wechat_window.resizable(False, False)
+            dianzan_window.geometry("300x300")
+            dianzan_window.resizable(False, False)
             
-            # 获取 QR 图片路径
-            qr_img_path = os.path.join(current_dir, "images", "wechat_qr.png")  
+            # 获取 thankyou 图片路径
+            thankyou_img_path = os.path.join(current_dir, "images", "dianzan_thankyou.png")  
             
             try:
-                qr_img = Image.open(qr_img_path)
-                qr_img = qr_img.resize((200, 200))  # 调整图片大小
-                qr_img_tk = ImageTk.PhotoImage(qr_img)
+                thankyou_img = Image.open(thankyou_img_path)
+                thankyou_img = thankyou_img.resize((200, 200))  # 调整图片大小
+                thankyou_img_tk = ImageTk.PhotoImage(thankyou_img)
             except Exception as e:
-                print(f"微信二维码加载失败: {e}")
-                qr_img_tk = None
+                print(f"图片加载失败: {e}")
+                thankyou_img_tk = None
             
             # 显示二维码图片
-            if qr_img_tk:
-                qr_label = tk.Label(wechat_window, image=qr_img_tk)
-                qr_label.image = qr_img_tk  # 保持对图片的引用
-                qr_label.pack(pady=20)
+            if thankyou_img_tk:
+                thankyou_label = tk.Label(dianzan_window, image=thankyou_img_tk)
+                thankyou_label.image = thankyou_img_tk  # 保持对图片的引用
+                thankyou_label.pack(pady=20)
             
             # 提示文本
-            message_label = tk.Label(wechat_window, text="扫一扫上方二维码添加微信", font=("微软雅黑", 11))
+            message_label = tk.Label(dianzan_window, text="感谢支持", font=("仿宋", 15))
             message_label.pack(pady=10)
         
-        # 创建微信图标按钮
-        wechat_image_label = tk.Label(contact_frame, image=wechat_img_tk, cursor="hand2")
-        wechat_image_label.image = wechat_img_tk  # 保持对图片的引用
-        wechat_image_label.bind("<Button-1>", lambda event: show_wechat_qr())  # 绑定点击事件
-        wechat_image_label.grid(row=0, column=2, padx=5)  # 放在第0行，第2列，左右间距5
+        # 创建点赞图标按钮
+        dianzan_image_label = tk.Label(contact_frame, image=dianzan_img_tk, cursor="hand2")
+        dianzan_image_label.image = dianzan_img_tk  # 保持对图片的引用
+        dianzan_image_label.bind("<Button-1>", lambda event: show_dianzan_thankyou())  # 绑定点击事件
+        dianzan_image_label.grid(row=0, column=2, padx=5)  # 放在第0行，第2列，左右间距5
 
 
 
@@ -226,5 +228,17 @@ def get_cheat_sheet_ipv4_en_pdf():
         current_dir = os.path.join(Desktop_dir, "Network-Calculator")
     
     doc_path = os.path.join(current_dir, "docs", "cheat_sheet_ipv4_en.pdf")
+
+    return doc_path
+
+def get_agilent_netzwerk_pdf():
+        # 获取资源文件路径
+    if hasattr(sys, '_MEIPASS'):  # 如果是打包后的环境
+        current_dir = sys._MEIPASS
+    else:
+        Desktop_dir = os.path.join(os.path.expanduser("~"), "Desktop")
+        current_dir = os.path.join(Desktop_dir, "Network-Calculator")
+    
+    doc_path = os.path.join(current_dir, "docs", "Agilent_Netzwerk.pdf")
 
     return doc_path

@@ -40,7 +40,7 @@ def ip_base_converter(frame):
             result_text.insert(tk.END, result, "big_font")  # 显示转换结果，应用自定义字体样式
 
             # 保存历史记录
-            save_to_history("IP及掩码进制转换器", {"symbol": ip_input}, result)
+            save_to_history("IP进制转换器", {"symbol": ip_input}, result)
 
             # 更新状态字典中的输入内容
             ip_base_converter_state["symbol"] = ip_input
