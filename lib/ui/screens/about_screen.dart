@@ -33,7 +33,7 @@ class AboutScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 700),
+              constraints: const BoxConstraints(maxWidth: 900),
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(20),

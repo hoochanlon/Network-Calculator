@@ -201,6 +201,8 @@
   "referenceSubnetRouteBlog": "サブネット分割とルート集約の説明",
   "referenceCheatSheets": "ネットワークチートシート",
   "advanced": "詳細設定",
-  "advancedSettings": "詳細設定"
+  "advancedSettings": "詳細設定",
+  "webPlatformNotSupported": "Web プラットフォームではカスタムディレクトリの選択はサポートされていません",
+  "webPlatformStorageInfo": "Web プラットフォームではカスタムディレクトリの選択はサポートされていません。ブラウザのデフォルトストレージが使用されます"
 }
 

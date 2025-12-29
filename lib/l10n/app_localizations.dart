@@ -1246,6 +1246,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'高级设置'**
   String get advancedSettings;
+
+  /// No description provided for @webPlatformNotSupported.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 平台不支持自定义目录选择'**
+  String get webPlatformNotSupported;
+
+  /// No description provided for @webPlatformStorageInfo.
+  ///
+  /// In zh, this message translates to:
+  /// **'Web 平台不支持自定义目录选择，将使用浏览器默认存储位置'**
+  String get webPlatformStorageInfo;
 }
 
 class _AppLocalizationsDelegate

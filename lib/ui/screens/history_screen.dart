@@ -337,33 +337,36 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
           ),
           // 原有 body 内容
           Expanded(
-            child: Column(
-              children: [
-                // 搜索框
-                if (_history.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: TextField(
-                      controller: _searchController,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontFamily: 'OPPOSans',
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: Column(
+                  children: [
+                    // 搜索框
+                    if (_history.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: TextField(
+                          controller: _searchController,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontFamily: 'OPPOSans',
+                          ),
+                          decoration: InputDecoration(
+                            hintText: l10n.searchHint,
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: _searchController.text.isNotEmpty
+                                ? IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                    },
+                                    splashRadius: 20,
+                                  )
+                                : null,
+                          ),
+                        ),
                       ),
-                      decoration: InputDecoration(
-                        hintText: l10n.searchHint,
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  _searchController.clear();
-                                },
-                                splashRadius: 20,
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
                 // 历史记录列表
                 Expanded(
                   child: _isLoading
@@ -498,9 +501,11 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                                 },
                               ),
                             ),
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
+          ),
           ),
         ],
       ),

@@ -201,6 +201,8 @@
   "referenceSubnetRouteBlog": "子網劃分與路由聚合詳解",
   "referenceCheatSheets": "網路速查表",
   "advanced": "進階",
-  "advancedSettings": "進階設定"
+  "advancedSettings": "進階設定",
+  "webPlatformNotSupported": "Web 平台不支援自訂目錄選擇",
+  "webPlatformStorageInfo": "Web 平台不支援自訂目錄選擇，將使用瀏覽器預設儲存位置"
 }
 

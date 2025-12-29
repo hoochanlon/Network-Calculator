@@ -198,6 +198,8 @@
   "referenceSubnetRouteBlog": "Subnet Division and Route Aggregation Explained",
   "referenceCheatSheets": "Network Cheat Sheets",
   "advanced": "Advanced",
-  "advancedSettings": "Advanced Settings"
+  "advancedSettings": "Advanced Settings",
+  "webPlatformNotSupported": "Custom directory selection is not supported on Web platform",
+  "webPlatformStorageInfo": "Custom directory selection is not supported on Web platform, browser default storage will be used"
 }
 

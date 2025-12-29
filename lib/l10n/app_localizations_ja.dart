@@ -590,4 +590,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get advancedSettings => '詳細設定';
+
+  @override
+  String get webPlatformNotSupported =>
+      'Web プラットフォームではカスタムディレクトリの選択はサポートされていません';
+
+  @override
+  String get webPlatformStorageInfo =>
+      'Web プラットフォームではカスタムディレクトリの選択はサポートされていません。ブラウザのデフォルトストレージが使用されます';
 }

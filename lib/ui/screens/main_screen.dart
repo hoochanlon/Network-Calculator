@@ -133,11 +133,18 @@ class _MainScreenState extends State<MainScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Scaffold(
-      body: Row(
-        children: [
-          // 左侧导航栏
-          Container(
-            width: 230,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // 根据窗口宽度动态调整侧边栏宽度
+          // 默认宽度：230，窗口最大化时（宽度 > 1920）最大宽度：300
+          final screenWidth = MediaQuery.of(context).size.width;
+          final sidebarWidth = screenWidth > 1600 ? 300.0 : 230.0; 
+          
+          return Row(
+            children: [
+              // 左侧导航栏
+              Container(
+                width: sidebarWidth,
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF252525) : Colors.white,
               border: Border(
@@ -425,7 +432,7 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final maxWidth = constraints.maxWidth > 1200 ? 1200.0 : constraints.maxWidth;
+                final maxWidth = constraints.maxWidth > 900 ? 900.0 : constraints.maxWidth;
                 return Center(
                   child: SizedBox(
                     width: maxWidth,
@@ -448,6 +455,8 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
         ],
+          );
+        },
       ),
     );
   }

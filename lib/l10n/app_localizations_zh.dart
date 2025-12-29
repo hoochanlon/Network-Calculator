@@ -584,6 +584,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get advancedSettings => '高级设置';
+
+  @override
+  String get webPlatformNotSupported => 'Web 平台不支持自定义目录选择';
+
+  @override
+  String get webPlatformStorageInfo => 'Web 平台不支持自定义目录选择，将使用浏览器默认存储位置';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -1166,4 +1172,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get advancedSettings => '進階設定';
+
+  @override
+  String get webPlatformNotSupported => 'Web 平台不支援自訂目錄選擇';
+
+  @override
+  String get webPlatformStorageInfo => 'Web 平台不支援自訂目錄選擇，將使用瀏覽器預設儲存位置';
 }

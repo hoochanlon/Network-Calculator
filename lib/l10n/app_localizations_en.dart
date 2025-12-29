@@ -614,4 +614,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get advancedSettings => 'Advanced Settings';
+
+  @override
+  String get webPlatformNotSupported =>
+      'Custom directory selection is not supported on Web platform';
+
+  @override
+  String get webPlatformStorageInfo =>
+      'Custom directory selection is not supported on Web platform, browser default storage will be used';
 }

@@ -25,9 +25,12 @@ class _ColorThemeScreenState extends State<ColorThemeScreen> {
           //   title: l10n.colorTheme,
           // ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 900),
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
                 Text(
                   l10n.presetThemes,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -45,7 +48,9 @@ class _ColorThemeScreenState extends State<ColorThemeScreen> {
                     ),
                   ),
                 ),
-              ],
+                  ],
+                ),
+              ),
             ),
           ),
         ],

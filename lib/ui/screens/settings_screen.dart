@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:network_calculator/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -33,12 +33,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadHistoryLimit();
-    _loadHistoryStoragePath();
-    _loadDefaultStoragePath();
-    _loadSidebarDragEnabled();
+    // 合并所有异步加载，减少 setState 次数
+    _loadAllSettings();
     // 初始化锁定状态（仅在首次使用时）
     CalculatorSettingsProvider.initializeLockedItems();
+  }
+
+  /// 一次性加载所有设置，减少 setState 调用
+  Future<void> _loadAllSettings() async {
+    // 并行加载所有设置
+    final results = await Future.wait([
+      CalculatorSettingsProvider.getSidebarDragEnabled(),
+      CalculatorSettingsProvider.getHistoryLimit(),
+      CalculatorSettingsProvider.getHistoryStoragePath(),
+      HistoryService.getDefaultStoragePath(),
+      HistoryService.getDefaultStorageFilePath(),
+    ]);
+    
+    if (mounted) {
+      setState(() {
+        _sidebarDragEnabled = results[0] as bool;
+        _historyLimit = results[1] as int;
+        _historyStoragePath = results[2] as String?;
+        _defaultStoragePath = results[3] as String;
+        _defaultStorageFilePath = results[4] as String;
+      });
+    }
   }
 
   Future<void> _loadSidebarDragEnabled() async {
@@ -127,9 +147,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildSettingsContent(BuildContext context, AppLocalizations l10n, LocaleProvider localeProvider, ThemeProvider themeProvider) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 900),
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          cacheExtent: 500, // 增加缓存范围，提升滚动性能
+          children: [
         Card(
           child: Column(
             children: [
@@ -363,13 +387,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         const SizedBox(width: 8),
                         Switch(
                           value: _sidebarDragEnabled,
-                          onChanged: (value) async {
-                            await CalculatorSettingsProvider.setSidebarDragEnabled(value);
-                            if (mounted) {
-                              setState(() {
-                                _sidebarDragEnabled = value;
-                              });
-                            }
+                          onChanged: (value) {
+                            // 立即更新 UI，异步保存
+                            setState(() {
+                              _sidebarDragEnabled = value;
+                            });
+                            // 后台保存，不阻塞 UI
+                            CalculatorSettingsProvider.setSidebarDragEnabled(value);
                           },
                         ),
                       ],
@@ -397,48 +421,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leading: const Icon(Icons.folder),
                     title: Text(l10n.dataStoragePath),
                     subtitle: Text(
-                      _historyStoragePath != null
-                          ? '${_historyStoragePath}${Platform.pathSeparator}history.json'
-                          : _defaultStorageFilePath,
+                      kIsWeb
+                          ? l10n.webPlatformNotSupported
+                          : (_historyStoragePath != null
+                              ? '${_historyStoragePath}${_historyStoragePath!.contains('/') ? '/' : '\\'}history.json'
+                              : _defaultStorageFilePath),
                     ),
-                    trailing: _historyStoragePath != null
-                        ? IconButton(
-                            icon: const Icon(Icons.clear, size: 20),
-                            onPressed: () async {
-                              await CalculatorSettingsProvider.setHistoryStoragePath(null);
-                              await _loadHistoryStoragePath();
-                              if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(l10n.dataStoragePathReset),
-                                    duration: const Duration(seconds: 2),
-                                  ),
-                                );
-                              }
+                    trailing: kIsWeb
+                        ? null
+                        : (_historyStoragePath != null
+                            ? IconButton(
+                                icon: const Icon(Icons.clear, size: 20),
+                            onPressed: () {
+                              // 立即更新 UI
+                              setState(() {
+                                _historyStoragePath = null;
+                              });
+                              // 后台保存
+                              CalculatorSettingsProvider.setHistoryStoragePath(null).then((_) {
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(l10n.dataStoragePathReset),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              });
                             },
-                            tooltip: l10n.reset,
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                          )
-                        : null,
-                    onTap: () async {
-                      final l10n = AppLocalizations.of(context)!;
-                      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-                      
-                      if (selectedDirectory != null) {
-                        await CalculatorSettingsProvider.setHistoryStoragePath(selectedDirectory);
-                        await _loadHistoryStoragePath();
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('${l10n.dataStoragePathSet}: $selectedDirectory'),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
-                        }
-                      }
-                    },
+                                tooltip: l10n.reset,
+                                visualDensity: VisualDensity.compact,
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                              )
+                            : null),
+                    onTap: kIsWeb
+                        ? () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.webPlatformStorageInfo),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+                          }
+                        : () {
+                            // 使用异步操作，不阻塞 UI
+                            _selectDirectory(context);
+                          },
                   ),
                 ],
               ),
@@ -458,8 +487,67 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
         ),
-              ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 选择目录（异步操作，不阻塞 UI）
+  Future<void> _selectDirectory(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // 显示加载指示器
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    
+    try {
+      // 在后台线程执行文件选择
+      final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+      
+      // 关闭加载指示器
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+      
+      if (selectedDirectory != null) {
+        // 立即更新 UI
+        setState(() {
+          _historyStoragePath = selectedDirectory;
+        });
+        
+        // 异步保存，不阻塞 UI
+        CalculatorSettingsProvider.setHistoryStoragePath(selectedDirectory).then((_) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${l10n.dataStoragePathSet}: $selectedDirectory'),
+                duration: const Duration(seconds: 2),
+              ),
             );
+          }
+        });
+      }
+    } catch (e) {
+      // 关闭加载指示器
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('选择目录失败: $e'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
 }
