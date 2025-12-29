@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:network_calculator/l10n/app_localizations.dart';
 import '../widgets/screen_title_bar.dart';
 
@@ -50,11 +51,25 @@ class AboutScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        '${l10n.appTitle} v1.0.0',
+                      FutureBuilder<PackageInfo>(
+                        future: PackageInfo.fromPlatform(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final version = snapshot.data!.version;
+                            return Text(
+                              '${l10n.appTitle} v$version',
+                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            );
+                          }
+                          return Text(
+                            l10n.appTitle,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 8),
                       Text(

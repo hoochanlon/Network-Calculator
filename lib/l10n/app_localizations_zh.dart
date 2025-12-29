@@ -162,6 +162,32 @@ class AppLocalizationsZh extends AppLocalizations {
   String get merge => '合并网段';
 
   @override
+  String get mergeAlgorithm => '合并算法';
+
+  @override
+  String get selectAlgorithm => '选择算法';
+
+  @override
+  String get algorithmSummarizationSource =>
+      '基于 Route Summarization Calculator (calcip.com)';
+
+  @override
+  String get algorithmMergeSource =>
+      '基于 CIDR Merger & Deduplicator (networks.tools)';
+
+  @override
+  String get algorithmSummarization => 'Summarization';
+
+  @override
+  String get algorithmSummarizationDescription => '最大化覆盖的汇总，找到所有网络的公共前缀';
+
+  @override
+  String get algorithmMerge => 'Merge';
+
+  @override
+  String get algorithmMergeDescription => '基于路由器性能的合并最优解，合并相邻或重叠的CIDR范围';
+
+  @override
   String get split => '拆分网络';
 
   @override
@@ -480,6 +506,54 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get calculatorStatesCleared => '已清除所有计算器的输入和结果';
+
+  @override
+  String get references => '参考资料';
+
+  @override
+  String get referenceBasicTools => '基础 IP 与子网工具';
+
+  @override
+  String get referenceIpAddressCalc => 'IP地址计算与进制转换';
+
+  @override
+  String get referenceIpAddressCalcDesc => '适用场景：基础 IP 地址换算、进制转换、网段划分。';
+
+  @override
+  String get referenceIpCalculator => 'IP计算器';
+
+  @override
+  String get referenceSubnetCidr => '子网与 CIDR 工具';
+
+  @override
+  String get referenceSubnetCidrDesc => '适用场景：可视化子网划分、CIDR 地址块展示。';
+
+  @override
+  String get referenceRouteAggregation => '路由聚合与超网拆分';
+
+  @override
+  String get referenceSupernetSplit => '超网拆分';
+
+  @override
+  String get referenceSupernetSplitDesc => '适用场景：将大地址块拆分为多个小网段。';
+
+  @override
+  String get referenceRouteAggregationTitle => '路由聚合';
+
+  @override
+  String get referenceRouteAggregationDesc => '适用场景：合并多个子网为一个 CIDR，优化路由表。';
+
+  @override
+  String get referenceLearningResources => '学习与速查资源';
+
+  @override
+  String get referenceTechBlogs => '技术博客参考';
+
+  @override
+  String get referenceSubnetRouteBlog => '子网划分与路由聚合详解';
+
+  @override
+  String get referenceCheatSheets => '网络速查表';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -638,6 +712,32 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get merge => '合併網段';
+
+  @override
+  String get mergeAlgorithm => '合併算法';
+
+  @override
+  String get selectAlgorithm => '選擇算法';
+
+  @override
+  String get algorithmSummarizationSource =>
+      '基於 Route Summarization Calculator (calcip.com)';
+
+  @override
+  String get algorithmMergeSource =>
+      '基於 CIDR Merger & Deduplicator (networks.tools)';
+
+  @override
+  String get algorithmSummarization => 'Summarization';
+
+  @override
+  String get algorithmSummarizationDescription => '最大化覆蓋的匯總，找到所有網路的公共前綴';
+
+  @override
+  String get algorithmMerge => 'Merge';
+
+  @override
+  String get algorithmMergeDescription => '基於路由器性能的合併最優解，合併相鄰或重疊的CIDR範圍';
 
   @override
   String get split => '拆分網路';
@@ -958,4 +1058,52 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get calculatorStatesCleared => '已清除所有計算機的輸入和結果';
+
+  @override
+  String get references => '參考資料';
+
+  @override
+  String get referenceBasicTools => '基礎 IP 與子網工具';
+
+  @override
+  String get referenceIpAddressCalc => 'IP地址計算與進制轉換';
+
+  @override
+  String get referenceIpAddressCalcDesc => '適用場景：基礎 IP 地址換算、進制轉換、網段劃分。';
+
+  @override
+  String get referenceIpCalculator => 'IP計算器';
+
+  @override
+  String get referenceSubnetCidr => '子網與 CIDR 工具';
+
+  @override
+  String get referenceSubnetCidrDesc => '適用場景：可視化子網劃分、CIDR 地址塊展示。';
+
+  @override
+  String get referenceRouteAggregation => '路由聚合與超網拆分';
+
+  @override
+  String get referenceSupernetSplit => '超網拆分';
+
+  @override
+  String get referenceSupernetSplitDesc => '適用場景：將大地址塊拆分為多個小網段。';
+
+  @override
+  String get referenceRouteAggregationTitle => '路由聚合';
+
+  @override
+  String get referenceRouteAggregationDesc => '適用場景：合併多個子網為一個 CIDR，優化路由表。';
+
+  @override
+  String get referenceLearningResources => '學習與速查資源';
+
+  @override
+  String get referenceTechBlogs => '技術部落格參考';
+
+  @override
+  String get referenceSubnetRouteBlog => '子網劃分與路由聚合詳解';
+
+  @override
+  String get referenceCheatSheets => '網路速查表';
 }

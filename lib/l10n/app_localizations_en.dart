@@ -164,6 +164,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get merge => 'Merge Networks';
 
   @override
+  String get mergeAlgorithm => 'Merge Algorithm';
+
+  @override
+  String get selectAlgorithm => 'Select Algorithm';
+
+  @override
+  String get algorithmSummarizationSource =>
+      'Based on Route Summarization Calculator (calcip.com)';
+
+  @override
+  String get algorithmMergeSource =>
+      'Based on CIDR Merger & Deduplicator (networks.tools)';
+
+  @override
+  String get algorithmSummarization => 'Summarization';
+
+  @override
+  String get algorithmSummarizationDescription =>
+      'Maximize coverage summary, find common prefix of all networks';
+
+  @override
+  String get algorithmMerge => 'Merge';
+
+  @override
+  String get algorithmMergeDescription =>
+      'Optimal merge solution based on router performance, merge adjacent or overlapping CIDR ranges';
+
+  @override
   String get split => 'Split Network';
 
   @override
@@ -499,4 +527,59 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get calculatorStatesCleared =>
       'All calculator inputs and results have been cleared';
+
+  @override
+  String get references => 'References';
+
+  @override
+  String get referenceBasicTools => 'Basic IP and Subnet Tools';
+
+  @override
+  String get referenceIpAddressCalc =>
+      'IP Address Calculation and Base Conversion';
+
+  @override
+  String get referenceIpAddressCalcDesc =>
+      'Use cases: Basic IP address conversion, base conversion, network segment division.';
+
+  @override
+  String get referenceIpCalculator => 'IP Calculator';
+
+  @override
+  String get referenceSubnetCidr => 'Subnet and CIDR Tools';
+
+  @override
+  String get referenceSubnetCidrDesc =>
+      'Use cases: Visual subnet division, CIDR address block display.';
+
+  @override
+  String get referenceRouteAggregation =>
+      'Route Aggregation and Supernet Splitting';
+
+  @override
+  String get referenceSupernetSplit => 'Supernet Splitting';
+
+  @override
+  String get referenceSupernetSplitDesc =>
+      'Use cases: Split large address blocks into multiple small network segments.';
+
+  @override
+  String get referenceRouteAggregationTitle => 'Route Aggregation';
+
+  @override
+  String get referenceRouteAggregationDesc =>
+      'Use cases: Merge multiple subnets into one CIDR, optimize routing tables.';
+
+  @override
+  String get referenceLearningResources => 'Learning and Reference Resources';
+
+  @override
+  String get referenceTechBlogs => 'Technical Blog References';
+
+  @override
+  String get referenceSubnetRouteBlog =>
+      'Subnet Division and Route Aggregation Explained';
+
+  @override
+  String get referenceCheatSheets => 'Network Cheat Sheets';
 }

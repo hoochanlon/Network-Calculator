@@ -158,6 +158,109 @@ flutter build linux --release
 
 所有文本都通过 `AppLocalizations` 进行管理，便于扩展更多语言。
 
+## 故障排除
+
+### Windows 平台插件问题
+
+#### 问题现象
+
+在 Windows 平台运行应用时，可能会遇到以下错误：
+
+```
+MissingPluginException: No implementation found for method getAll on channel plugins.flutter.io/shared_preferences
+```
+
+或者在构建时出现：
+
+```
+Package path_provider:windows references path_provider_windows:windows as the default plugin, but the package does not exist
+```
+
+#### 问题原因
+
+1. **缺少 Windows 平台实现包**：Flutter 的某些插件（如 `shared_preferences`、`path_provider`、`url_launcher`）需要单独的 Windows 平台实现包，这些包不会自动包含在主包中。
+
+2. **插件注册文件未生成**：添加 Windows 平台包后，需要重新生成插件注册文件（`generated_plugin_registrant.cc`），否则插件无法正确注册。
+
+3. **构建缓存问题**：旧的构建缓存可能包含过期的插件信息，导致新添加的插件无法被识别。
+
+#### 一键修复方法
+
+**方法一：使用修复脚本（推荐）**
+
+在项目根目录运行：
+
+**Windows 命令提示符 (CMD):**
+```bash
+fix_windows_plugins.bat
+```
+
+**PowerShell:**
+```powershell
+.\fix_windows_plugins.ps1
+```
+
+该脚本会自动执行以下步骤：
+1. 清理项目构建缓存
+2. 重新获取所有依赖包
+3. 重新生成插件注册文件
+4. 构建 Windows 应用验证修复
+
+**方法二：手动修复**
+
+如果脚本无法运行，可以手动执行以下命令：
+
+```bash
+# 1. 清理项目
+flutter clean
+
+# 2. 重新获取依赖
+flutter pub get
+
+# 3. 重新构建（这会自动重新生成插件注册文件）
+flutter build windows --debug
+```
+
+#### 预防措施
+
+确保 `pubspec.yaml` 中包含以下 Windows 平台实现包：
+
+```yaml
+dependencies:
+  shared_preferences: ^2.2.2
+  shared_preferences_windows: ^2.4.1  # Windows 平台实现
+  path_provider: ^2.1.2
+  path_provider_windows: ^2.3.0       # Windows 平台实现
+  url_launcher: ^6.2.5
+  url_launcher_windows: ^3.1.5        # Windows 平台实现
+```
+
+**注意**：`package_info_plus` 从 9.0.0 版本开始已经内置了 Windows 支持，不需要单独的 Windows 包。
+
+#### 其他常见问题
+
+**问题：构建时提示找不到文件**
+
+```
+Error when reading 'file_picker-8.3.7/lib/file_picker.dart': 系统找不到指定的文件
+```
+
+**解决方案**：更新到最新版本的包，旧版本可能已从 pub cache 中移除：
+
+```bash
+flutter pub upgrade
+```
+
+**问题：插件注册警告**
+
+看到以下警告是正常的，可以忽略：
+
+```
+Package path_provider:windows references path_provider_windows:windows as the default plugin...
+```
+
+这些警告不会影响应用的正常运行。
+
 ## 许可证
 
 与原项目保持一致。

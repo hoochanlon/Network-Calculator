@@ -15,6 +15,7 @@ import 'calculator_screens/network_split_screen.dart';
 import 'calculator_screens/ip_inclusion_screen.dart';
 import 'history_screen.dart';
 import 'settings_screen.dart';
+import 'reference_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -132,12 +133,18 @@ class _MainScreenState extends State<MainScreen> {
       }
     }
 
-    // 添加特殊项（历史记录和设置）
+    // 添加特殊项（历史记录、参考资料和设置）
     orderedCalculators.addAll([
       NavigationItem(
         icon: Symbols.history,
         label: l10n.history,
         screen: HistoryScreen(key: _historyKey),
+        isSpecial: true,
+      ),
+      NavigationItem(
+        icon: Symbols.menu_book,
+        label: l10n.references,
+        screen: const ReferenceScreen(),
         isSpecial: true,
       ),
       NavigationItem(
@@ -179,7 +186,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           // 左侧导航栏
           Container(
-            width: 220,
+            width: 230,
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF252525) : Colors.white,
               border: Border(
@@ -257,16 +264,26 @@ class _MainScreenState extends State<MainScreen> {
           ),
           // 右侧内容区域
           Expanded(
-            child: FutureBuilder<List<NavigationItem>>(
-              future: _getNavigationItems(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final items = snapshot.data!;
-                return IndexedStack(
-                  index: _currentIndex,
-                  children: items.map((item) => item.screen).toList(),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxWidth = constraints.maxWidth > 1200 ? 1200.0 : constraints.maxWidth;
+                return Center(
+                  child: SizedBox(
+                    width: maxWidth,
+                    child: FutureBuilder<List<NavigationItem>>(
+                      future: _getNavigationItems(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        final items = snapshot.data!;
+                        return IndexedStack(
+                          index: _currentIndex,
+                          children: items.map((item) => item.screen).toList(),
+                        );
+                      },
+                    ),
+                  ),
                 );
               },
             ),
@@ -295,6 +312,7 @@ class _MainScreenState extends State<MainScreen> {
         }
       },
       mouseCursor: SystemMouseCursors.click,
+      borderRadius: BorderRadius.circular(8),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

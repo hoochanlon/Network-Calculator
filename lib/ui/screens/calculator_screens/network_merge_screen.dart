@@ -22,6 +22,7 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
   String? _result;
   bool _isLoading = false;
   bool _isInitialized = false;
+  MergeAlgorithm _selectedAlgorithm = MergeAlgorithm.summarization;
 
   @override
   void initState() {
@@ -71,6 +72,8 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
       setState(() {
         _inputController.text = state['input'] ?? '';
         _result = state['result'];
+        final algorithmIndex = state['algorithm'] ?? 0;
+        _selectedAlgorithm = MergeAlgorithm.values[algorithmIndex.clamp(0, MergeAlgorithm.values.length - 1)];
         _isInitialized = true;
       });
     } else {
@@ -83,6 +86,7 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
     await stateProvider.saveState(CalculatorKeys.networkMerge, {
       'input': _inputController.text,
       'result': _result,
+      'algorithm': _selectedAlgorithm.index,
     });
   }
 
@@ -101,7 +105,7 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
         .where((line) => line.isNotEmpty)
         .toList();
 
-    final result = NetworkMergeService.mergeNetworks(networks);
+    final result = NetworkMergeService.mergeNetworks(networks, algorithm: _selectedAlgorithm);
 
     setState(() {
       _result = result;
@@ -175,6 +179,85 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                       ),
                       maxLines: 10,
                       minLines: 5,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.selectAlgorithm,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 400),
+                        child: Card(
+                          elevation: 0,
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: SegmentedButton<MergeAlgorithm>(
+                              segments: [
+                                ButtonSegment<MergeAlgorithm>(
+                                  value: MergeAlgorithm.summarization,
+                                  icon: const Icon(Icons.auto_awesome, size: 18),
+                                  label: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    child: Text(l10n.algorithmSummarization),
+                                  ),
+                                ),
+                                ButtonSegment<MergeAlgorithm>(
+                                  value: MergeAlgorithm.merge,
+                                  icon: const Icon(Icons.merge_type, size: 18),
+                                  label: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                                    child: Text(l10n.algorithmMerge),
+                                  ),
+                                ),
+                              ],
+                              selected: {_selectedAlgorithm},
+                              onSelectionChanged: (Set<MergeAlgorithm> newSelection) {
+                                setState(() {
+                                  _selectedAlgorithm = newSelection.first;
+                                });
+                                if (_isInitialized) {
+                                  _saveState();
+                                }
+                              },
+                              style: SegmentedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                minimumSize: const Size(0, 44),
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                                backgroundColor: Theme.of(context).colorScheme.surface,
+                                foregroundColor: Theme.of(context).colorScheme.onSurface,
+                                selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+                                selectedForegroundColor: Theme.of(context).colorScheme.onPrimary,
+                                elevation: 0,
+                                shadowColor: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 400),
+                        child: Text(
+                          _selectedAlgorithm == MergeAlgorithm.summarization
+                              ? l10n.algorithmSummarizationSource
+                              : l10n.algorithmMergeSource,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Row(
@@ -255,10 +338,7 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                       const Divider(),
                       SelectableText(
                         _result!,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
                   ),

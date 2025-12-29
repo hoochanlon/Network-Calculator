@@ -162,6 +162,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get merge => 'ネットワークをマージ';
 
   @override
+  String get mergeAlgorithm => 'マージアルゴリズム';
+
+  @override
+  String get selectAlgorithm => 'アルゴリズムを選択';
+
+  @override
+  String get algorithmSummarizationSource =>
+      'Route Summarization Calculator (calcip.com) に基づく';
+
+  @override
+  String get algorithmMergeSource =>
+      'CIDR Merger & Deduplicator (networks.tools) に基づく';
+
+  @override
+  String get algorithmSummarization => 'Summarization';
+
+  @override
+  String get algorithmSummarizationDescription =>
+      '最大カバレッジの要約、すべてのネットワークの共通プレフィックスを見つける';
+
+  @override
+  String get algorithmMerge => 'Merge';
+
+  @override
+  String get algorithmMergeDescription =>
+      'ルーター性能に基づく最適なマージソリューション、隣接または重複するCIDR範囲をマージ';
+
+  @override
   String get split => 'ネットワークを分割';
 
   @override
@@ -481,4 +509,54 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get calculatorStatesCleared => 'すべての計算機の入力と結果がクリアされました';
+
+  @override
+  String get references => '参考資料';
+
+  @override
+  String get referenceBasicTools => '基本IPとサブネットツール';
+
+  @override
+  String get referenceIpAddressCalc => 'IPアドレス計算と基数変換';
+
+  @override
+  String get referenceIpAddressCalcDesc => '使用例：基本IPアドレス変換、基数変換、ネットワークセグメント分割。';
+
+  @override
+  String get referenceIpCalculator => 'IP計算機';
+
+  @override
+  String get referenceSubnetCidr => 'サブネットとCIDRツール';
+
+  @override
+  String get referenceSubnetCidrDesc => '使用例：視覚的なサブネット分割、CIDRアドレスブロック表示。';
+
+  @override
+  String get referenceRouteAggregation => 'ルート集約とスーパーネット分割';
+
+  @override
+  String get referenceSupernetSplit => 'スーパーネット分割';
+
+  @override
+  String get referenceSupernetSplitDesc =>
+      '使用例：大きなアドレスブロックを複数の小さなネットワークセグメントに分割。';
+
+  @override
+  String get referenceRouteAggregationTitle => 'ルート集約';
+
+  @override
+  String get referenceRouteAggregationDesc =>
+      '使用例：複数のサブネットを1つのCIDRにマージし、ルーティングテーブルを最適化。';
+
+  @override
+  String get referenceLearningResources => '学習とリファレンスリソース';
+
+  @override
+  String get referenceTechBlogs => '技術ブログリファレンス';
+
+  @override
+  String get referenceSubnetRouteBlog => 'サブネット分割とルート集約の説明';
+
+  @override
+  String get referenceCheatSheets => 'ネットワークチートシート';
 }

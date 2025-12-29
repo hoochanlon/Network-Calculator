@@ -407,6 +407,54 @@ abstract class AppLocalizations {
   /// **'合并网段'**
   String get merge;
 
+  /// No description provided for @mergeAlgorithm.
+  ///
+  /// In zh, this message translates to:
+  /// **'合并算法'**
+  String get mergeAlgorithm;
+
+  /// No description provided for @selectAlgorithm.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择算法'**
+  String get selectAlgorithm;
+
+  /// No description provided for @algorithmSummarizationSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于 Route Summarization Calculator (calcip.com)'**
+  String get algorithmSummarizationSource;
+
+  /// No description provided for @algorithmMergeSource.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于 CIDR Merger & Deduplicator (networks.tools)'**
+  String get algorithmMergeSource;
+
+  /// No description provided for @algorithmSummarization.
+  ///
+  /// In zh, this message translates to:
+  /// **'Summarization'**
+  String get algorithmSummarization;
+
+  /// No description provided for @algorithmSummarizationDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'最大化覆盖的汇总，找到所有网络的公共前缀'**
+  String get algorithmSummarizationDescription;
+
+  /// No description provided for @algorithmMerge.
+  ///
+  /// In zh, this message translates to:
+  /// **'Merge'**
+  String get algorithmMerge;
+
+  /// No description provided for @algorithmMergeDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'基于路由器性能的合并最优解，合并相邻或重叠的CIDR范围'**
+  String get algorithmMergeDescription;
+
   /// No description provided for @split.
   ///
   /// In zh, this message translates to:
@@ -1042,6 +1090,102 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'已清除所有计算器的输入和结果'**
   String get calculatorStatesCleared;
+
+  /// No description provided for @references.
+  ///
+  /// In zh, this message translates to:
+  /// **'参考资料'**
+  String get references;
+
+  /// No description provided for @referenceBasicTools.
+  ///
+  /// In zh, this message translates to:
+  /// **'基础 IP 与子网工具'**
+  String get referenceBasicTools;
+
+  /// No description provided for @referenceIpAddressCalc.
+  ///
+  /// In zh, this message translates to:
+  /// **'IP地址计算与进制转换'**
+  String get referenceIpAddressCalc;
+
+  /// No description provided for @referenceIpAddressCalcDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'适用场景：基础 IP 地址换算、进制转换、网段划分。'**
+  String get referenceIpAddressCalcDesc;
+
+  /// No description provided for @referenceIpCalculator.
+  ///
+  /// In zh, this message translates to:
+  /// **'IP计算器'**
+  String get referenceIpCalculator;
+
+  /// No description provided for @referenceSubnetCidr.
+  ///
+  /// In zh, this message translates to:
+  /// **'子网与 CIDR 工具'**
+  String get referenceSubnetCidr;
+
+  /// No description provided for @referenceSubnetCidrDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'适用场景：可视化子网划分、CIDR 地址块展示。'**
+  String get referenceSubnetCidrDesc;
+
+  /// No description provided for @referenceRouteAggregation.
+  ///
+  /// In zh, this message translates to:
+  /// **'路由聚合与超网拆分'**
+  String get referenceRouteAggregation;
+
+  /// No description provided for @referenceSupernetSplit.
+  ///
+  /// In zh, this message translates to:
+  /// **'超网拆分'**
+  String get referenceSupernetSplit;
+
+  /// No description provided for @referenceSupernetSplitDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'适用场景：将大地址块拆分为多个小网段。'**
+  String get referenceSupernetSplitDesc;
+
+  /// No description provided for @referenceRouteAggregationTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'路由聚合'**
+  String get referenceRouteAggregationTitle;
+
+  /// No description provided for @referenceRouteAggregationDesc.
+  ///
+  /// In zh, this message translates to:
+  /// **'适用场景：合并多个子网为一个 CIDR，优化路由表。'**
+  String get referenceRouteAggregationDesc;
+
+  /// No description provided for @referenceLearningResources.
+  ///
+  /// In zh, this message translates to:
+  /// **'学习与速查资源'**
+  String get referenceLearningResources;
+
+  /// No description provided for @referenceTechBlogs.
+  ///
+  /// In zh, this message translates to:
+  /// **'技术博客参考'**
+  String get referenceTechBlogs;
+
+  /// No description provided for @referenceSubnetRouteBlog.
+  ///
+  /// In zh, this message translates to:
+  /// **'子网划分与路由聚合详解'**
+  String get referenceSubnetRouteBlog;
+
+  /// No description provided for @referenceCheatSheets.
+  ///
+  /// In zh, this message translates to:
+  /// **'网络速查表'**
+  String get referenceCheatSheets;
 }
 
 class _AppLocalizationsDelegate
