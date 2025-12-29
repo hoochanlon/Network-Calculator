@@ -1,0 +1,1 @@
+pyinstaller -w -F -i "C:\Users\Administrator\Desktop\Network-Calculator\images\logo.ico" --onefile --add-data "C:\Users\Administrator\Desktop\Network-Calculator\docs;docs" --add-data "C:\Users\Administrator\Desktop\Network-Calculator\images;images" --name "多功能IP地址计算器v1.5" --distpath "C:\Users\Administrator\Desktop" "C:\Users\Administrator\Desktop\Network-Calculator\main.py"
