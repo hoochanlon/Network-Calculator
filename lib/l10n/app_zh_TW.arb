@@ -155,8 +155,16 @@
   "bilibiliPink": "BiliBili·粉紅",
   "calculatorSortOrder": "計算器排序",
   "calculatorSortOrderDescription": "拖曳調整計算器順序",
+  "sidebarSortOrder": "側邊欄排序",
+  "sidebarSortOrderDescription": "拖曳調整側邊欄項目順序",
   "resetSortOrder": "重設排序",
   "resetSortOrderConfirm": "確定要重設為預設排序嗎？",
+  "resetSidebarSortOrder": "重設側邊欄排序",
+  "resetSidebarSortOrderConfirm": "確定要重設為預設側邊欄排序嗎？",
+  "lockItem": "鎖定項目",
+  "unlockItem": "解鎖項目",
+  "sidebarDragEnabled": "啟用側邊欄拖曳排序",
+  "sidebarDragEnabledDescription": "開啟後可在側邊欄長按拖曳項目進行排序",
   "historyLimit": "歷史記錄數量限制",
   "historyLimitDescription": "設定最多儲存的歷史記錄條數",
   "historyLimitHint": "請輸入數量（10-100000）",
@@ -191,6 +199,8 @@
   "referenceLearningResources": "學習與速查資源",
   "referenceTechBlogs": "技術部落格參考",
   "referenceSubnetRouteBlog": "子網劃分與路由聚合詳解",
-  "referenceCheatSheets": "網路速查表"
+  "referenceCheatSheets": "網路速查表",
+  "advanced": "進階",
+  "advancedSettings": "進階設定"
 }
 

@@ -461,11 +461,37 @@ class AppLocalizationsEn extends AppLocalizations {
       'Drag to adjust calculator order';
 
   @override
+  String get sidebarSortOrder => 'Sidebar Sort Order';
+
+  @override
+  String get sidebarSortOrderDescription => 'Drag to adjust sidebar item order';
+
+  @override
   String get resetSortOrder => 'Reset Order';
 
   @override
   String get resetSortOrderConfirm =>
       'Are you sure you want to reset to default order?';
+
+  @override
+  String get resetSidebarSortOrder => 'Reset Sidebar Order';
+
+  @override
+  String get resetSidebarSortOrderConfirm =>
+      'Are you sure you want to reset to default sidebar order?';
+
+  @override
+  String get lockItem => 'Lock Item';
+
+  @override
+  String get unlockItem => 'Unlock Item';
+
+  @override
+  String get sidebarDragEnabled => 'Enable Sidebar Drag Sort';
+
+  @override
+  String get sidebarDragEnabledDescription =>
+      'Long press and drag items in the sidebar to reorder when enabled';
 
   @override
   String get historyLimit => 'History Limit';
@@ -582,4 +608,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get referenceCheatSheets => 'Network Cheat Sheets';
+
+  @override
+  String get advanced => 'Advanced';
+
+  @override
+  String get advancedSettings => 'Advanced Settings';
 }

@@ -3,19 +3,12 @@ import 'package:network_calculator/l10n/app_localizations.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../core/providers/calculator_settings_provider.dart';
 import '../../core/providers/locale_provider.dart';
-import '../../core/utils/calculator_name_translator.dart';
-import 'calculator_screens/ip_calculator_screen.dart';
-import 'calculator_screens/subnet_calculator_screen.dart';
-import 'calculator_screens/base_converter_screen.dart';
-import 'calculator_screens/network_merge_screen.dart';
-import 'calculator_screens/network_split_screen.dart';
-import 'calculator_screens/ip_inclusion_screen.dart';
 import 'history_screen.dart';
-import 'settings_screen.dart';
-import 'reference_screen.dart';
+import 'main_navigation_item.dart';
+import 'main_navigation_items.dart';
+import 'main_social_footer.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -26,24 +19,38 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  String? _currentItemKey; // 跟踪当前选中项的 key，用于排序改变时保持选中状态
   final GlobalKey<HistoryScreenState> _historyKey = GlobalKey<HistoryScreenState>();
   List<NavigationItem>? _cachedNavigationItems;
   List<String>? _cachedCalculatorOrder;
   Locale? _cachedLocale;
   LocaleProvider? _localeProvider;
+  bool _sidebarDragEnabled = false;
 
   @override
   void initState() {
     super.initState();
     // 监听计算器顺序变化
     CalculatorSettingsProvider.orderNotifier.addListener(_onOrderChanged);
+    // 初始化锁定状态（仅在首次使用时）
+    CalculatorSettingsProvider.initializeLockedItems();
     // 监听语言变化
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         _localeProvider = Provider.of<LocaleProvider>(context, listen: false);
         _localeProvider?.addListener(_onLocaleChanged);
+        _loadSidebarDragEnabled();
       }
     });
+  }
+
+  Future<void> _loadSidebarDragEnabled() async {
+    final enabled = await CalculatorSettingsProvider.getSidebarDragEnabled();
+    if (mounted) {
+      setState(() {
+        _sidebarDragEnabled = enabled;
+      });
+    }
   }
 
   @override
@@ -54,12 +61,37 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
-  void _onOrderChanged() {
+  void _onOrderChanged() async {
+    // 重新加载拖拽状态（可能在设置界面中更改了）
+    await _loadSidebarDragEnabled();
+    
+    // 保存当前选中项的 key
+    String? currentKey = _currentItemKey;
+    if (currentKey == null && _cachedNavigationItems != null && 
+        _currentIndex >= 0 && _currentIndex < _cachedNavigationItems!.length) {
+      currentKey = _cachedNavigationItems![_currentIndex].calculatorKey;
+    }
+    
     // 清除缓存，强制刷新
-    setState(() {
-      _cachedNavigationItems = null;
-      _cachedCalculatorOrder = null;
-    });
+    _cachedNavigationItems = null;
+    _cachedCalculatorOrder = null;
+    
+    // 如果找到了当前项的 key，在新列表中查找其新位置
+    if (currentKey != null && mounted) {
+      final newItems = await _getNavigationItems();
+      final newIndex = newItems.indexWhere(
+        (item) => item.calculatorKey == currentKey
+      );
+      if (newIndex >= 0 && mounted) {
+        setState(() {
+          _currentIndex = newIndex;
+          _currentItemKey = currentKey;
+        });
+      }
+    } else {
+      // 如果没有找到 key，只是刷新界面
+      setState(() {});
+    }
   }
 
   void _onLocaleChanged() {
@@ -72,108 +104,27 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<List<NavigationItem>> _getNavigationItems() async {
-    final l10n = AppLocalizations.of(context)!;
-    final savedOrder = await CalculatorSettingsProvider.getCalculatorOrder();
-    final currentLocale = Provider.of<LocaleProvider>(context, listen: false).locale;
+    final items = await MainNavigationItemsManager.getNavigationItems(
+      context,
+      _historyKey,
+      _cachedNavigationItems,
+      _cachedCalculatorOrder,
+      _cachedLocale,
+    );
     
-    // 如果顺序和语言都没有变化，返回缓存的列表
-    // 使用语言代码作为缓存键的一部分，确保语言变化时刷新
-    if (_cachedNavigationItems != null && 
-        _cachedCalculatorOrder != null &&
-        _listEquals(_cachedCalculatorOrder!, savedOrder) &&
-        _cachedLocale?.toString() == currentLocale.toString()) {
-      return _cachedNavigationItems!;
-    }
-
-    // 创建所有计算器项（不包括特殊项）
-    final allCalculators = <String, NavigationItem>{
-      CalculatorKeys.ipCalculator: NavigationItem(
-        icon: Symbols.bring_your_own_ip,
-        label: l10n.ipCalculator,
-        screen: const IpCalculatorScreen(),
-        calculatorKey: CalculatorKeys.ipCalculator,
-      ),
-      CalculatorKeys.subnetCalculator: NavigationItem(
-        icon: Symbols.account_tree,
-        label: l10n.subnetCalculator,
-        screen: const SubnetCalculatorScreen(),
-        calculatorKey: CalculatorKeys.subnetCalculator,
-      ),
-      CalculatorKeys.baseConverter: NavigationItem(
-        icon: Symbols.swap_horiz,
-        label: l10n.baseConverter,
-        screen: const BaseConverterScreen(),
-        calculatorKey: CalculatorKeys.baseConverter,
-      ),
-      CalculatorKeys.networkMerge: NavigationItem(
-        icon: Symbols.call_merge,
-        label: l10n.networkMerge,
-        screen: const NetworkMergeScreen(),
-        calculatorKey: CalculatorKeys.networkMerge,
-      ),
-      CalculatorKeys.networkSplit: NavigationItem(
-        icon: Symbols.call_split,
-        label: l10n.networkSplit,
-        screen: const NetworkSplitScreen(),
-        calculatorKey: CalculatorKeys.networkSplit,
-      ),
-      CalculatorKeys.ipInclusionChecker: NavigationItem(
-        icon: Symbols.search,
-        label: l10n.ipInclusionChecker,
-        screen: const IpInclusionScreen(),
-        calculatorKey: CalculatorKeys.ipInclusionChecker,
-      ),
-    };
-
-    // 按照保存的顺序排列计算器
-    final orderedCalculators = <NavigationItem>[];
-    for (final key in savedOrder) {
-      if (allCalculators.containsKey(key)) {
-        orderedCalculators.add(allCalculators[key]!);
-      }
-    }
-
-    // 添加特殊项（历史记录、参考资料和设置）
-    orderedCalculators.addAll([
-      NavigationItem(
-        icon: Symbols.history,
-        label: l10n.history,
-        screen: HistoryScreen(key: _historyKey),
-        isSpecial: true,
-      ),
-      NavigationItem(
-        icon: Symbols.menu_book,
-        label: l10n.references,
-        screen: const ReferenceScreen(),
-        isSpecial: true,
-      ),
-      NavigationItem(
-        icon: Symbols.settings,
-        label: l10n.settings,
-        screen: const SettingsScreen(),
-        isSpecial: true,
-      ),
-    ]);
-
-    _cachedNavigationItems = orderedCalculators;
+    // 更新缓存
+    final savedOrder = await CalculatorSettingsProvider.getSidebarOrder();
+    final currentLocale = Provider.of<LocaleProvider>(context, listen: false).locale;
+    _cachedNavigationItems = items;
     _cachedCalculatorOrder = List<String>.from(savedOrder);
     _cachedLocale = currentLocale;
-    return orderedCalculators;
-  }
-
-  bool _listEquals<T>(List<T> a, List<T> b) {
-    if (a.length != b.length) return false;
-    for (int i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) return false;
+    
+    // 如果当前索引有效，确保 _currentItemKey 已设置
+    if (_currentItemKey == null && _currentIndex >= 0 && _currentIndex < items.length) {
+      _currentItemKey = items[_currentIndex].calculatorKey;
     }
-    return true;
-  }
-
-  void _refreshNavigationItems() {
-    setState(() {
-      _cachedNavigationItems = null;
-      _cachedCalculatorOrder = null;
-    });
+    
+    return items;
   }
 
   @override
@@ -243,22 +194,230 @@ class _MainScreenState extends State<MainScreen> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       final items = snapshot.data!;
-                      return ListView.builder(
-                        key: ValueKey(items.map((e) => e.calculatorKey ?? '').join(',')),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          final isSelected = _currentIndex == index;
-                          
-                          return _buildNavigationItem(context, item, index, isSelected, items);
-                        },
-                      );
+                      
+                      // 如果启用了拖拽排序，使用 ReorderableListView
+                      if (_sidebarDragEnabled) {
+                        return FutureBuilder<Set<String>>(
+                          future: CalculatorSettingsProvider.getLockedItems(),
+                          builder: (context, lockedSnapshot) {
+                            if (!lockedSnapshot.hasData) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            final lockedItems = lockedSnapshot.data!;
+                            
+                            return StatefulBuilder(
+                              builder: (context, setLocalState) {
+                                return ReorderableListView(
+                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  proxyDecorator: (child, index, animation) {
+                                    return Material(
+                                      elevation: 6,
+                                      shadowColor: Colors.black26,
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: child,
+                                    );
+                                  },
+                                  onReorder: (oldIndex, newIndex) {
+                                    if (newIndex > oldIndex) {
+                                      newIndex -= 1;
+                                    }
+                                    
+                                    // 检查是否尝试移动锁定的项目
+                                    final oldKey = items[oldIndex].calculatorKey;
+                                    if (oldKey != null && lockedItems.contains(oldKey)) {
+                                      return; // 锁定的项目不能移动
+                                    }
+                                    
+                                    // 检查目标位置是否是锁定项目
+                                    final targetKey = items[newIndex].calculatorKey;
+                                    if (targetKey != null && lockedItems.contains(targetKey)) {
+                                      return; // 不能移动到锁定项目的位置
+                                    }
+                                    
+                                    // 保存当前选中项的 key
+                                    String? currentKey = _currentItemKey;
+                                    if (currentKey == null && _currentIndex >= 0 && _currentIndex < items.length) {
+                                      currentKey = items[_currentIndex].calculatorKey;
+                                    }
+                                    
+                                    // 构建新顺序，保持锁定项目的位置不变
+                                    final currentOrder = List<String>.from(
+                                      items.map((e) => e.calculatorKey ?? '').toList()
+                                    );
+                                    
+                                    // 记录锁定项目及其原始位置
+                                    final Map<int, String> lockedPositions = {};
+                                    for (int i = 0; i < currentOrder.length; i++) {
+                                      if (lockedItems.contains(currentOrder[i])) {
+                                        lockedPositions[i] = currentOrder[i];
+                                      }
+                                    }
+                                    
+                                    // 创建只包含非锁定项目的列表
+                                    final nonLockedItems = <String>[];
+                                    final nonLockedIndices = <int>[];
+                                    for (int i = 0; i < currentOrder.length; i++) {
+                                      if (!lockedItems.contains(currentOrder[i])) {
+                                        nonLockedItems.add(currentOrder[i]);
+                                        nonLockedIndices.add(i);
+                                      }
+                                    }
+                                    
+                                    // 在非锁定项目列表中执行移动
+                                    final oldNonLockedIndex = nonLockedIndices.indexOf(oldIndex);
+                                    if (oldNonLockedIndex == -1) return;
+                                    
+                                    // 计算目标位置在非锁定项目列表中的索引
+                                    int targetNonLockedIndex = 0;
+                                    for (int i = 0; i < nonLockedIndices.length; i++) {
+                                      if (nonLockedIndices[i] >= newIndex) {
+                                        targetNonLockedIndex = i;
+                                        break;
+                                      }
+                                      targetNonLockedIndex = i + 1;
+                                    }
+                                    
+                                    // 在非锁定项目列表中移动
+                                    final movedItem = nonLockedItems.removeAt(oldNonLockedIndex);
+                                    nonLockedItems.insert(targetNonLockedIndex, movedItem);
+                                    
+                                    // 重新构建完整顺序，保持锁定项目在原来的位置
+                                    final finalOrder = <String>[];
+                                    int nonLockedItemIndex = 0;
+                                    
+                                    for (int i = 0; i < currentOrder.length; i++) {
+                                      if (lockedPositions.containsKey(i)) {
+                                        // 保持锁定项目在原来的位置
+                                        finalOrder.add(lockedPositions[i]!);
+                                      } else {
+                                        // 插入非锁定项目
+                                        if (nonLockedItemIndex < nonLockedItems.length) {
+                                          finalOrder.add(nonLockedItems[nonLockedItemIndex]);
+                                          nonLockedItemIndex++;
+                                        }
+                                      }
+                                    }
+                                    
+                                    // 立即更新本地状态，使UI平滑过渡
+                                    setLocalState(() {
+                                      // 更新缓存，避免重新获取
+                                      _cachedCalculatorOrder = finalOrder;
+                                      _cachedNavigationItems = null; // 清除缓存，强制重新构建
+                                    });
+                                    
+                                    // 异步保存新顺序（不阻塞UI）
+                                    CalculatorSettingsProvider.setSidebarOrder(finalOrder).then((_) {
+                                      // 更新当前索引
+                                      if (currentKey != null && mounted) {
+                                        _getNavigationItems().then((newItems) {
+                                          final foundIndex = newItems.indexWhere(
+                                            (item) => item.calculatorKey == currentKey
+                                          );
+                                          if (foundIndex >= 0 && mounted) {
+                                            setState(() {
+                                              _currentIndex = foundIndex;
+                                              _currentItemKey = currentKey;
+                                            });
+                                          }
+                                        });
+                                      }
+                                    });
+                                  },
+                                  children: items.asMap().entries.map((entry) {
+                                    final index = entry.key;
+                                    final item = entry.value;
+                                    final isSelected = _currentIndex == index;
+                                    final isLocked = item.calculatorKey != null && lockedItems.contains(item.calculatorKey);
+                                    
+                                    Widget child = MainNavigationItemBuilder.buildNavigationItem(
+                                      context,
+                                      item,
+                                      index,
+                                      isSelected,
+                                      () {
+                                        setState(() {
+                                          _currentIndex = index;
+                                          _currentItemKey = item.calculatorKey;
+                                        });
+                                        if (item.screen is HistoryScreen && _historyKey.currentState != null) {
+                                          _historyKey.currentState!.refreshHistory();
+                                        }
+                                      },
+                                      isLocked: isLocked,
+                                      showDragHandle: true,
+                                      onLockToggle: () {
+                                        setState(() {});
+                                      },
+                                    );
+                                    
+                                    // 使用稳定的 key，确保 Flutter 能正确识别项目
+                                    final itemKey = item.calculatorKey ?? 'item_$index';
+                                    
+                                    // 如果项目被锁定，不能拖拽
+                                    if (isLocked) {
+                                      return KeyedSubtree(
+                                        key: ValueKey(itemKey),
+                                        child: child,
+                                      );
+                                    } else {
+                                      return ReorderableDragStartListener(
+                                        key: ValueKey(itemKey),
+                                        index: index,
+                                        child: child,
+                                      );
+                                    }
+                                  }).toList(),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      } else {
+                        // 未启用拖拽排序，使用普通的 ListView
+                        return ListView.builder(
+                          key: ValueKey(items.map((e) => e.calculatorKey ?? '').join(',')),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            final item = items[index];
+                            final isSelected = _currentIndex == index;
+                            
+                            return FutureBuilder<bool>(
+                              future: item.calculatorKey != null 
+                                  ? CalculatorSettingsProvider.isItemLocked(item.calculatorKey!)
+                                  : Future.value(false),
+                              builder: (context, lockSnapshot) {
+                                final isLocked = lockSnapshot.data ?? false;
+                                return MainNavigationItemBuilder.buildNavigationItem(
+                                  context,
+                                  item,
+                                  index,
+                                  isSelected,
+                                  () {
+                                    setState(() {
+                                      _currentIndex = index;
+                                      _currentItemKey = item.calculatorKey;
+                                    });
+                                    if (item.screen is HistoryScreen && _historyKey.currentState != null) {
+                                      _historyKey.currentState!.refreshHistory();
+                                    }
+                                  },
+                                  isLocked: isLocked,
+                                  showDragHandle: false,
+                                  onLockToggle: () {
+                                    setState(() {});
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        );
+                      }
                     },
                   ),
                 ),
                 // 页脚社交图标
-                _buildSocialFooter(context),
+                MainSocialFooterBuilder.buildSocialFooter(context),
               ],
             ),
           ),
@@ -293,424 +452,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildNavigationItem(
-    BuildContext context,
-    NavigationItem item,
-    int index,
-    bool isSelected,
-    List<NavigationItem> items,
-  ) {
-    return InkWell(
-      // mouseCursor: SystemMouseCursors.click,
-      onTap: () {
-        setState(() {
-          _currentIndex = index;
-        });
-        // 当切换到历史记录页面时，刷新数据
-        if (item.screen is HistoryScreen && _historyKey.currentState != null) {
-          _historyKey.currentState!.refreshHistory();
-        }
-      },
-      mouseCursor: SystemMouseCursors.click,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).primaryColor.withOpacity(0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: isSelected
-              ? Border.all(
-                  color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  width: 1,
-                )
-              : null,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              item.icon,
-              size: 20,
-              color: isSelected
-                  ? Theme.of(context).primaryColor
-                  : Theme.of(context).textTheme.bodyMedium?.color,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                item.label,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: isSelected
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).textTheme.bodyMedium?.color,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _launchURL(BuildContext context, String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else {
-      if (context.mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${l10n.cannotOpenLink}: $url')),
-        );
-      }
-    }
-  }
-
-  Widget _buildSocialFooter(BuildContext context) {
-    // 使用主题的主色调
-    final primaryColor = Theme.of(context).primaryColor;
-    
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? const Color(0xFF404040)
-                : const Color(0xFFE0E0E0),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Blog
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => _launchURL(context, 'https://hoochanlon.github.io'),
-              child: SvgPicture.asset(
-                'assets/images/blog.svg',
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          // GitHub
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => _launchURL(context, 'https://github.com/hoochanlon'),
-              child: SvgPicture.asset(
-                'assets/images/github.svg',
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Bluesky
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => _launchURL(context, 'https://bsky.app/profile/hoochanlon.bsky.social'),
-              child: SvgPicture.asset(
-                'assets/images/bluesky.svg',
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          // Email
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () => _launchURL(context, 'mailto:hoochanlon@outlook.com'),
-              child: SvgPicture.asset(
-                'assets/images/email.svg',
-                width: 20,
-                height: 20,
-                colorFilter: ColorFilter.mode(
-                  primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
-class NavigationItem {
-  final IconData icon;
-  final String label;
-  final Widget screen;
-  final bool isSpecial;
-  final String? calculatorKey;
 
-  NavigationItem({
-    required this.icon,
-    required this.label,
-    required this.screen,
-    this.isSpecial = false,
-    this.calculatorKey,
-  });
-}
-
-class CalculatorHomeScreen extends StatelessWidget {
-  const CalculatorHomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Icon(Symbols.bring_your_own_ip, size: 28),
-            const SizedBox(width: 12),
-            Text(l10n.appTitle),
-          ],
-        ),
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    const Color(0xFF1E1E1E),
-                    const Color(0xFF2C2C2C).withOpacity(0.5),
-                  ],
-                )
-              : LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    const Color(0xFFF5F5F5),
-                    const Color(0xFFFAFAFA),
-                  ],
-                ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 900),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 欢迎标题
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.appTitle,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          AppLocalizations.of(context)?.appSubtitle ?? 'Professional Network Calculator Toolset',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // 网格布局
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 1.15,
-                    children: [
-                      _buildCalculatorCard(
-                        context,
-                        l10n.ipCalculator,
-                        Symbols.bring_your_own_ip,
-                        Colors.red,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const IpCalculatorScreen()),
-                        ),
-                      ),
-                      _buildCalculatorCard(
-                        context,
-                        l10n.subnetCalculator,
-                        Symbols.account_tree,
-                        Colors.orange,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const SubnetCalculatorScreen()),
-                        ),
-                      ),
-                      _buildCalculatorCard(
-                        context,
-                        l10n.baseConverter,
-                        Symbols.swap_horiz,
-                        Colors.blue,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const BaseConverterScreen()),
-                        ),
-                      ),
-                      _buildCalculatorCard(
-                        context,
-                        l10n.networkMerge,
-                        Symbols.call_merge,
-                        Colors.green,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const NetworkMergeScreen()),
-                        ),
-                      ),
-                      _buildCalculatorCard(
-                        context,
-                        l10n.networkSplit,
-                        Symbols.call_split,
-                        Colors.purple,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const NetworkSplitScreen()),
-                        ),
-                      ),
-                      _buildCalculatorCard(
-                        context,
-                        l10n.ipInclusionChecker,
-                        Symbols.search,
-                        Colors.teal,
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const IpInclusionScreen()),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCalculatorCard(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Color color,
-    VoidCallback onTap,
-  ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Card(
-      elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: InkWell(
-        mouseCursor: SystemMouseCursors.click,
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color.withOpacity(0.1),
-                color.withOpacity(0.05),
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: color.withOpacity(0.15),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Icon(icon, color: color, size: 28),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const Spacer(),
-                Row(
-                  children: [
-                    Text(
-                      AppLocalizations.of(context)?.getStarted ?? 'Get Started',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: color,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Symbols.arrow_forward,
-                      size: 14,
-                      color: color,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 

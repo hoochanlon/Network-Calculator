@@ -152,8 +152,16 @@
   "bilibiliPink": "BiliBili Pink",
   "calculatorSortOrder": "Calculator Sort Order",
   "calculatorSortOrderDescription": "Drag to adjust calculator order",
+  "sidebarSortOrder": "Sidebar Sort Order",
+  "sidebarSortOrderDescription": "Drag to adjust sidebar item order",
   "resetSortOrder": "Reset Order",
   "resetSortOrderConfirm": "Are you sure you want to reset to default order?",
+  "resetSidebarSortOrder": "Reset Sidebar Order",
+  "resetSidebarSortOrderConfirm": "Are you sure you want to reset to default sidebar order?",
+  "lockItem": "Lock Item",
+  "unlockItem": "Unlock Item",
+  "sidebarDragEnabled": "Enable Sidebar Drag Sort",
+  "sidebarDragEnabledDescription": "Long press and drag items in the sidebar to reorder when enabled",
   "historyLimit": "History Limit",
   "historyLimitDescription": "Set the maximum number of history records to keep",
   "historyLimitHint": "Enter a number (10-100000)",
@@ -188,6 +196,8 @@
   "referenceLearningResources": "Learning and Reference Resources",
   "referenceTechBlogs": "Technical Blog References",
   "referenceSubnetRouteBlog": "Subnet Division and Route Aggregation Explained",
-  "referenceCheatSheets": "Network Cheat Sheets"
+  "referenceCheatSheets": "Network Cheat Sheets",
+  "advanced": "Advanced",
+  "advancedSettings": "Advanced Settings"
 }
 

@@ -8,10 +8,10 @@ import '../../core/providers/locale_provider.dart';
 import '../../core/providers/theme_provider.dart';
 import '../../core/providers/calculator_settings_provider.dart';
 import '../../core/services/history_service.dart';
-import '../../core/utils/calculator_name_translator.dart';
 import '../widgets/screen_title_bar.dart';
 import 'about_screen.dart';
 import 'color_theme_screen.dart';
+import 'settings_dialogs.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -27,8 +27,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _defaultStorageFilePath = '';
   bool _showAbout = false;
   bool _showColorTheme = false;
-  bool _showCalculatorSort = false;
-  int _sortOrderKey = 0; // 用于强制刷新排序界面
+  bool _sidebarDragEnabled = false;
+  bool _showAdvanced = false; // 高级设置展开状态
 
   @override
   void initState() {
@@ -36,6 +36,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadHistoryLimit();
     _loadHistoryStoragePath();
     _loadDefaultStoragePath();
+    _loadSidebarDragEnabled();
+    // 初始化锁定状态（仅在首次使用时）
+    CalculatorSettingsProvider.initializeLockedItems();
+  }
+
+  Future<void> _loadSidebarDragEnabled() async {
+    final enabled = await CalculatorSettingsProvider.getSidebarDragEnabled();
+    if (mounted) {
+      setState(() {
+        _sidebarDragEnabled = enabled;
+      });
+    }
   }
 
   Future<void> _loadHistoryLimit() async {
@@ -81,30 +93,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ? l10n.about
                 : _showColorTheme
                     ? l10n.colorTheme
-                    : _showCalculatorSort
-                        ? l10n.calculatorSortOrder
-                        : l10n.settings,
-            actions: _showAbout || _showColorTheme || _showCalculatorSort
+                    : l10n.settings,
+            actions: _showAbout || _showColorTheme
                 ? [
-                    if (_showCalculatorSort)
-                      IconButton(
-                        icon: const Icon(Icons.refresh),
-                        onPressed: () => _showResetSortOrderDialog(context, l10n),
-                        tooltip: l10n.resetSortOrder,
-                        visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.all(8),
-                        constraints: const BoxConstraints(
-                          minWidth: 40,
-                          minHeight: 40,
-                        ),
-                      ),
                     IconButton(
                       icon: const Icon(Icons.arrow_back),
                       onPressed: () {
                         setState(() {
                           _showAbout = false;
                           _showColorTheme = false;
-                          _showCalculatorSort = false;
                         });
                       },
                       visualDensity: VisualDensity.compact,
@@ -122,9 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ? const AboutScreen()
                 : _showColorTheme
                     ? const ColorThemeScreen()
-                    : _showCalculatorSort
-                        ? _buildCalculatorSortScreen(context, l10n)
-                        : _buildSettingsContent(context, l10n, localeProvider, themeProvider),
+                    : _buildSettingsContent(context, l10n, localeProvider, themeProvider),
           ),
         ],
       ),
@@ -324,74 +319,128 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
               const Divider(),
-              ListTile(
-                leading: const Icon(Icons.sort),
-                title: Text(l10n.calculatorSortOrder),
-                subtitle: Text(l10n.calculatorSortOrderDescription),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
+              // 高级设置分组
+              ExpansionTile(
+                leading: const Icon(Symbols.science),
+                title: Text(l10n.advancedSettings),
+                subtitle: Text(l10n.advanced),
+                trailing: Icon(
+                  _showAdvanced ? Icons.expand_less : Icons.expand_more,
+                  size: 20,
+                ),
+                initiallyExpanded: _showAdvanced,
+                onExpansionChanged: (expanded) {
                   setState(() {
-                    _showCalculatorSort = true;
+                    _showAdvanced = expanded;
                   });
                 },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.history),
-                title: Text(l10n.historyLimit),
-                subtitle: Text('${l10n.historyLimitDescription}\n${l10n.currentLimit}: $_historyLimit ${l10n.entries}'),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  _showHistoryLimitDialog(context, l10n);
-                },
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.folder),
-                title: Text(l10n.dataStoragePath),
-                subtitle: Text(
-                  _historyStoragePath != null
-                      ? '${_historyStoragePath}${Platform.pathSeparator}history.json'
-                      : _defaultStorageFilePath,
-                ),
-                trailing: _historyStoragePath != null
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, size: 20),
-                        onPressed: () async {
-                          await CalculatorSettingsProvider.setHistoryStoragePath(null);
-                          await _loadHistoryStoragePath();
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.dataStoragePathReset),
-                                duration: const Duration(seconds: 2),
-                              ),
+                children: [
+                  // 启用侧边栏拖拽排序
+                  ListTile(
+                    leading: const Icon(Icons.drag_handle),
+                    title: Text(l10n.sidebarDragEnabled),
+                    subtitle: Text(l10n.sidebarDragEnabledDescription),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.refresh, size: 20),
+                          onPressed: () {
+                            SettingsDialogsBuilder.showResetSortOrderDialog(
+                              context,
+                              l10n,
+                              () {
+                                // 重置后刷新界面
+                                setState(() {});
+                              },
                             );
-                          }
-                        },
-                        tooltip: l10n.reset,
-                        visualDensity: VisualDensity.compact,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      )
-                    : null,
-                onTap: () async {
-                  final l10n = AppLocalizations.of(context)!;
-                  String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-                  
-                  if (selectedDirectory != null) {
-                    await CalculatorSettingsProvider.setHistoryStoragePath(selectedDirectory);
-                    await _loadHistoryStoragePath();
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('${l10n.dataStoragePathSet}: $selectedDirectory'),
-                          duration: const Duration(seconds: 2),
+                          },
+                          tooltip: l10n.resetSidebarSortOrder,
+                          visualDensity: VisualDensity.compact,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                         ),
+                        const SizedBox(width: 8),
+                        Switch(
+                          value: _sidebarDragEnabled,
+                          onChanged: (value) async {
+                            await CalculatorSettingsProvider.setSidebarDragEnabled(value);
+                            if (mounted) {
+                              setState(() {
+                                _sidebarDragEnabled = value;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  // 历史记录数量限制
+                  ListTile(
+                    leading: const Icon(Icons.history),
+                    title: Text(l10n.historyLimit),
+                    subtitle: Text('${l10n.historyLimitDescription}\n${l10n.currentLimit}: $_historyLimit ${l10n.entries}'),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: () {
+                      SettingsDialogsBuilder.showHistoryLimitDialog(
+                        context,
+                        l10n,
+                        _historyLimit,
+                        _loadHistoryLimit,
                       );
-                    }
-                  }
-                },
+                    },
+                  ),
+                  const Divider(height: 1),
+                  // 数据记录读写目录
+                  ListTile(
+                    leading: const Icon(Icons.folder),
+                    title: Text(l10n.dataStoragePath),
+                    subtitle: Text(
+                      _historyStoragePath != null
+                          ? '${_historyStoragePath}${Platform.pathSeparator}history.json'
+                          : _defaultStorageFilePath,
+                    ),
+                    trailing: _historyStoragePath != null
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 20),
+                            onPressed: () async {
+                              await CalculatorSettingsProvider.setHistoryStoragePath(null);
+                              await _loadHistoryStoragePath();
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(l10n.dataStoragePathReset),
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              }
+                            },
+                            tooltip: l10n.reset,
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          )
+                        : null,
+                    onTap: () async {
+                      final l10n = AppLocalizations.of(context)!;
+                      String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+                      
+                      if (selectedDirectory != null) {
+                        await CalculatorSettingsProvider.setHistoryStoragePath(selectedDirectory);
+                        await _loadHistoryStoragePath();
+                        if (mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${l10n.dataStoragePathSet}: $selectedDirectory'),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
           ),
@@ -413,241 +462,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
             );
   }
 
-  Widget _buildCalculatorSortScreen(BuildContext context, AppLocalizations l10n) {
-    return StatefulBuilder(
-      key: ValueKey(_sortOrderKey), // 使用 key 强制重建
-      builder: (context, setLocalState) {
-        return FutureBuilder<List<String>>(
-          future: CalculatorSettingsProvider.getCalculatorOrder(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final currentOrder = snapshot.data!;
-            return ReorderableListView(
-              padding: const EdgeInsets.all(16),
-              proxyDecorator: (child, index, animation) {
-                // 自定义拖拽时的外观，移除默认的条形图层
-                return Material(
-                  elevation: 6,
-                  shadowColor: Colors.black26,
-                  borderRadius: BorderRadius.circular(12),
-                  child: child,
-                );
-              },
-              onReorder: (oldIndex, newIndex) async {
-                if (newIndex > oldIndex) {
-                  newIndex -= 1;
-                }
-                final newOrder = List<String>.from(currentOrder);
-                final item = newOrder.removeAt(oldIndex);
-                newOrder.insert(newIndex, item);
-                await CalculatorSettingsProvider.setCalculatorOrder(newOrder);
-                // 立即更新本地状态以反映新顺序
-                setLocalState(() {});
-                // 通知主屏幕刷新 - 通过 ChangeNotifier
-                CalculatorSettingsProvider.orderNotifier.notifyOrderChanged();
-              },
-              children: currentOrder.asMap().entries.map((entry) {
-                final index = entry.key;
-                final key = entry.value;
-                final calculatorName = _getCalculatorName(key, l10n);
-                final icon = _getCalculatorIcon(key);
-                return ReorderableDragStartListener(
-                  key: Key(key),
-                  index: index,
-                  child: Card(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                        color: Theme.of(context).dividerColor,
-                        width: 1,
-                      ),
-                    ),
-                    child: ListTile(
-                      leading: Icon(icon),
-                      title: Text(calculatorName),
-                      trailing: const Icon(Icons.drag_handle),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    ),
-                  ),
-                );
-              }).toList(),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  String _getCalculatorName(String key, AppLocalizations l10n) {
-    return CalculatorNameTranslator.translate(key, l10n);
-  }
-
-  IconData _getCalculatorIcon(String key) {
-    switch (key) {
-      case CalculatorKeys.ipCalculator:
-        return Symbols.bring_your_own_ip;
-      case CalculatorKeys.subnetCalculator:
-        return Symbols.account_tree;
-      case CalculatorKeys.baseConverter:
-        return Symbols.swap_horiz;
-      case CalculatorKeys.networkMerge:
-        return Symbols.call_merge;
-      case CalculatorKeys.networkSplit:
-        return Symbols.call_split;
-      case CalculatorKeys.ipInclusionChecker:
-        return Symbols.search;
-      default:
-        return Symbols.calculate;
-    }
-  }
-
-
-  void _showHistoryLimitDialog(BuildContext context, AppLocalizations l10n) {
-    final controller = TextEditingController(text: _historyLimit.toString());
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Text(
-          l10n.historyLimit,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.historyLimitDescription,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: l10n.historyLimitHint,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: Theme.of(context).brightness == Brightness.dark
-                    ? Theme.of(context).colorScheme.surface
-                    : Theme.of(context).colorScheme.surfaceContainerHighest,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(l10n.cancel),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () async {
-              final value = int.tryParse(controller.text);
-              if (value != null && value >= 10 && value <= 100000) {
-                await CalculatorSettingsProvider.setHistoryLimit(value);
-                await _loadHistoryLimit();
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              } else {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.historyLimitHint),
-                      duration: const Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(l10n.save),
-          ),
-        ],
-        actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-      ),
-    );
-  }
-
-  void _showResetSortOrderDialog(BuildContext context, AppLocalizations l10n) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Text(
-          l10n.resetSortOrder,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          l10n.resetSortOrderConfirm,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        actions: [
-          OutlinedButton(
-            onPressed: () => Navigator.pop(context),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(l10n.cancel),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            onPressed: () async {
-              await CalculatorSettingsProvider.resetCalculatorOrder();
-              if (context.mounted) {
-                Navigator.pop(context);
-                // 刷新排序界面 - 通过更新 key 强制重建
-                setState(() {
-                  _sortOrderKey++;
-                });
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(l10n.reset),
-          ),
-        ],
-        actionsPadding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-      ),
-    );
-  }
 }
 

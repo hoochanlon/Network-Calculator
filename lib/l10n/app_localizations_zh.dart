@@ -445,10 +445,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get calculatorSortOrderDescription => '拖拽调整计算器顺序';
 
   @override
+  String get sidebarSortOrder => '侧边栏排序';
+
+  @override
+  String get sidebarSortOrderDescription => '拖拽调整侧边栏项目顺序';
+
+  @override
   String get resetSortOrder => '重置排序';
 
   @override
   String get resetSortOrderConfirm => '确定要重置为默认排序吗？';
+
+  @override
+  String get resetSidebarSortOrder => '重置侧边栏排序';
+
+  @override
+  String get resetSidebarSortOrderConfirm => '确定要重置为默认侧边栏排序吗？';
+
+  @override
+  String get lockItem => '锁定项目';
+
+  @override
+  String get unlockItem => '解锁项目';
+
+  @override
+  String get sidebarDragEnabled => '启用侧边栏拖拽排序';
+
+  @override
+  String get sidebarDragEnabledDescription => '开启后可在侧边栏长按拖拽项目进行排序';
 
   @override
   String get historyLimit => '历史记录数量限制';
@@ -554,6 +578,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get referenceCheatSheets => '网络速查表';
+
+  @override
+  String get advanced => '高级';
+
+  @override
+  String get advancedSettings => '高级设置';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -997,10 +1027,34 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get calculatorSortOrderDescription => '拖曳調整計算器順序';
 
   @override
+  String get sidebarSortOrder => '側邊欄排序';
+
+  @override
+  String get sidebarSortOrderDescription => '拖曳調整側邊欄項目順序';
+
+  @override
   String get resetSortOrder => '重設排序';
 
   @override
   String get resetSortOrderConfirm => '確定要重設為預設排序嗎？';
+
+  @override
+  String get resetSidebarSortOrder => '重設側邊欄排序';
+
+  @override
+  String get resetSidebarSortOrderConfirm => '確定要重設為預設側邊欄排序嗎？';
+
+  @override
+  String get lockItem => '鎖定項目';
+
+  @override
+  String get unlockItem => '解鎖項目';
+
+  @override
+  String get sidebarDragEnabled => '啟用側邊欄拖曳排序';
+
+  @override
+  String get sidebarDragEnabledDescription => '開啟後可在側邊欄長按拖曳項目進行排序';
 
   @override
   String get historyLimit => '歷史記錄數量限制';
@@ -1106,4 +1160,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get referenceCheatSheets => '網路速查表';
+
+  @override
+  String get advanced => '進階';
+
+  @override
+  String get advancedSettings => '進階設定';
 }

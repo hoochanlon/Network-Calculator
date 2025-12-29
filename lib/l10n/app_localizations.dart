@@ -965,6 +965,18 @@ abstract class AppLocalizations {
   /// **'拖拽调整计算器顺序'**
   String get calculatorSortOrderDescription;
 
+  /// No description provided for @sidebarSortOrder.
+  ///
+  /// In zh, this message translates to:
+  /// **'侧边栏排序'**
+  String get sidebarSortOrder;
+
+  /// No description provided for @sidebarSortOrderDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'拖拽调整侧边栏项目顺序'**
+  String get sidebarSortOrderDescription;
+
   /// No description provided for @resetSortOrder.
   ///
   /// In zh, this message translates to:
@@ -976,6 +988,42 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'确定要重置为默认排序吗？'**
   String get resetSortOrderConfirm;
+
+  /// No description provided for @resetSidebarSortOrder.
+  ///
+  /// In zh, this message translates to:
+  /// **'重置侧边栏排序'**
+  String get resetSidebarSortOrder;
+
+  /// No description provided for @resetSidebarSortOrderConfirm.
+  ///
+  /// In zh, this message translates to:
+  /// **'确定要重置为默认侧边栏排序吗？'**
+  String get resetSidebarSortOrderConfirm;
+
+  /// No description provided for @lockItem.
+  ///
+  /// In zh, this message translates to:
+  /// **'锁定项目'**
+  String get lockItem;
+
+  /// No description provided for @unlockItem.
+  ///
+  /// In zh, this message translates to:
+  /// **'解锁项目'**
+  String get unlockItem;
+
+  /// No description provided for @sidebarDragEnabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'启用侧边栏拖拽排序'**
+  String get sidebarDragEnabled;
+
+  /// No description provided for @sidebarDragEnabledDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'开启后可在侧边栏长按拖拽项目进行排序'**
+  String get sidebarDragEnabledDescription;
 
   /// No description provided for @historyLimit.
   ///
@@ -1186,6 +1234,18 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'网络速查表'**
   String get referenceCheatSheets;
+
+  /// No description provided for @advanced.
+  ///
+  /// In zh, this message translates to:
+  /// **'高级'**
+  String get advanced;
+
+  /// No description provided for @advancedSettings.
+  ///
+  /// In zh, this message translates to:
+  /// **'高级设置'**
+  String get advancedSettings;
 }
 
 class _AppLocalizationsDelegate

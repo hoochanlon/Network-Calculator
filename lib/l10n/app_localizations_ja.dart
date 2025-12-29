@@ -448,10 +448,35 @@ class AppLocalizationsJa extends AppLocalizations {
   String get calculatorSortOrderDescription => 'ドラッグして計算機の順序を調整';
 
   @override
+  String get sidebarSortOrder => 'サイドバーの並び順';
+
+  @override
+  String get sidebarSortOrderDescription => 'ドラッグしてサイドバー項目の順序を調整';
+
+  @override
   String get resetSortOrder => '並び順をリセット';
 
   @override
   String get resetSortOrderConfirm => 'デフォルトの並び順にリセットしてもよろしいですか？';
+
+  @override
+  String get resetSidebarSortOrder => 'サイドバーの並び順をリセット';
+
+  @override
+  String get resetSidebarSortOrderConfirm => 'デフォルトのサイドバーの並び順にリセットしてもよろしいですか？';
+
+  @override
+  String get lockItem => '項目をロック';
+
+  @override
+  String get unlockItem => '項目のロックを解除';
+
+  @override
+  String get sidebarDragEnabled => 'サイドバーのドラッグ並び替えを有効化';
+
+  @override
+  String get sidebarDragEnabledDescription =>
+      '有効にすると、サイドバーで長押ししてドラッグして項目を並び替えることができます';
 
   @override
   String get historyLimit => '履歴数の制限';
@@ -559,4 +584,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get referenceCheatSheets => 'ネットワークチートシート';
+
+  @override
+  String get advanced => '詳細設定';
+
+  @override
+  String get advancedSettings => '詳細設定';
 }

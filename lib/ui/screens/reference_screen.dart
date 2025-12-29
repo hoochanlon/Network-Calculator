@@ -69,6 +69,12 @@ class ReferenceScreen extends StatelessWidget {
                             [
                               _buildLinkItem(
                                 context,
+                                'ToolJson Subnetmask Calculator',
+                                'https://www.tooljson.com/network/subnetmask-calculator',
+                                'https://www.tooljson.com/network/subnetmask-calculator',
+                              ),
+                              _buildLinkItem(
+                                context,
                                 'SolarWinds Advanced Subnet Calculator',
                                 'https://www.solarwinds.com/free-tools/advanced-subnet-calculator',
                                 'https://www.solarwinds.com/free-tools/advanced-subnet-calculator',

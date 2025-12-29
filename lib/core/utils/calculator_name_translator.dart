@@ -8,6 +8,11 @@ class CalculatorKeys {
   static const String networkMerge = 'network_merge';
   static const String networkSplit = 'network_split';
   static const String ipInclusionChecker = 'ip_inclusion_checker';
+  
+  // 特殊项键值
+  static const String history = 'history';
+  static const String references = 'references';
+  static const String settings = 'settings';
 }
 
 /// 计算器名称翻译器
@@ -51,6 +56,12 @@ class CalculatorNameTranslator {
         return l10n.networkSplit;
       case CalculatorKeys.ipInclusionChecker:
         return l10n.ipInclusionChecker;
+      case CalculatorKeys.history:
+        return l10n.history;
+      case CalculatorKeys.references:
+        return l10n.references;
+      case CalculatorKeys.settings:
+        return l10n.settings;
       default:
         // 向后兼容：如果不是键值，尝试作为旧格式处理
         return _legacyKeyToName(key, l10n);
@@ -64,7 +75,10 @@ class CalculatorNameTranslator {
         str == CalculatorKeys.baseConverter ||
         str == CalculatorKeys.networkMerge ||
         str == CalculatorKeys.networkSplit ||
-        str == CalculatorKeys.ipInclusionChecker;
+        str == CalculatorKeys.ipInclusionChecker ||
+        str == CalculatorKeys.history ||
+        str == CalculatorKeys.references ||
+        str == CalculatorKeys.settings;
   }
 
   /// 内部使用的检查方法

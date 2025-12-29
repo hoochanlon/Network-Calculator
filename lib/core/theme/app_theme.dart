@@ -75,6 +75,19 @@ class AppTheme {
         bodySmall: TextStyle(color: textSecondary, fontSize: 12, fontFamily: 'OPPOSans'),
       ),
       dividerColor: dividerColor,
+      splashColor: primaryColor.withOpacity(0.1), // 点击波纹效果颜色
+      highlightColor: primaryColor.withOpacity(0.05), // 点击高亮颜色
+      listTileTheme: ListTileThemeData(
+        selectedTileColor: primaryColor.withOpacity(0.1), // 选中时的背景色
+        selectedColor: primaryColor, // 选中时的图标和文本颜色
+        iconColor: textSecondary, // 默认图标颜色
+        textColor: textPrimary, // 默认文本颜色
+        tileColor: Colors.transparent, // 默认背景色
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: backgroundColor,
         elevation: 0,
@@ -166,6 +179,19 @@ class AppTheme {
         labelLarge: TextStyle(color: const Color(0xFF212121), fontSize: 16, fontFamily: 'OPPOSans'),
       ),
       dividerColor: const Color(0xFFE0E0E0),
+      splashColor: primaryColor.withOpacity(0.1), // 点击波纹效果颜色
+      highlightColor: primaryColor.withOpacity(0.05), // 点击高亮颜色
+      listTileTheme: ListTileThemeData(
+        selectedTileColor: primaryColor.withOpacity(0.1), // 选中时的背景色
+        selectedColor: primaryColor, // 选中时的图标和文本颜色
+        iconColor: const Color(0xFF757575), // 默认图标颜色
+        textColor: const Color(0xFF212121), // 默认文本颜色
+        tileColor: Colors.transparent, // 默认背景色
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,

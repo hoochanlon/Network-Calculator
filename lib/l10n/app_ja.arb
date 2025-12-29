@@ -155,8 +155,16 @@
   "bilibiliPink": "BiliBili・ピンク",
   "calculatorSortOrder": "計算機の並び順",
   "calculatorSortOrderDescription": "ドラッグして計算機の順序を調整",
+  "sidebarSortOrder": "サイドバーの並び順",
+  "sidebarSortOrderDescription": "ドラッグしてサイドバー項目の順序を調整",
   "resetSortOrder": "並び順をリセット",
   "resetSortOrderConfirm": "デフォルトの並び順にリセットしてもよろしいですか？",
+  "resetSidebarSortOrder": "サイドバーの並び順をリセット",
+  "resetSidebarSortOrderConfirm": "デフォルトのサイドバーの並び順にリセットしてもよろしいですか？",
+  "lockItem": "項目をロック",
+  "unlockItem": "項目のロックを解除",
+  "sidebarDragEnabled": "サイドバーのドラッグ並び替えを有効化",
+  "sidebarDragEnabledDescription": "有効にすると、サイドバーで長押ししてドラッグして項目を並び替えることができます",
   "historyLimit": "履歴数の制限",
   "historyLimitDescription": "保存する履歴レコードの最大数を設定",
   "historyLimitHint": "数を入力してください（10-100000）",
@@ -191,6 +199,8 @@
   "referenceLearningResources": "学習とリファレンスリソース",
   "referenceTechBlogs": "技術ブログリファレンス",
   "referenceSubnetRouteBlog": "サブネット分割とルート集約の説明",
-  "referenceCheatSheets": "ネットワークチートシート"
+  "referenceCheatSheets": "ネットワークチートシート",
+  "advanced": "詳細設定",
+  "advancedSettings": "詳細設定"
 }
 

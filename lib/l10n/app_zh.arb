@@ -155,8 +155,16 @@
   "bilibiliPink": "BiliBili·粉红",
   "calculatorSortOrder": "计算器排序",
   "calculatorSortOrderDescription": "拖拽调整计算器顺序",
+  "sidebarSortOrder": "侧边栏排序",
+  "sidebarSortOrderDescription": "拖拽调整侧边栏项目顺序",
   "resetSortOrder": "重置排序",
   "resetSortOrderConfirm": "确定要重置为默认排序吗？",
+  "resetSidebarSortOrder": "重置侧边栏排序",
+  "resetSidebarSortOrderConfirm": "确定要重置为默认侧边栏排序吗？",
+  "lockItem": "锁定项目",
+  "unlockItem": "解锁项目",
+  "sidebarDragEnabled": "启用侧边栏拖拽排序",
+  "sidebarDragEnabledDescription": "开启后可在侧边栏长按拖拽项目进行排序",
   "historyLimit": "历史记录数量限制",
   "historyLimitDescription": "设置最多保存的历史记录条数",
   "historyLimitHint": "请输入数量（10-100000）",
@@ -191,6 +199,8 @@
   "referenceLearningResources": "学习与速查资源",
   "referenceTechBlogs": "技术博客参考",
   "referenceSubnetRouteBlog": "子网划分与路由聚合详解",
-  "referenceCheatSheets": "网络速查表"
+  "referenceCheatSheets": "网络速查表",
+  "advanced": "高级",
+  "advancedSettings": "高级设置"
 }
 
