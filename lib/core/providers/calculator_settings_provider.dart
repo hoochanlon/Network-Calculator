@@ -118,10 +118,12 @@ class CalculatorSettingsProvider {
   }
 
   /// 设置侧边栏顺序
-  static Future<void> setSidebarOrder(List<String> order) async {
+  static Future<void> setSidebarOrder(List<String> order, {bool silent = false}) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keySidebarOrder, json.encode(order));
-    _orderNotifier.notifyOrderChanged();
+    if (!silent) {
+      _orderNotifier.notifyOrderChanged();
+    }
   }
 
   /// 重置侧边栏顺序为默认

@@ -153,6 +153,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get copy => 'コピー';
 
   @override
+  String get cut => '切り取り';
+
+  @override
+  String get paste => '貼り付け';
+
+  @override
+  String get selectAll => 'すべて選択';
+
+  @override
   String get delete => '削除';
 
   @override

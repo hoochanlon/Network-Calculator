@@ -8,6 +8,7 @@ import '../../../core/utils/error_message_translator.dart';
 import '../../../core/utils/calculator_name_translator.dart';
 import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
+import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
 
 class BaseConverterScreen extends StatefulWidget {
@@ -190,6 +191,7 @@ class _BaseConverterScreenState extends State<BaseConverterScreen> {
                         hintText: '192.168.1.1 or 11000000.10101000.00000001.00000001',
                       ),
                       onSubmitted: (_) => _convert(),
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
                       Row(

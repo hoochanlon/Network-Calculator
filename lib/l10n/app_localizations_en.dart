@@ -155,6 +155,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copy => 'Copy';
 
   @override
+  String get cut => 'Cut';
+
+  @override
+  String get paste => 'Paste';
+
+  @override
+  String get selectAll => 'Select All';
+
+  @override
   String get delete => 'Delete';
 
   @override

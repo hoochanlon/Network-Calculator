@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import '../../core/providers/calculator_settings_provider.dart';
+import '../../core/theme/app_fonts.dart';
 import '../../l10n/app_localizations.dart';
 import 'history_screen.dart';
 
@@ -33,14 +34,37 @@ class MainNavigationItemBuilder {
     bool isLocked = false,
     VoidCallback? onLockToggle,
     bool showDragHandle = false,
+    bool sidebarDragEnabled = false,
   }) {
     final l10n = AppLocalizations.of(context)!;
     
     return InkWell(
       onTap: onTap,
-      onLongPress: item.calculatorKey != null ? () {
-        // 长按显示锁定/解锁菜单
-        _showLockMenu(context, item, isLocked, onLockToggle, l10n);
+      onLongPress: (item.calculatorKey != null && sidebarDragEnabled) ? () async {
+        // 获取当前锁定状态
+        final currentLocked = await CalculatorSettingsProvider.isItemLocked(item.calculatorKey!);
+        // 长按自动锁定/解锁
+        await CalculatorSettingsProvider.toggleItemLock(item.calculatorKey!);
+        // 通知顺序变化，触发界面刷新
+        CalculatorSettingsProvider.orderNotifier.notifyOrderChanged();
+        if (onLockToggle != null) {
+          onLockToggle();
+        }
+        // 显示操作提示
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                currentLocked ? l10n.unlockItem : l10n.lockItem,
+                style: AppFonts.createStyle(
+                  fontSize: 14,
+                ),
+              ),
+              duration: const Duration(seconds: 1),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
       } : null,
       mouseCursor: SystemMouseCursors.click,
       borderRadius: BorderRadius.circular(8),
@@ -77,10 +101,10 @@ class MainNavigationItemBuilder {
             Expanded(
               child: Text(
                 item.label,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: isSelected
                       ? Theme.of(context).primaryColor
-                      : Theme.of(context).textTheme.bodyMedium?.color,
+                      : Theme.of(context).textTheme.bodyLarge?.color,
                   fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
@@ -111,49 +135,5 @@ class MainNavigationItemBuilder {
     );
   }
   
-  /// 显示锁定菜单
-  static void _showLockMenu(
-    BuildContext context,
-    NavigationItem item,
-    bool isLocked,
-    VoidCallback? onLockToggle,
-    AppLocalizations l10n,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: Icon(
-                isLocked ? Icons.lock_open : Icons.lock,
-                color: isLocked 
-                    ? Theme.of(context).colorScheme.error 
-                    : Theme.of(context).primaryColor,
-              ),
-              title: Text(isLocked ? l10n.unlockItem : l10n.lockItem),
-              onTap: () async {
-                if (item.calculatorKey != null) {
-                  await CalculatorSettingsProvider.toggleItemLock(item.calculatorKey!);
-                  // 通知顺序变化，触发界面刷新
-                  CalculatorSettingsProvider.orderNotifier.notifyOrderChanged();
-                  if (onLockToggle != null) {
-                    onLockToggle();
-                  }
-                }
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 

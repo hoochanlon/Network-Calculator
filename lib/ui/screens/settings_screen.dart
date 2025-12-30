@@ -368,7 +368,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.refresh, size: 20),
+                          icon: const Icon(Icons.refresh, size: 30),
                           onPressed: () {
                             SettingsDialogsBuilder.showResetSortOrderDialog(
                               context,
@@ -379,10 +379,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               },
                             );
                           },
-                          tooltip: l10n.resetSidebarSortOrder,
                           visualDensity: VisualDensity.compact,
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
+                          constraints: const BoxConstraints(
+                            minWidth: 48,
+                            minHeight: 48,
+                            maxWidth: 48,
+                            maxHeight: 48,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Switch(

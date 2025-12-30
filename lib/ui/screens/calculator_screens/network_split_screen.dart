@@ -8,6 +8,7 @@ import '../../../core/utils/error_message_translator.dart';
 import '../../../core/utils/calculator_name_translator.dart';
 import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
+import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
 
 class NetworkSplitScreen extends StatefulWidget {
@@ -183,6 +184,7 @@ class _NetworkSplitScreenState extends State<NetworkSplitScreen> {
                         labelText: l10n.inputSupernet,
                         hintText: '172.16.64.0/21',
                       ),
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
                     TextField(
@@ -192,6 +194,7 @@ class _NetworkSplitScreenState extends State<NetworkSplitScreen> {
                         hintText: '24',
                       ),
                       keyboardType: TextInputType.number,
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
                     Row(

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:network_calculator/l10n/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../core/services/history_service.dart';
 import '../../core/providers/calculator_state_provider.dart';
 import '../../core/utils/calculator_name_translator.dart';
+import '../../core/theme/app_fonts.dart';
 import '../widgets/screen_title_bar.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -122,6 +125,10 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              foregroundColor: Theme.of(context).colorScheme.primary,
             ),
             child: Text(l10n.cancel),
           ),
@@ -133,8 +140,8 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
             child: Text(l10n.deleteAll),
           ),
@@ -175,6 +182,10 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              side: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              foregroundColor: Theme.of(context).colorScheme.primary,
             ),
             child: Text(l10n.cancel),
           ),
@@ -186,6 +197,8 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
             child: Text(l10n.clear),
           ),
@@ -246,9 +259,24 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
         allowedExtensions: ['json'],
       );
 
-      if (result != null && result.files.single.path != null) {
-        final filePath = result.files.single.path!;
-        final success = await HistoryService.importHistory(filePath);
+      if (result != null) {
+        bool success = false;
+        
+        if (kIsWeb) {
+          // Web 平台：使用文件内容（bytes）
+          final file = result.files.single;
+          if (file.bytes != null) {
+            // 使用 UTF-8 解码，避免中文等字符出现乱码
+            final content = utf8.decode(file.bytes!);
+            success = await HistoryService.importHistoryFromContent(content);
+          }
+        } else {
+          // 桌面平台：使用文件路径
+          final filePath = result.files.single.path;
+          if (filePath != null) {
+            success = await HistoryService.importHistory(filePath);
+          }
+        }
         
         if (mounted) {
           if (success) {
@@ -348,9 +376,8 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                         padding: const EdgeInsets.all(16),
                         child: TextField(
                           controller: _searchController,
-                          style: TextStyle(
+                          style: AppFonts.createStyle(
                             color: Theme.of(context).colorScheme.onSurface,
-                            fontFamily: 'OPPOSans',
                           ),
                           decoration: InputDecoration(
                             hintText: l10n.searchHint,
@@ -388,7 +415,7 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                                     _searchController.text.isNotEmpty
                                         ? l10n.noResultsFound
                                         : l10n.noHistory,
-                                    style: Theme.of(context).textTheme.bodyLarge,
+                                    style: AppFonts.withFont(Theme.of(context).textTheme.bodyLarge),
                                   ),
                                   // 当没有历史记录且不是搜索状态时，显示导入按钮
                                   if (_searchController.text.isEmpty) ...[
@@ -424,7 +451,7 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                                       ),
                                       title: Text(
                                         CalculatorNameTranslator.translate(record.calculator, l10n),
-                                        style: Theme.of(context).textTheme.titleMedium,
+                                        style: AppFonts.withFont(Theme.of(context).textTheme.titleMedium),
                                       ),
                                       subtitle: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,13 +459,15 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                                           const SizedBox(height: 8),
                                           Text(
                                             _formatDate(record.timestamp),
-                                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.color
-                                                      ?.withOpacity(0.6),
-                                                ),
+                                            style: AppFonts.withFont(
+                                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.color
+                                                        ?.withOpacity(0.6),
+                                                  ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -471,26 +500,29 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                                               if (record.inputs.isNotEmpty) ...[
                                                 Text(
                                                   '${l10n.inputs}:',
-                                                  style: Theme.of(context).textTheme.titleSmall,
+                                                  style: AppFonts.withFont(Theme.of(context).textTheme.titleSmall),
                                                 ),
                                                 const SizedBox(height: 8),
                                                 ...record.inputs.entries.map((entry) => Padding(
                                                       padding: const EdgeInsets.only(bottom: 4),
                                                       child: Text(
                                                         '${entry.key}: ${entry.value}',
-                                                        style: Theme.of(context).textTheme.bodyMedium,
+                                                        style: AppFonts.withFont(Theme.of(context).textTheme.bodyMedium),
                                                       ),
                                                     )),
                                                 const Divider(),
                                               ],
                                               Text(
                                                 '${l10n.result}:',
-                                                style: Theme.of(context).textTheme.titleSmall,
+                                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                                  fontFamily: 'OPPOSans',
+                                                ),
                                               ),
                                               const SizedBox(height: 8),
                                               SelectableText(
                                                 record.result,
-                                                style: Theme.of(context).textTheme.bodyMedium,
+                                                style: AppFonts.withFont(Theme.of(context).textTheme.bodyMedium),
+                                                selectionControls: AppTextSelectionControls.customControls,
                                               ),
                                             ],
                                           ),

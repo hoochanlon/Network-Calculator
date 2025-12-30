@@ -389,6 +389,24 @@ abstract class AppLocalizations {
   /// **'复制'**
   String get copy;
 
+  /// No description provided for @cut.
+  ///
+  /// In zh, this message translates to:
+  /// **'剪切'**
+  String get cut;
+
+  /// No description provided for @paste.
+  ///
+  /// In zh, this message translates to:
+  /// **'粘贴'**
+  String get paste;
+
+  /// No description provided for @selectAll.
+  ///
+  /// In zh, this message translates to:
+  /// **'全选'**
+  String get selectAll;
+
   /// No description provided for @delete.
   ///
   /// In zh, this message translates to:

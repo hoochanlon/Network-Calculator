@@ -8,6 +8,7 @@ import '../../../core/utils/error_message_translator.dart';
 import '../../../core/utils/calculator_name_translator.dart';
 import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
+import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
 
 class NetworkMergeScreen extends StatefulWidget {
@@ -167,25 +168,17 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      l10n.inputNetworks,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
                     TextField(
                       controller: _inputController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
+                        labelText: l10n.inputNetworks,
                         hintText: '192.168.1.0/24\n192.168.2.0/24\n192.168.3.0/24',
                       ),
                       maxLines: 10,
                       minLines: 5,
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      l10n.selectAlgorithm,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
                     Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 400),

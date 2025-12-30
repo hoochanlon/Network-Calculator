@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'app_fonts.dart';
+import 'custom_text_selection_controls.dart';
 
 class AppTheme {
   // 网易云音乐风格的颜色
@@ -16,6 +18,11 @@ class AppTheme {
       brightness: Brightness.dark,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: backgroundColor,
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: textPrimary,
+        selectionColor: primaryColor.withOpacity(0.3),
+        selectionHandleColor: primaryColor,
+      ),
       colorScheme: ColorScheme.dark(
         primary: primaryColor,
         secondary: primaryColor,
@@ -61,18 +68,19 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: textSecondary,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          textStyle: AppFonts.createStyle(fontSize: 14),
         ),
       ),
       textTheme: TextTheme(
-        displayLarge: TextStyle(color: textPrimary, fontSize: 32, fontWeight: FontWeight.bold, fontFamily: 'OPPOSans'),
-        displayMedium: TextStyle(color: textPrimary, fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'OPPOSans'),
-        displaySmall: TextStyle(color: textPrimary, fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'OPPOSans'),
-        headlineMedium: TextStyle(color: textPrimary, fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'OPPOSans'),
-        titleLarge: TextStyle(color: textPrimary, fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'OPPOSans'),
-        titleMedium: TextStyle(color: textPrimary, fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'OPPOSans'),
-        bodyLarge: TextStyle(color: textPrimary, fontSize: 16, fontFamily: 'OPPOSans'),
-        bodyMedium: TextStyle(color: textPrimary, fontSize: 14, fontFamily: 'OPPOSans'),
-        bodySmall: TextStyle(color: textSecondary, fontSize: 12, fontFamily: 'OPPOSans'),
+        displayLarge: AppFonts.createStyle(color: textPrimary, fontSize: 32, fontWeight: FontWeight.bold),
+        displayMedium: AppFonts.createStyle(color: textPrimary, fontSize: 28, fontWeight: FontWeight.bold),
+        displaySmall: AppFonts.createStyle(color: textPrimary, fontSize: 24, fontWeight: FontWeight.bold),
+        headlineMedium: AppFonts.createStyle(color: textPrimary, fontSize: 20, fontWeight: FontWeight.w600),
+        titleLarge: AppFonts.createStyle(color: textPrimary, fontSize: 18, fontWeight: FontWeight.w600),
+        titleMedium: AppFonts.createStyle(color: textPrimary, fontSize: 16, fontWeight: FontWeight.w500),
+        bodyLarge: AppFonts.createStyle(color: textPrimary, fontSize: 16),
+        bodyMedium: AppFonts.createStyle(color: textPrimary, fontSize: 14),
+        bodySmall: AppFonts.createStyle(color: textSecondary, fontSize: 12),
       ),
       dividerColor: dividerColor,
       splashColor: primaryColor.withOpacity(0.1), // 点击波纹效果颜色
@@ -88,15 +96,19 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: backgroundColor,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: TextStyle(
+        titleTextStyle: AppFonts.createStyle(
           color: textPrimary,
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          fontFamily: 'OPPOSans',
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: AppFonts.createStyle(
+          fontSize: 14,
         ),
       ),
     );
@@ -118,8 +130,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: Colors.white,
-        labelStyle: const TextStyle(color: Color(0xFF212121), fontFamily: 'OPPOSans'),
-        hintStyle: const TextStyle(color: Color(0xFF757575), fontFamily: 'OPPOSans'),
+        labelStyle: AppFonts.createStyle(color: const Color(0xFF212121)),
+        hintStyle: AppFonts.createStyle(color: const Color(0xFF757575)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -135,10 +147,10 @@ class AppTheme {
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       // 确保所有 TextField 的文本颜色都是深色
-      textSelectionTheme: const TextSelectionThemeData(
-        cursorColor: Color(0xFF212121),
-        selectionColor: Color(0xFFEC4141),
-        selectionHandleColor: Color(0xFFEC4141),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: const Color(0xFF212121),
+        selectionColor: primaryColor.withOpacity(0.3),
+        selectionHandleColor: primaryColor,
       ),
       colorScheme: ColorScheme.light(
         primary: primaryColor,
@@ -163,20 +175,21 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: const Color(0xFF212121),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          textStyle: AppFonts.createStyle(fontSize: 14),
         ),
       ),
       textTheme: TextTheme(
-        displayLarge: TextStyle(color: const Color(0xFF000000), fontSize: 32, fontWeight: FontWeight.bold, fontFamily: 'OPPOSans'),
-        displayMedium: TextStyle(color: const Color(0xFF000000), fontSize: 28, fontWeight: FontWeight.bold, fontFamily: 'OPPOSans'),
-        displaySmall: TextStyle(color: const Color(0xFF000000), fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'OPPOSans'),
-        headlineMedium: TextStyle(color: const Color(0xFF000000), fontSize: 20, fontWeight: FontWeight.w600, fontFamily: 'OPPOSans'),
-        titleLarge: TextStyle(color: const Color(0xFF000000), fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'OPPOSans'),
-        titleMedium: TextStyle(color: const Color(0xFF212121), fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'OPPOSans'),
-        bodyLarge: TextStyle(color: const Color(0xFF212121), fontSize: 16, fontFamily: 'OPPOSans'),
-        bodyMedium: TextStyle(color: const Color(0xFF212121), fontSize: 14, fontFamily: 'OPPOSans'),
-        bodySmall: TextStyle(color: const Color(0xFF424242), fontSize: 12, fontFamily: 'OPPOSans'),
+        displayLarge: AppFonts.createStyle(color: const Color(0xFF000000), fontSize: 32, fontWeight: FontWeight.bold),
+        displayMedium: AppFonts.createStyle(color: const Color(0xFF000000), fontSize: 28, fontWeight: FontWeight.bold),
+        displaySmall: AppFonts.createStyle(color: const Color(0xFF000000), fontSize: 24, fontWeight: FontWeight.bold),
+        headlineMedium: AppFonts.createStyle(color: const Color(0xFF000000), fontSize: 20, fontWeight: FontWeight.w600),
+        titleLarge: AppFonts.createStyle(color: const Color(0xFF000000), fontSize: 18, fontWeight: FontWeight.w600),
+        titleMedium: AppFonts.createStyle(color: const Color(0xFF212121), fontSize: 16, fontWeight: FontWeight.w500),
+        bodyLarge: AppFonts.createStyle(color: const Color(0xFF212121), fontSize: 16),
+        bodyMedium: AppFonts.createStyle(color: const Color(0xFF212121), fontSize: 14),
+        bodySmall: AppFonts.createStyle(color: const Color(0xFF424242), fontSize: 12),
         // 为 TextField 设置默认文本样式
-        labelLarge: TextStyle(color: const Color(0xFF212121), fontSize: 16, fontFamily: 'OPPOSans'),
+        labelLarge: AppFonts.createStyle(color: const Color(0xFF212121), fontSize: 16),
       ),
       dividerColor: const Color(0xFFE0E0E0),
       splashColor: primaryColor.withOpacity(0.1), // 点击波纹效果颜色
@@ -192,16 +205,20 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        iconTheme: IconThemeData(color: Color(0xFF212121)),
-        titleTextStyle: TextStyle(
-          color: Color(0xFF000000),
+        iconTheme: const IconThemeData(color: Color(0xFF212121)),
+        titleTextStyle: AppFonts.createStyle(
+          color: const Color(0xFF000000),
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          fontFamily: 'OPPOSans',
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: AppFonts.createStyle(
+          fontSize: 14,
         ),
       ),
     );

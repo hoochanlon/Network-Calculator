@@ -8,6 +8,7 @@ import '../../../core/utils/error_message_translator.dart';
 import '../../../core/utils/calculator_name_translator.dart';
 import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
+import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
 
 class SubnetCalculatorScreen extends StatefulWidget {
@@ -210,19 +211,17 @@ ${l10n.invertedMask}: ${result['invertedMask']}
                         labelText: l10n.inputSubnetOrCidr,
                         hintText: '255.255.255.0 or /24',
                       ),
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      l10n.inputHosts,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 8),
                     TextField(
                       controller: _hostsController,
-                      decoration: const InputDecoration(
-                        hintText: '100',
+                      decoration: InputDecoration(
+                        labelText: l10n.inputHosts,
+                        hintText: l10n.inputHosts,
                       ),
                       keyboardType: TextInputType.number,
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
                     Row(

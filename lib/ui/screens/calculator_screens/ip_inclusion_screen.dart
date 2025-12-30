@@ -8,6 +8,7 @@ import '../../../core/utils/error_message_translator.dart';
 import '../../../core/utils/calculator_name_translator.dart';
 import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
+import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
 
 class IpInclusionScreen extends StatefulWidget {
@@ -193,6 +194,7 @@ ${l10n.lastUsableIp}: ${result['lastUsableIp']}
                         labelText: l10n.inputCheckCidr,
                         hintText: '192.168.1.0/24',
                       ),
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
                     TextField(
@@ -201,6 +203,7 @@ ${l10n.lastUsableIp}: ${result['lastUsableIp']}
                         labelText: l10n.inputTargetCidr,
                         hintText: '192.168.0.0/16',
                       ),
+                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
                     Row(

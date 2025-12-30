@@ -153,6 +153,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get copy => '复制';
 
   @override
+  String get cut => '剪切';
+
+  @override
+  String get paste => '粘贴';
+
+  @override
+  String get selectAll => '全选';
+
+  @override
   String get delete => '删除';
 
   @override
@@ -739,6 +748,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get copy => '複製';
+
+  @override
+  String get cut => '剪下';
+
+  @override
+  String get paste => '貼上';
+
+  @override
+  String get selectAll => '全選';
 
   @override
   String get delete => '刪除';

@@ -1,8 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import '../providers/calculator_settings_provider.dart';
+import 'dart:io' as io;
 
 class HistoryRecord {
   final String calculator;
@@ -42,32 +43,41 @@ class HistoryService {
 
   // 获取默认历史记录存储目录
   static Future<String> getDefaultStoragePath() async {
+    if (kIsWeb) {
+      return 'Web Storage';
+    }
     final directory = await getApplicationDocumentsDirectory();
-    final historyDir = Directory('${directory.path}${Platform.pathSeparator}network_calculator');
+    final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}network_calculator');
     return historyDir.path;
   }
 
   // 获取默认历史记录文件完整路径
   static Future<String> getDefaultStorageFilePath() async {
+    if (kIsWeb) {
+      return 'Web Storage';
+    }
     final directory = await getApplicationDocumentsDirectory();
-    final historyDir = Directory('${directory.path}${Platform.pathSeparator}network_calculator');
-    final filePath = '${historyDir.path}${Platform.pathSeparator}$_historyFileName';
+    final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}network_calculator');
+    final filePath = '${historyDir.path}${io.Platform.pathSeparator}$_historyFileName';
     // 规范化路径，统一使用系统路径分隔符
-    if (Platform.isWindows) {
+    if (io.Platform.isWindows) {
       return filePath.replaceAll('/', '\\');
     } else {
       return filePath.replaceAll('\\', '/');
     }
   }
 
-  // 获取历史记录文件路径
-  static Future<File> _getHistoryFile() async {
-    Directory directory;
+  // 获取历史记录文件路径（仅用于非 Web 平台）
+  static Future<io.File> _getHistoryFile() async {
+    if (kIsWeb) {
+      throw UnsupportedError('File operations are not supported on Web platform');
+    }
+    io.Directory directory;
     
     // 优先使用自定义存储路径
     final customPath = await CalculatorSettingsProvider.getHistoryStoragePath();
     if (customPath != null && customPath.isNotEmpty) {
-      directory = Directory(customPath);
+      directory = io.Directory(customPath);
       if (!await directory.exists()) {
         // 如果自定义路径不存在，创建它
         await directory.create(recursive: true);
@@ -75,18 +85,21 @@ class HistoryService {
     } else {
       // 使用默认应用文档目录
       directory = await getApplicationDocumentsDirectory();
-      final historyDir = Directory('${directory.path}${Platform.pathSeparator}network_calculator');
+      final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}network_calculator');
       if (!await historyDir.exists()) {
         await historyDir.create(recursive: true);
       }
       directory = historyDir;
     }
     
-    return File('${directory.path}${Platform.pathSeparator}$_historyFileName');
+    return io.File('${directory.path}${io.Platform.pathSeparator}$_historyFileName');
   }
 
-  // 从 SharedPreferences 迁移数据到文件
+  // 从 SharedPreferences 迁移数据到文件（仅用于非 Web 平台）
   static Future<void> _migrateFromSharedPreferences() async {
+    if (kIsWeb) {
+      return; // Web 平台不需要迁移
+    }
     try {
       final migrated = await CalculatorSettingsProvider.isHistoryMigrated();
       if (migrated) return; // 已经迁移过
@@ -119,19 +132,31 @@ class HistoryService {
 
   static Future<List<HistoryRecord>> loadHistory() async {
     try {
-      // 先尝试迁移旧数据
-      await _migrateFromSharedPreferences();
-      
-      final file = await _getHistoryFile();
-      if (!await file.exists()) {
-        return [];
+      if (kIsWeb) {
+        // Web 平台：使用 SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        final historyJson = prefs.getString(_historyKey);
+        if (historyJson == null || historyJson.isEmpty) {
+          return [];
+        }
+        final List<dynamic> historyList = json.decode(historyJson);
+        return historyList.map((item) => HistoryRecord.fromJson(item as Map<String, dynamic>)).toList();
+      } else {
+        // 桌面平台：使用文件系统
+        // 先尝试迁移旧数据
+        await _migrateFromSharedPreferences();
+        
+        final file = await _getHistoryFile();
+        if (!await file.exists()) {
+          return [];
+        }
+
+        final content = await file.readAsString(encoding: utf8);
+        if (content.isEmpty) return [];
+
+        final List<dynamic> historyList = json.decode(content);
+        return historyList.map((item) => HistoryRecord.fromJson(item as Map<String, dynamic>)).toList();
       }
-
-      final content = await file.readAsString(encoding: utf8);
-      if (content.isEmpty) return [];
-
-      final List<dynamic> historyList = json.decode(content);
-      return historyList.map((item) => HistoryRecord.fromJson(item as Map<String, dynamic>)).toList();
     } catch (e) {
       return [];
     }
@@ -139,9 +164,17 @@ class HistoryService {
 
   static Future<void> saveHistory(List<HistoryRecord> history) async {
     try {
-      final file = await _getHistoryFile();
       final historyJson = json.encode(history.map((record) => record.toJson()).toList());
-      await file.writeAsString(historyJson, encoding: utf8);
+      
+      if (kIsWeb) {
+        // Web 平台：使用 SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString(_historyKey, historyJson);
+      } else {
+        // 桌面平台：使用文件系统
+        final file = await _getHistoryFile();
+        await file.writeAsString(historyJson, encoding: utf8);
+      }
     } catch (e) {
       // Handle error
     }
@@ -168,13 +201,20 @@ class HistoryService {
 
   static Future<void> clearHistory() async {
     try {
-      final file = await _getHistoryFile();
-      if (await file.exists()) {
-        await file.delete();
+      if (kIsWeb) {
+        // Web 平台：清除 SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove(_historyKey);
+      } else {
+        // 桌面平台：删除文件
+        final file = await _getHistoryFile();
+        if (await file.exists()) {
+          await file.delete();
+        }
+        // 同时清除 SharedPreferences 中的旧数据（如果存在）
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove(_historyKey);
       }
-      // 同时清除 SharedPreferences 中的旧数据（如果存在）
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_historyKey);
     } catch (e) {
       // Handle error
     }
@@ -190,45 +230,68 @@ class HistoryService {
 
       final historyJson = json.encode(history.map((record) => record.toJson()).toList());
       
-      // 获取导出目录（使用默认下载目录）
-      Directory? directory;
-      if (Platform.isWindows) {
-        directory = Directory('${Platform.environment['USERPROFILE']}\\Downloads');
-      } else if (Platform.isMacOS) {
-        directory = Directory('${Platform.environment['HOME']}/Downloads');
-      } else if (Platform.isLinux) {
-        directory = Directory('${Platform.environment['HOME']}/Downloads');
+      if (kIsWeb) {
+        // Web 平台：触发下载
+        // 注意：实际下载功能需要在 UI 层实现，这里返回 JSON 内容
+        return historyJson;
       } else {
-        directory = await getApplicationDocumentsDirectory();
-      }
+        // 桌面平台：保存到文件
+        // 获取导出目录（使用默认下载目录）
+        io.Directory? directory;
+        if (io.Platform.isWindows) {
+          directory = io.Directory('${io.Platform.environment['USERPROFILE']}\\Downloads');
+        } else if (io.Platform.isMacOS) {
+          directory = io.Directory('${io.Platform.environment['HOME']}/Downloads');
+        } else if (io.Platform.isLinux) {
+          directory = io.Directory('${io.Platform.environment['HOME']}/Downloads');
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
 
-      if (!await directory.exists()) {
-        directory = await getApplicationDocumentsDirectory();
-      }
+        if (!await directory.exists()) {
+          directory = await getApplicationDocumentsDirectory();
+        }
 
-      final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-      // 使用 Platform.pathSeparator 确保路径分隔符统一
-      final fileName = 'network_calculator_history_$timestamp.json';
-      final filePath = '${directory.path}${Platform.pathSeparator}$fileName';
-      final file = File(filePath);
-      await file.writeAsString(historyJson, encoding: utf8);
-      
-      // 规范化路径，统一使用系统路径分隔符（Windows使用\，Unix使用/）
-      return file.path.replaceAll(RegExp(r'[/\\]'), Platform.pathSeparator);
+        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
+        // 使用 Platform.pathSeparator 确保路径分隔符统一
+        final fileName = 'network_calculator_history_$timestamp.json';
+        final filePath = '${directory.path}${io.Platform.pathSeparator}$fileName';
+        final file = io.File(filePath);
+        await file.writeAsString(historyJson, encoding: utf8);
+        
+        // 规范化路径，统一使用系统路径分隔符（Windows使用\，Unix使用/）
+        return file.path.replaceAll(RegExp(r'[/\\]'), io.Platform.pathSeparator);
+      }
     } catch (e) {
       return null;
     }
   }
 
-  // 从文件导入历史记录
+  // 从文件导入历史记录（仅用于非 Web 平台）
   static Future<bool> importHistory(String filePath) async {
+    if (kIsWeb) {
+      return false; // Web 平台应使用 importHistoryFromContent
+    }
     try {
-      final file = File(filePath);
+      final file = io.File(filePath);
       if (!await file.exists()) {
         return false;
       }
 
       final content = await file.readAsString(encoding: utf8);
+      return await importHistoryFromContent(content);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // 从内容字符串导入历史记录（用于 Web 平台）
+  static Future<bool> importHistoryFromContent(String content) async {
+    try {
+      if (content.isEmpty) {
+        return false;
+      }
+
       final List<dynamic> historyList = json.decode(content);
       
       if (historyList.isEmpty) {
