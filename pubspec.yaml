@@ -41,3 +41,15 @@ flutter:
       fonts:
         - asset: assets/fonts/OPPOSans4.0.ttf
 
+  # 添加 web 配置
+  web:
+    renderer: canvaskit
+    # 添加 CSP 配置
+    csp:
+      "script-src":
+        - "'self'"
+        - "'unsafe-inline'"
+        - "'unsafe-eval'"
+      "style-src":
+        - "'self'"
+        - "'unsafe-inline'"
