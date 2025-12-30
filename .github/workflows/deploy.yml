@@ -45,13 +45,13 @@ jobs:
     - name: Clean build
       run: flutter clean
     
-    - name: Build Flutter Web (HTML Renderer - 更兼容)
+    - name: Build Flutter Web
       run: |
-        # 使用 HTML renderer 避免 CanvasKit 的 CDN 问题
+        # Flutter 3.x 会自动选择最佳的渲染器
+        # 如需强制使用 HTML renderer，可通过环境变量设置
         flutter build web \
           --release \
           --base-href /network-calculator/ \
-          --web-renderer html \
           --dart-define=BUILD_MODE=production \
           --dart-define=APP_VERSION=1.6.0
     
