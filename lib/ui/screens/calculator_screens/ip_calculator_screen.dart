@@ -10,6 +10,9 @@ import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
 import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
+import '../../widgets/calculator_text_field.dart';
+import '../../widgets/calculator_buttons.dart';
+import '../../widgets/result_card.dart';
 
 class IpCalculatorScreen extends StatefulWidget {
   const IpCalculatorScreen({super.key});
@@ -187,68 +190,25 @@ ${l10n.networkClass}: ${result['networkClass']}
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextField(
+                    CalculatorTextField(
                       controller: _ipController,
-                      decoration: InputDecoration(
-                        labelText: l10n.inputIpAddress,
-                        hintText: '192.168.1.1',
-                      ),
+                      labelText: l10n.inputIpAddress,
+                      hintText: '192.168.1.1',
                       keyboardType: TextInputType.number,
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
-                    TextField(
+                    CalculatorTextField(
                       controller: _subnetController,
-                      decoration: InputDecoration(
-                        labelText: l10n.inputSubnetMask,
-                        hintText: '255.255.255.0 or /24',
-                      ),
-                      selectionControls: AppTextSelectionControls.customControls,
+                      labelText: l10n.inputSubnetMask,
+                      hintText: '255.255.255.0 or /24',
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _calculate,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : Text(l10n.calculate),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: _clear,
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                                side: BorderSide(
-                                  color: Theme.of(context).dividerColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(l10n.clear),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CalculatorButtonRow(
+                      actionText: l10n.calculate,
+                      clearText: l10n.clear,
+                      onActionPressed: _calculate,
+                      onClearPressed: _clear,
+                      isLoading: _isLoading,
                     ),
                   ],
                 ),
@@ -256,60 +216,40 @@ ${l10n.networkClass}: ${result['networkClass']}
             ),
             if (_result != null && !_result!.containsKey('error')) ...[
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            l10n.result,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: _formatResult(_result!, l10n)));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.copiedToClipboard)),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(),
-                      _buildResultRow(l10n.networkAddress, _result!['networkAddress']),
-                      _buildResultRow(l10n.broadcastAddress, _result!['broadcastAddress']),
-                      _buildResultRow(l10n.usableIps, _result!['usableIps'].toString()),
-                      _buildResultRow(l10n.firstUsableIp, _result!['firstUsableIp']),
-                      _buildResultRow(l10n.lastUsableIp, _result!['lastUsableIp']),
-                      _buildResultRow(l10n.networkClass, _result!['networkClass']),
-                      _buildResultRow(l10n.cidr, _result!['cidr']),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.binary,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      SelectableText(
-                        'IP: ${_result!['ipBinary']}\n${l10n.subnetMask}: ${_result!['subnetMaskBinary']}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.hexadecimal,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 8),
-                      SelectableText(
-                        'IP: ${_result!['ipHexadecimal']}\n${l10n.subnetMask}: ${_result!['subnetMaskHexadecimal']}',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
+              ResultCard(
+                title: l10n.result,
+                copyText: _formatResult(_result!, l10n),
+                contentBuilder: (context) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ResultRow(label: l10n.networkAddress, value: _result!['networkAddress']),
+                    ResultRow(label: l10n.broadcastAddress, value: _result!['broadcastAddress']),
+                    ResultRow(label: l10n.usableIps, value: _result!['usableIps'].toString()),
+                    ResultRow(label: l10n.firstUsableIp, value: _result!['firstUsableIp']),
+                    ResultRow(label: l10n.lastUsableIp, value: _result!['lastUsableIp']),
+                    ResultRow(label: l10n.networkClass, value: _result!['networkClass']),
+                    ResultRow(label: l10n.cidr, value: _result!['cidr']),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.binary,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    SelectableText(
+                      'IP: ${_result!['ipBinary']}\n${l10n.subnetMask}: ${_result!['subnetMaskBinary']}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.hexadecimal,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    SelectableText(
+                      'IP: ${_result!['ipHexadecimal']}\n${l10n.subnetMask}: ${_result!['subnetMaskHexadecimal']}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -322,30 +262,5 @@ ${l10n.networkClass}: ${result['networkClass']}
     );
   }
 
-  Widget _buildResultRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: SelectableText(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 

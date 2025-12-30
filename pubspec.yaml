@@ -36,14 +36,27 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/fonts/
 
   fonts:
     - family: OPPOSans
       fonts:
         - asset: assets/fonts/OPPOSans4.0.ttf
+          weight: 400
+          style: normal
+        - asset: assets/fonts/OPPOSans4.0.ttf
+          weight: 500
+          style: normal
+        - asset: assets/fonts/OPPOSans4.0.ttf
+          weight: 600
+          style: normal
+        - asset: assets/fonts/OPPOSans4.0.ttf
+          weight: 700
+          style: normal
 
-# Web 配置 - 放在 flutter 同级
+# Web 配置 - 放在 flutter 配置同级
 web:
+  # 使用 canvaskit 渲染器以获得更好的字体渲染质量
   renderer: canvaskit
   csp:
     "script-src":

@@ -182,8 +182,8 @@ class CalculatorSettingsProvider {
     Set<String> lockedItems;
     
     if (lockedJson == null) {
-      // 首次使用，默认锁定"设置"项
-      lockedItems = {CalculatorKeys.settings};
+      // 首次使用，不再默认锁定任何项目，保持和 Windows 客户端一致
+      lockedItems = {};
       await setLockedItems(lockedItems);
       return lockedItems;
     }
@@ -192,8 +192,8 @@ class CalculatorSettingsProvider {
       final List<dynamic> lockedList = json.decode(lockedJson);
       lockedItems = lockedList.map((e) => e.toString()).toSet();
     } catch (e) {
-      // 数据损坏，重置为默认（锁定"设置"项）
-      lockedItems = {CalculatorKeys.settings};
+      // 数据损坏时，重置为不锁定任何项目
+      lockedItems = {};
       await setLockedItems(lockedItems);
       return lockedItems;
     }
@@ -210,23 +210,23 @@ class CalculatorSettingsProvider {
     // 检查是否已经初始化过
     final hasInitialized = prefs.getBool(initializedKey) ?? false;
     
-    // 如果还没有设置过锁定项，默认锁定"设置"项
+    // 如果还没有设置过锁定项，默认不锁定任何项目
     if (lockedJson == null) {
-      await setLockedItems({CalculatorKeys.settings});
+      await setLockedItems({});
       await prefs.setBool(initializedKey, true);
     } else if (!hasInitialized) {
       // 如果已经有锁定项但还没有标记为已初始化，检查是否需要初始化
       try {
         final List<dynamic> lockedList = json.decode(lockedJson);
         final lockedItems = lockedList.map((e) => e.toString()).toSet();
-        // 如果锁定列表为空，默认锁定"设置"项
+        // 如果锁定列表为空，保持不锁定任何项目
         if (lockedItems.isEmpty) {
-          await setLockedItems({CalculatorKeys.settings});
+          await setLockedItems({});
         }
         await prefs.setBool(initializedKey, true);
       } catch (e) {
-        // 数据损坏，重置为默认
-        await setLockedItems({CalculatorKeys.settings});
+        // 数据损坏，重置为不锁定任何项目
+        await setLockedItems({});
         await prefs.setBool(initializedKey, true);
       }
     }

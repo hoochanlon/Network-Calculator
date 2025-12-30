@@ -10,6 +10,9 @@ import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
 import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
+import '../../widgets/calculator_text_field.dart';
+import '../../widgets/calculator_buttons.dart';
+import '../../widgets/result_card.dart';
 
 class IpInclusionScreen extends StatefulWidget {
   const IpInclusionScreen({super.key});
@@ -188,67 +191,24 @@ ${l10n.lastUsableIp}: ${result['lastUsableIp']}
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextField(
+                    CalculatorTextField(
                       controller: _cidr1Controller,
-                      decoration: InputDecoration(
                         labelText: l10n.inputCheckCidr,
                         hintText: '192.168.1.0/24',
-                      ),
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
-                    TextField(
+                    CalculatorTextField(
                       controller: _cidr2Controller,
-                      decoration: InputDecoration(
                         labelText: l10n.inputTargetCidr,
                         hintText: '192.168.0.0/16',
-                      ),
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _check,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : Text(l10n.check),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: _clear,
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                                side: BorderSide(
-                                  color: Theme.of(context).dividerColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(l10n.clear),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CalculatorButtonRow(
+                      actionText: l10n.check,
+                      clearText: l10n.clear,
+                      onActionPressed: _check,
+                      onClearPressed: _clear,
+                      isLoading: _isLoading,
                     ),
                   ],
                 ),
@@ -256,47 +216,27 @@ ${l10n.lastUsableIp}: ${result['lastUsableIp']}
             ),
             if (_result != null && !_result!.containsKey('error')) ...[
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+              ResultCard(
+                title: l10n.result,
+                copyText: _formatResult(_result!, l10n),
+                contentBuilder: (context) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            l10n.result,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: _formatResult(_result!, l10n)));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.copiedToClipboard)),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(),
-                      _buildResultRow(
-                        l10n.result,
-                        _result!['result'] == true ? l10n.trueText : l10n.falseText,
+                    ResultRow(
+                      label: l10n.result,
+                      value: _result!['result'] == true ? l10n.trueText : l10n.falseText,
                         isHighlight: _result!['result'] == true,
                       ),
                       if (_result!['result'] == true) ...[
-                        _buildResultRow(l10n.networkAddress, _result!['networkAddress']),
-                        _buildResultRow(l10n.broadcastAddress, _result!['broadcastAddress']),
-                        _buildResultRow(l10n.usableIps, _result!['usableIps'].toString()),
+                      ResultRow(label: l10n.networkAddress, value: _result!['networkAddress']),
+                      ResultRow(label: l10n.broadcastAddress, value: _result!['broadcastAddress']),
+                      ResultRow(label: l10n.usableIps, value: _result!['usableIps'].toString()),
                         if (_result!['firstUsableIp'] != null)
-                          _buildResultRow(l10n.firstUsableIp, _result!['firstUsableIp']),
+                        ResultRow(label: l10n.firstUsableIp, value: _result!['firstUsableIp']),
                         if (_result!['lastUsableIp'] != null)
-                          _buildResultRow(l10n.lastUsableIp, _result!['lastUsableIp']),
-                      ],
+                        ResultRow(label: l10n.lastUsableIp, value: _result!['lastUsableIp']),
                     ],
-                  ),
+                  ],
                 ),
               ),
             ],
@@ -309,33 +249,5 @@ ${l10n.lastUsableIp}: ${result['lastUsableIp']}
     );
   }
 
-  Widget _buildResultRow(String label, String value, {bool isHighlight = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: SelectableText(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: isHighlight ? Theme.of(context).primaryColor : null,
-                    fontWeight: isHighlight ? FontWeight.bold : null,
-                  ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 

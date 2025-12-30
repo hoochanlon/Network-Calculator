@@ -10,6 +10,9 @@ import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
 import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
+import '../../widgets/calculator_text_field.dart';
+import '../../widgets/calculator_buttons.dart';
+import '../../widgets/result_card.dart';
 
 class SubnetCalculatorScreen extends StatefulWidget {
   const SubnetCalculatorScreen({super.key});
@@ -205,68 +208,25 @@ ${l10n.invertedMask}: ${result['invertedMask']}
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextField(
+                    CalculatorTextField(
                       controller: _subnetController,
-                      decoration: InputDecoration(
                         labelText: l10n.inputSubnetOrCidr,
                         hintText: '255.255.255.0 or /24',
-                      ),
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
-                    TextField(
+                    CalculatorTextField(
                       controller: _hostsController,
-                      decoration: InputDecoration(
                         labelText: l10n.inputHosts,
                         hintText: l10n.inputHosts,
-                      ),
                       keyboardType: TextInputType.number,
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _calculate,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : Text(l10n.calculate),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: _clear,
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                                side: BorderSide(
-                                  color: Theme.of(context).dividerColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(l10n.clear),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CalculatorButtonRow(
+                      actionText: l10n.calculate,
+                      clearText: l10n.clear,
+                      onActionPressed: _calculate,
+                      onClearPressed: _clear,
+                      isLoading: _isLoading,
                     ),
                   ],
                 ),
@@ -274,38 +234,19 @@ ${l10n.invertedMask}: ${result['invertedMask']}
             ),
             if (_result != null && !_result!.containsKey('error')) ...[
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+              ResultCard(
+                title: l10n.result,
+                copyText: _formatResult(_result!, l10n),
+                contentBuilder: (context) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            l10n.result,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: _formatResult(_result!, l10n)));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.copiedToClipboard)),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(),
                       if (_result!.containsKey('hosts'))
-                        _buildResultRow(l10n.hosts, _result!['hosts'].toString()),
+                      ResultRow(label: l10n.hosts, value: _result!['hosts'].toString()),
                       if (_result!.containsKey('subnetInput'))
-                        _buildResultRow(l10n.subnetInput, _result!['subnetInput']),
-                      _buildResultRow(l10n.subnetMask, '${_result!['subnetMask']} (${_result!['cidr']})'),
-                      _buildResultRow(l10n.usableHosts, _result!['usableHosts'].toString()),
-                      _buildResultRow(l10n.invertedMask, _result!['invertedMask']),
+                      ResultRow(label: l10n.subnetInput, value: _result!['subnetInput']),
+                    ResultRow(label: l10n.subnetMask, value: '${_result!['subnetMask']} (${_result!['cidr']})'),
+                    ResultRow(label: l10n.usableHosts, value: _result!['usableHosts'].toString()),
+                    ResultRow(label: l10n.invertedMask, value: _result!['invertedMask']),
                       const SizedBox(height: 16),
                       Text(
                         l10n.binary,
@@ -327,7 +268,6 @@ ${l10n.invertedMask}: ${result['invertedMask']}
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
-                  ),
                 ),
               ),
                 ],
@@ -340,30 +280,5 @@ ${l10n.invertedMask}: ${result['invertedMask']}
     );
   }
 
-  Widget _buildResultRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: SelectableText(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 

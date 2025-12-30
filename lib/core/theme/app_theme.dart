@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'app_fonts.dart';
 import 'custom_text_selection_controls.dart';
@@ -16,6 +17,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: AppFonts.primaryFontFamily,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: backgroundColor,
       textSelectionTheme: TextSelectionThemeData(
@@ -23,6 +25,8 @@ class AppTheme {
         selectionColor: primaryColor.withOpacity(0.3),
         selectionHandleColor: primaryColor,
       ),
+      // 优化字体渲染，确保响应式文本也使用自定义字体
+      typography: _createTypographyWithFont(),
       colorScheme: ColorScheme.dark(
         primary: primaryColor,
         secondary: primaryColor,
@@ -118,6 +122,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: AppFonts.primaryFontFamily,
       primaryColor: primaryColor,
       scaffoldBackgroundColor: const Color(0xFFF5F5F5),
       cardTheme: CardThemeData(
@@ -152,6 +157,8 @@ class AppTheme {
         selectionColor: primaryColor.withOpacity(0.3),
         selectionHandleColor: primaryColor,
       ),
+      // 优化字体渲染，确保响应式文本也使用自定义字体
+      typography: _createTypographyWithFont(),
       colorScheme: ColorScheme.light(
         primary: primaryColor,
         secondary: primaryColor,
@@ -227,5 +234,59 @@ class AppTheme {
   // 保持向后兼容
   static ThemeData get darkTheme => getDarkTheme(defaultPrimaryColor);
   static ThemeData get lightTheme => getLightTheme(defaultPrimaryColor);
+
+  /// 创建使用自定义字体的 Typography
+  /// 确保响应式文本缩放时也使用 OPPO Sans 字体
+  static Typography _createTypographyWithFont() {
+    final baseTypography = Typography.material2021(
+      platform: defaultTargetPlatform,
+    );
+    
+    // 辅助函数：为 TextStyle 应用字体
+    TextStyle? _applyFont(TextStyle? style) {
+      return style?.copyWith(fontFamily: AppFonts.primaryFontFamily);
+    }
+    
+    // 为所有文本样式应用自定义字体
+    return Typography(
+      black: TextTheme(
+        displayLarge: _applyFont(baseTypography.black.displayLarge),
+        displayMedium: _applyFont(baseTypography.black.displayMedium),
+        displaySmall: _applyFont(baseTypography.black.displaySmall),
+        headlineLarge: _applyFont(baseTypography.black.headlineLarge),
+        headlineMedium: _applyFont(baseTypography.black.headlineMedium),
+        headlineSmall: _applyFont(baseTypography.black.headlineSmall),
+        titleLarge: _applyFont(baseTypography.black.titleLarge),
+        titleMedium: _applyFont(baseTypography.black.titleMedium),
+        titleSmall: _applyFont(baseTypography.black.titleSmall),
+        bodyLarge: _applyFont(baseTypography.black.bodyLarge),
+        bodyMedium: _applyFont(baseTypography.black.bodyMedium),
+        bodySmall: _applyFont(baseTypography.black.bodySmall),
+        labelLarge: _applyFont(baseTypography.black.labelLarge),
+        labelMedium: _applyFont(baseTypography.black.labelMedium),
+        labelSmall: _applyFont(baseTypography.black.labelSmall),
+      ),
+      white: TextTheme(
+        displayLarge: _applyFont(baseTypography.white.displayLarge),
+        displayMedium: _applyFont(baseTypography.white.displayMedium),
+        displaySmall: _applyFont(baseTypography.white.displaySmall),
+        headlineLarge: _applyFont(baseTypography.white.headlineLarge),
+        headlineMedium: _applyFont(baseTypography.white.headlineMedium),
+        headlineSmall: _applyFont(baseTypography.white.headlineSmall),
+        titleLarge: _applyFont(baseTypography.white.titleLarge),
+        titleMedium: _applyFont(baseTypography.white.titleMedium),
+        titleSmall: _applyFont(baseTypography.white.titleSmall),
+        bodyLarge: _applyFont(baseTypography.white.bodyLarge),
+        bodyMedium: _applyFont(baseTypography.white.bodyMedium),
+        bodySmall: _applyFont(baseTypography.white.bodySmall),
+        labelLarge: _applyFont(baseTypography.white.labelLarge),
+        labelMedium: _applyFont(baseTypography.white.labelMedium),
+        labelSmall: _applyFont(baseTypography.white.labelSmall),
+      ),
+      englishLike: baseTypography.englishLike,
+      dense: baseTypography.dense,
+      tall: baseTypography.tall,
+    );
+  }
 }
 

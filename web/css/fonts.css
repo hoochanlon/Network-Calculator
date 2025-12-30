@@ -1,0 +1,145 @@
+/* 
+ * 字体样式配置
+ * 定义 OPPOSans 字体的加载和应用
+ */
+
+/* 字体映射：优先使用本地字体文件，iOS Safari 兼容性更好 */
+/* 本地字体文件路径（Flutter Web 构建后的路径） */
+@font-face {
+  font-family: "OPPOSans";
+  src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
+  /* 使用 swap 策略，平衡性能和字体质量，避免阻塞 FCP */
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+  /* 针对高 DPR 设备优化 */
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+@font-face {
+  font-family: "OPPOSans";
+  src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+@font-face {
+  font-family: "OPPOSans";
+  src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+@font-face {
+  font-family: "OPPOSans";
+  src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* CDN 字体作为备用（如果本地字体加载失败） */
+@font-face {
+  font-family: "OPPOSans";
+  src: local("OPPO Sans 4.0"), 
+       url("https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/OPPOSans4-Regular.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/OPPOSans4-Regular.woff") format("woff");
+  font-display: swap;
+  font-weight: 400 700;
+  /* 仅在本地字体不可用时使用 */
+  unicode-range: U+0000-00FF, U+0100-024F, U+0250-02FF, U+0300-03FF, U+0400-04FF, U+0500-05FF, U+0600-06FF, U+0700-074F, U+0750-077F, U+0780-07BF, U+07C0-07FF, U+0800-083F, U+0840-085F, U+0860-086F, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F, U+2C60-2C7F, U+2C80-2CFF, U+2D00-2D2F, U+2D30-2D7F, U+2D80-2DDF, U+2DE0-2DFF, U+2E00-2E7F, U+2E80-2EFF, U+2F00-2FDF, U+3000-303F, U+3040-309F, U+30A0-30FF, U+3100-312F, U+3130-318F, U+3190-319F, U+31A0-31BF, U+31C0-31EF, U+31F0-31FF, U+3200-32FF, U+3300-33FF, U+3400-4DBF, U+4DC0-4DFF, U+4E00-9FFF, U+A000-A48F, U+A490-A4CF, U+A500-A63F, U+A640-A69F, U+A700-A71F, U+A720-A7FF, U+A800-A82F, U+A840-A87F, U+A880-A8DF, U+A900-A92F, U+A930-A95F, U+A960-A97F, U+A980-A9DF, U+AA00-AA5F, U+AA60-AA7F, U+AA80-AADF, U+AAE0-AAFF, U+AB00-AB2F, U+AB30-AB6F, U+ABC0-ABFF, U+AC00-D7AF, U+D7B0-D7FF, U+F900-FAFF, U+FB00-FB4F, U+FB50-FDFF, U+FE00-FE0F, U+FE10-FE1F, U+FE20-FE2F, U+FE30-FE4F, U+FE50-FE6F, U+FE70-FEFF, U+FF00-FFEF, U+FFF0-FFFF;
+}
+
+/* 全局字体设置 - 优化字体回退策略，iOS Safari 优先使用 OPPOSans */
+html, body, 
+div, span, p, a, h1, h2, h3, h4, h5, h6,
+input, textarea, button, select, label,
+table, th, td, tr,
+ul, ol, li {
+  /* iOS Safari 需要明确指定字体，避免回退到系统字体 */
+  font-family: "OPPOSans", "OPPO Sans 4.0", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* 移动端高 DPR 设备字体渲染优化 */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* 针对高 DPR 设备的字体渲染优化 */
+  -webkit-font-feature-settings: "kern" 1, "liga" 1;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Flutter 视图的字体平滑 - iOS Safari 优化 */
+flutter-view {
+  font-family: "OPPOSans", "OPPO Sans 4.0", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* 移动端高 DPR 设备优化 */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* 针对高 DPR 设备的字体渲染优化 */
+  -webkit-font-feature-settings: "kern" 1, "liga" 1;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* 移动端高 DPR 设备特定优化 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  html, body, flutter-view {
+    /* 高 DPR 设备使用更精细的字体渲染 */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* 确保文本清晰度 - 使用更精细的描边 */
+    -webkit-text-stroke: 0.01em transparent;
+    /* 强制使用硬件加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: contents;
+  }
+  
+  /* Canvas 元素的高 DPR 优化 */
+  canvas {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    /* 确保 Canvas 在高 DPR 设备上清晰 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* 针对超高 DPR 设备（如 iPhone 14 Pro Max 的 3x） */
+  @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+    html, body, flutter-view {
+      /* 使用最高质量的字体渲染 */
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      /* 超高 DPR 设备的额外优化 - 更精细的描边 */
+      -webkit-text-stroke: 0.003em transparent;
+      /* 强制硬件加速 */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      perspective: 1000px;
+      -webkit-perspective: 1000px;
+    }
+    
+    /* 超高 DPR 设备的 Canvas 优化 */
+    canvas {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      /* 确保最高质量渲染 */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: contents;
+    }
+  }
+}
+

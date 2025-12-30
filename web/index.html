@@ -19,6 +19,8 @@
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
+  <!-- Viewport 设置：优化移动端显示和字体渲染 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -29,8 +31,26 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
+  <!-- 关键资源预加载：优化 FCP 和 LCP -->
+  <link rel="preload" href="assets/fonts/OPPOSans4.0.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="css/global.css" as="style">
+  <link rel="preload" href="js/font-optimization.js" as="script">
+  
+  <!-- DNS 预解析和预连接：优化外部资源加载 -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <!-- 预加载关键字体样式表（作为备用） -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/result.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/result.css"></noscript>
+
   <title>network_calculator</title>
   <link rel="manifest" href="manifest.json">
+  
+  <!-- 引入全局样式（包含字体样式） -->
+  <link rel="stylesheet" href="css/global.css">
+  
+  <!-- 引入字体和 Canvas 渲染优化脚本（使用 defer 避免阻塞渲染） -->
+  <script src="js/font-optimization.js" defer></script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

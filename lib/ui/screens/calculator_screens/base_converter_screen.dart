@@ -10,6 +10,9 @@ import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
 import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
+import '../../widgets/calculator_text_field.dart';
+import '../../widgets/calculator_buttons.dart';
+import '../../widgets/result_card.dart';
 
 class BaseConverterScreen extends StatefulWidget {
   const BaseConverterScreen({super.key});
@@ -184,59 +187,19 @@ class _BaseConverterScreenState extends State<BaseConverterScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextField(
+                    CalculatorTextField(
                       controller: _inputController,
-                      decoration: InputDecoration(
                         labelText: l10n.inputBaseValue,
                         hintText: '192.168.1.1 or 11000000.10101000.00000001.00000001',
-                      ),
                       onSubmitted: (_) => _convert(),
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 200),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: _isLoading ? null : _convert,
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                  minimumSize: const Size(0, 48),
-                                ),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
-                                      )
-                                    : Text(l10n.calculate),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 200),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                onPressed: _clear,
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                  minimumSize: const Size(0, 48),
-                                  side: BorderSide(
-                                    color: Theme.of(context).dividerColor,
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Text(l10n.clear),
-                              ),
-                            ),
-                          ),
-                        ],
+                    CalculatorButtonRow(
+                      actionText: l10n.calculate,
+                      clearText: l10n.clear,
+                      onActionPressed: _convert,
+                      onClearPressed: _clear,
+                      isLoading: _isLoading,
                       ),
                   ],
                 ),
@@ -244,39 +207,20 @@ class _BaseConverterScreenState extends State<BaseConverterScreen> {
             ),
             if (_result != null && !_result!.containsKey('error')) ...[
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+              ResultCard(
+                title: l10n.result,
+                copyText: _formatResult(_result!, l10n),
+                contentBuilder: (context) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            l10n.result,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: _formatResult(_result!, l10n)));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.copiedToClipboard)),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(),
                       if (_result!.containsKey('binary'))
-                        _buildResultRow(l10n.binary, _result!['binary']),
+                      ResultRow(label: l10n.binary, value: _result!['binary']),
                       if (_result!.containsKey('decimal'))
-                        _buildResultRow(l10n.decimal, _result!['decimal']),
+                      ResultRow(label: l10n.decimal, value: _result!['decimal']),
                       if (_result!.containsKey('decimalNoDot'))
-                        _buildResultRow(l10n.decimalNoDot, _result!['decimalNoDot'].toString()),
+                      ResultRow(label: l10n.decimalNoDot, value: _result!['decimalNoDot'].toString()),
                       if (_result!.containsKey('hexadecimal'))
-                        _buildResultRow(l10n.hexadecimal, _result!['hexadecimal']),
+                      ResultRow(label: l10n.hexadecimal, value: _result!['hexadecimal']),
                       if (_result!.containsKey('complement')) ...[
                         const SizedBox(height: 16),
                         Text(
@@ -287,38 +231,11 @@ class _BaseConverterScreenState extends State<BaseConverterScreen> {
                         ..._buildComplementResult(_result!['complement'] as Map<String, dynamic>, l10n),
                       ],
                     ],
-                  ),
                 ),
               ),
             ],
           ],
         ),
-      ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildResultRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).textTheme.bodySmall?.color,
-                  ),
-            ),
-          ),
-          Expanded(
-            child: SelectableText(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),
         ],
@@ -328,10 +245,10 @@ class _BaseConverterScreenState extends State<BaseConverterScreen> {
 
   List<Widget> _buildComplementResult(Map<String, dynamic> complement, AppLocalizations l10n) {
     return [
-      _buildResultRow('${l10n.binary}:', complement['binary']),
-      _buildResultRow('${l10n.decimal}:', complement['decimal']),
-      _buildResultRow('${l10n.decimalNoDot}:', complement['decimalNoDot'].toString()),
-      _buildResultRow('${l10n.hexadecimal}:', complement['hexadecimal']),
+      ResultRow(label: '${l10n.binary}:', value: complement['binary']),
+      ResultRow(label: '${l10n.decimal}:', value: complement['decimal']),
+      ResultRow(label: '${l10n.decimalNoDot}:', value: complement['decimalNoDot'].toString()),
+      ResultRow(label: '${l10n.hexadecimal}:', value: complement['hexadecimal']),
     ];
   }
 }

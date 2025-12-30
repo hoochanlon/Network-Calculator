@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/providers/calculator_settings_provider.dart';
 import '../../core/providers/locale_provider.dart';
+import '../../core/utils/calculator_name_translator.dart';
 import 'history_screen.dart';
 import 'main_navigation_item.dart';
 import 'main_navigation_items.dart';
@@ -28,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   Locale? _cachedLocale;
   LocaleProvider? _localeProvider;
   bool _sidebarDragEnabled = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -129,194 +131,263 @@ class _MainScreenState extends State<MainScreen> {
     return items;
   }
 
+  // 构建侧边栏内容
+  Widget _buildSidebar(BuildContext context, bool isDark, List<NavigationItem> items) {
+    return Column(
+      children: [
+        // Logo 区域
+        Container(
+          height: 68,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isDark ? const Color(0xFF404040) : const Color(0xFFE0E0E0),
+                width: 1,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                'assets/images/ncalc.svg',
+                width: 28,
+                height: 28,
+                colorFilter: ColorFilter.mode(
+                  Theme.of(context).primaryColor,
+                  BlendMode.srcIn,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  AppLocalizations.of(context)!.appTitle,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+        // 导航菜单
+        Expanded(
+          child: _buildNavigationList(context, items),
+        ),
+        // 页脚社交图标
+        MainSocialFooterBuilder.buildSocialFooter(context),
+      ],
+    );
+  }
+
+  // 构建导航列表
+  Widget _buildNavigationList(BuildContext context, List<NavigationItem> items) {
+    // 如果启用了拖拽排序，使用 ReorderableListView
+    if (_sidebarDragEnabled) {
+      return FutureBuilder<Set<String>>(
+        future: CalculatorSettingsProvider.getLockedItems(),
+        builder: (context, lockedSnapshot) {
+          if (!lockedSnapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final lockedItems = lockedSnapshot.data!;
+          
+          return _ReorderableListStateful(
+            key: ValueKey('reorderable_list_${items.length}'),
+            initialItems: items,
+            lockedItems: lockedItems,
+            currentIndex: _currentIndex,
+            currentItemKey: _currentItemKey,
+            onIndexChanged: (index, key) {
+              setState(() {
+                _currentIndex = index;
+                _currentItemKey = key;
+              });
+            },
+            onHistoryRefresh: () {
+              if (_historyKey.currentState != null) {
+                _historyKey.currentState!.refreshHistory();
+              }
+            },
+            onItemsReordered: (reorderedItems, finalOrder) {
+              _cachedNavigationItems = reorderedItems;
+              _cachedCalculatorOrder = finalOrder;
+            },
+          );
+        }
+      );
+    }
+    // 如果不启用拖拽，使用普通 ListView
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        final isSelected = _currentIndex == index;
+        
+        return FutureBuilder<bool>(
+          future: item.calculatorKey != null
+              ? CalculatorSettingsProvider.isItemLocked(item.calculatorKey!)
+              : Future.value(false),
+          builder: (context, lockSnapshot) {
+            bool isLocked = lockSnapshot.data ?? false;
+            // “设置”等特殊项不显示锁状态
+            if (item.calculatorKey == CalculatorKeys.settings) {
+              isLocked = false;
+            }
+            return MainNavigationItemBuilder.buildNavigationItem(
+              context,
+              item,
+              index,
+              isSelected,
+              () {
+                final screenWidth = MediaQuery.of(context).size.width;
+                setState(() {
+                  _currentIndex = index;
+                  _currentItemKey = item.calculatorKey;
+                });
+                // 在小屏幕上，选择后自动关闭抽屉
+                if (screenWidth < 768 && Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+                if (item.screen is HistoryScreen && _historyKey.currentState != null) {
+                  _historyKey.currentState!.refreshHistory();
+                }
+              },
+              isLocked: isLocked,
+              showDragHandle: false,
+              sidebarDragEnabled: _sidebarDragEnabled,
+              onLockToggle: () {
+                setState(() {});
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 768; // 移动端断点
+    final isTablet = screenWidth >= 768 && screenWidth < 1024; // 平板断点
+    
+    // 响应式侧边栏宽度
+    final sidebarWidth = screenWidth > 1600 ? 270.0 : (screenWidth > 1024 ? 260.0 : 240.0);
     
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          // 根据窗口宽度动态调整侧边栏宽度
-          // 默认宽度：230，窗口最大化时（宽度 > 1920）最大宽度：300
-          final screenWidth = MediaQuery.of(context).size.width;
-          final sidebarWidth = screenWidth > 1600 ? 270.0 : 260.0; 
-          
-          return Row(
-            children: [
-              // 左侧导航栏
-              Container(
-                width: sidebarWidth,
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF252525) : Colors.white,
-              border: Border(
-                right: BorderSide(
-                  color: isDark ? const Color(0xFF404040) : const Color(0xFFE0E0E0),
-                  width: 1,
-                ),
+      key: _scaffoldKey,
+      appBar: isMobile ? AppBar(
+        title: Row(
+          children: [
+            SvgPicture.asset(
+              'assets/images/ncalc.svg',
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).primaryColor,
+                BlendMode.srcIn,
               ),
             ),
-            child: Column(
-              children: [
-                // Logo 区域
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.appTitle,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        elevation: 0,
+      ) : null,
+      endDrawer: isMobile ? FutureBuilder<List<NavigationItem>>(
+        future: _getNavigationItems(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Drawer(
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          final items = snapshot.data!;
+          return Drawer(
+            width: sidebarWidth,
+            child: _buildSidebar(context, isDark, items),
+          );
+        },
+      ) : null,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Row(
+            children: [
+              // 桌面端显示侧边栏（左侧）
+              if (!isMobile)
                 Container(
-                  height: 68, // 固定高度，与右侧内容区域标题栏对齐
-                  padding: const EdgeInsets.all(20),
+                  width: sidebarWidth,
                   decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF252525) : Colors.white,
                     border: Border(
-                      bottom: BorderSide(
+                      right: BorderSide(
                         color: isDark ? const Color(0xFF404040) : const Color(0xFFE0E0E0),
                         width: 1,
                       ),
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/images/ncalc.svg',
-                        width: 28,
-                        height: 28,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).primaryColor,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          l10n.appTitle,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // 导航菜单
-                Expanded(
                   child: FutureBuilder<List<NavigationItem>>(
                     future: _getNavigationItems(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      final items = snapshot.data!;
-                      
-                      // 如果启用了拖拽排序，使用 ReorderableListView
-                      if (_sidebarDragEnabled) {
-                        return FutureBuilder<Set<String>>(
-                          future: CalculatorSettingsProvider.getLockedItems(),
-                          builder: (context, lockedSnapshot) {
-                            if (!lockedSnapshot.hasData) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-                            final lockedItems = lockedSnapshot.data!;
-                            
-                            return _ReorderableListStateful(
-                              key: ValueKey('reorderable_list_${items.length}'),
-                              initialItems: items,
-                              lockedItems: lockedItems,
-                              currentIndex: _currentIndex,
-                              currentItemKey: _currentItemKey,
-                              onIndexChanged: (index, key) {
-                                setState(() {
-                                  _currentIndex = index;
-                                  _currentItemKey = key;
-                                });
-                              },
-                              onHistoryRefresh: () {
-                                if (_historyKey.currentState != null) {
-                                  _historyKey.currentState!.refreshHistory();
-                                }
-                              },
-                              onItemsReordered: (reorderedItems, finalOrder) {
-                                // 更新父组件的缓存
-                                _cachedNavigationItems = reorderedItems;
-                                _cachedCalculatorOrder = finalOrder;
-                              },
-                            );
-                          }
-                        );
-                      }
-                      // 如果不启用拖拽，使用普通 ListView
-                      return ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          final isSelected = _currentIndex == index;
-                          
-                          return FutureBuilder<bool>(
-                            future: item.calculatorKey != null 
-                                ? CalculatorSettingsProvider.isItemLocked(item.calculatorKey!)
-                                : Future.value(false),
-                            builder: (context, lockSnapshot) {
-                              final isLocked = lockSnapshot.data ?? false;
-                              return MainNavigationItemBuilder.buildNavigationItem(
-                                context,
-                                item,
-                                index,
-                                isSelected,
-                                () {
-                                  setState(() {
-                                    _currentIndex = index;
-                                    _currentItemKey = item.calculatorKey;
-                                  });
-                                  if (item.screen is HistoryScreen && _historyKey.currentState != null) {
-                                    _historyKey.currentState!.refreshHistory();
-                                  }
-                                },
-                                isLocked: isLocked,
-                                showDragHandle: false,
-                                sidebarDragEnabled: _sidebarDragEnabled,
-                                onLockToggle: () {
-                                  setState(() {});
-                                },
-                              );
-                            },
-                          );
-                        },
-                      );
+                      return _buildSidebar(context, isDark, snapshot.data!);
                     },
                   ),
                 ),
-                // 页脚社交图标
-                MainSocialFooterBuilder.buildSocialFooter(context),
-              ],
-            ),
-          ),
-          // 右侧内容区域
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final maxWidth = constraints.maxWidth > 900 ? 900.0 : constraints.maxWidth;
-                return Center(
-                  child: SizedBox(
-                    width: maxWidth,
-                    child: FutureBuilder<List<NavigationItem>>(
-                      future: _getNavigationItems(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                        final items = snapshot.data!;
-                        return IndexedStack(
-                          index: _currentIndex,
-                          children: items.map((item) => item.screen).toList(),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      );
-    },
-    ),
+              // 右侧内容区域
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, contentConstraints) {
+                    // 响应式内容最大宽度
+                    double maxWidth;
+                    if (isMobile) {
+                      maxWidth = contentConstraints.maxWidth;
+                    } else if (isTablet) {
+                      maxWidth = contentConstraints.maxWidth > 800 ? 800.0 : contentConstraints.maxWidth;
+                    } else {
+                      maxWidth = contentConstraints.maxWidth > 900 ? 900.0 : contentConstraints.maxWidth;
+                    }
+                    
+                    return Center(
+                      child: SizedBox(
+                        width: maxWidth,
+                        child: FutureBuilder<List<NavigationItem>>(
+                          future: _getNavigationItems(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                            final items = snapshot.data!;
+                            return IndexedStack(
+                              index: _currentIndex,
+                              children: items.map((item) => item.screen).toList(),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

@@ -10,6 +10,9 @@ import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
 import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
+import '../../widgets/calculator_text_field.dart';
+import '../../widgets/calculator_buttons.dart';
+import '../../widgets/result_card.dart';
 
 class NetworkSplitScreen extends StatefulWidget {
   const NetworkSplitScreen({super.key});
@@ -178,68 +181,25 @@ class _NetworkSplitScreenState extends State<NetworkSplitScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextField(
+                    CalculatorTextField(
                       controller: _supernetController,
-                      decoration: InputDecoration(
                         labelText: l10n.inputSupernet,
                         hintText: '172.16.64.0/21',
-                      ),
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 16),
-                    TextField(
+                    CalculatorTextField(
                       controller: _targetMaskController,
-                      decoration: InputDecoration(
                         labelText: l10n.inputTargetMask,
                         hintText: '24',
-                      ),
                       keyboardType: TextInputType.number,
-                      selectionControls: AppTextSelectionControls.customControls,
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _split,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : Text(l10n.split),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: _clear,
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                                side: BorderSide(
-                                  color: Theme.of(context).dividerColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(l10n.clear),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CalculatorButtonRow(
+                      actionText: l10n.split,
+                      clearText: l10n.clear,
+                      onActionPressed: _split,
+                      onClearPressed: _clear,
+                      isLoading: _isLoading,
                     ),
                   ],
                 ),
@@ -247,42 +207,11 @@ class _NetworkSplitScreenState extends State<NetworkSplitScreen> {
             ),
             if (_result != null && _result!.isNotEmpty) ...[
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            l10n.result,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              final l10n = AppLocalizations.of(context)!;
-                              Clipboard.setData(ClipboardData(text: _result!.join('\n')));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.copiedToClipboard)),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(),
-                      ..._result!.map((subnet) => Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: SelectableText(
-                              subnet,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
+              ResultCard(
+                title: l10n.result,
+                content: _result!,
+                copyText: _result!.join('\n'),
+                isStringList: true,
               ),
             ],
           ],

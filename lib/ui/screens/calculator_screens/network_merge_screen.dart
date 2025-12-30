@@ -10,6 +10,9 @@ import '../../../core/providers/calculator_state_provider.dart';
 import '../../../core/providers/calculator_settings_provider.dart';
 import '../../../core/theme/app_fonts.dart';
 import '../../widgets/screen_title_bar.dart';
+import '../../widgets/calculator_text_field.dart';
+import '../../widgets/calculator_buttons.dart';
+import '../../widgets/result_card.dart';
 
 class NetworkMergeScreen extends StatefulWidget {
   const NetworkMergeScreen({super.key});
@@ -168,15 +171,13 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TextField(
+                    CalculatorTextField(
                       controller: _inputController,
-                      decoration: InputDecoration(
                         labelText: l10n.inputNetworks,
                         hintText: '192.168.1.0/24\n192.168.2.0/24\n192.168.3.0/24',
-                      ),
-                      maxLines: 10,
+                      multiline: true,
                       minLines: 5,
-                      selectionControls: AppTextSelectionControls.customControls,
+                      maxLines: 10,
                     ),
                     const SizedBox(height: 16),
                     Center(
@@ -196,16 +197,26 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                                   value: MergeAlgorithm.summarization,
                                   icon: const Icon(Icons.auto_awesome, size: 18),
                                   label: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    child: Text(l10n.algorithmSummarization),
+                                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                                    child: Text(
+                                      l10n.algorithmSummarization,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                 ),
                                 ButtonSegment<MergeAlgorithm>(
                                   value: MergeAlgorithm.merge,
                                   icon: const Icon(Icons.merge_type, size: 18),
                                   label: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                                    child: Text(l10n.algorithmMerge),
+                                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                                    child: Text(
+                                      l10n.algorithmMerge,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      maxLines: 1,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -219,7 +230,7 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                                 }
                               },
                               style: SegmentedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                 minimumSize: const Size(0, 44),
                                 side: BorderSide(
                                   color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
@@ -253,49 +264,12 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isLoading ? null : _merge,
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
-                                    )
-                                  : Text(l10n.merge),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 200),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: _clear,
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                minimumSize: const Size(0, 48),
-                                side: BorderSide(
-                                  color: Theme.of(context).dividerColor,
-                                  width: 1,
-                                ),
-                              ),
-                              child: Text(l10n.clear),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CalculatorButtonRow(
+                      actionText: l10n.merge,
+                      clearText: l10n.clear,
+                      onActionPressed: _merge,
+                      onClearPressed: _clear,
+                      isLoading: _isLoading,
                     ),
                   ],
                 ),
@@ -303,39 +277,10 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
             ),
             if (_result != null && !_result!.startsWith('Error:') && !_result!.startsWith('Invalid')) ...[
               const SizedBox(height: 16),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            l10n.result,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.copy),
-                            onPressed: () {
-                              final l10n = AppLocalizations.of(context)!;
-                              Clipboard.setData(ClipboardData(text: _result!));
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10n.copiedToClipboard)),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      const Divider(),
-                      SelectableText(
-                        _result!,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ],
-                  ),
-                ),
+              ResultCard(
+                title: l10n.result,
+                content: _result!,
+                copyText: _result!,
               ),
             ],
           ],

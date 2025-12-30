@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/color_theme.dart';
 
 class ThemeProvider with ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.dark;
+  // 默认使用浅色模式，和 Windows 客户端保持一致
+  ThemeMode _themeMode = ThemeMode.light;
   ColorTheme _currentColorTheme = ColorTheme.neteaseRed;
 
   ThemeMode get themeMode => _themeMode;
@@ -16,7 +17,8 @@ class ThemeProvider with ChangeNotifier {
 
   Future<void> _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    final themeModeString = prefs.getString('theme_mode') ?? 'dark';
+    // 没有用户设置时默认使用浅色模式
+    final themeModeString = prefs.getString('theme_mode') ?? 'light';
     _themeMode = themeModeString == 'light'
         ? ThemeMode.light
         : themeModeString == 'dark'

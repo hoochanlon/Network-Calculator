@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import '../../core/providers/calculator_settings_provider.dart';
 import '../../core/theme/app_fonts.dart';
+import '../../core/utils/calculator_name_translator.dart';
 import '../../l10n/app_localizations.dart';
 import 'history_screen.dart';
 
@@ -40,7 +41,11 @@ class MainNavigationItemBuilder {
     
     return InkWell(
       onTap: onTap,
-      onLongPress: (item.calculatorKey != null && sidebarDragEnabled) ? () async {
+      // “设置”等特殊项不再支持长按锁定，只对普通计算器项生效
+      onLongPress: (item.calculatorKey != null &&
+              sidebarDragEnabled &&
+              item.calculatorKey != CalculatorKeys.settings)
+          ? () async {
         // 获取当前锁定状态
         final currentLocked = await CalculatorSettingsProvider.isItemLocked(item.calculatorKey!);
         // 长按自动锁定/解锁
@@ -109,8 +114,8 @@ class MainNavigationItemBuilder {
                 ),
               ),
             ),
-            // 锁图标（如果被锁定）
-            if (isLocked)
+            // 锁图标（如果被锁定；“设置”等特殊项不显示锁图标）
+            if (isLocked && item.calculatorKey != CalculatorKeys.settings)
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 4),
                 child: Icon(
