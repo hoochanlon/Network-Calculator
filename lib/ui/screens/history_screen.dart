@@ -379,6 +379,7 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
                           style: AppFonts.createStyle(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
+                          selectionControls: AppTextSelectionControls.customControls,
                           decoration: InputDecoration(
                             hintText: l10n.searchHint,
                             prefixIcon: const Icon(Icons.search),

@@ -1,0 +1,458 @@
+# 网络计算器 - 架构与技术原理图
+
+本文档包含网络计算器应用的技术架构图和自动化部署流程图。
+
+## 📐 技术架构图
+
+### 应用整体架构
+
+```mermaid
+graph TB
+    subgraph "用户界面层 (UI Layer)"
+        A[MainScreen<br/>主界面] --> B[Sidebar<br/>侧边栏导航]
+        A --> C[Content Area<br/>内容区域]
+        B --> D[Navigation Items<br/>导航项列表]
+        C --> E[Calculator Screens<br/>计算器界面]
+        C --> F[Settings Screen<br/>设置界面]
+        C --> G[History Screen<br/>历史记录]
+    end
+
+    subgraph "状态管理层 (State Management)"
+        H[LocaleProvider<br/>语言设置] --> A
+        I[ThemeProvider<br/>主题管理] --> A
+        J[CalculatorStateProvider<br/>计算器状态] --> E
+        K[CalculatorSettingsProvider<br/>应用设置] --> F
+    end
+
+    subgraph "业务逻辑层 (Business Logic)"
+        L[IP Calculator Service<br/>IP地址计算服务]
+        M[Subnet Calculator Service<br/>子网掩码计算服务]
+        N[Base Converter Service<br/>进制转换服务]
+        O[Network Merge Service<br/>路由聚合服务]
+        P[Network Split Service<br/>超网拆分服务]
+        Q[IP Inclusion Service<br/>IP包含检测服务]
+        R[History Service<br/>历史记录服务]
+    end
+
+    subgraph "数据存储层 (Data Storage)"
+        S[SharedPreferences<br/>应用设置存储]
+        T[File System<br/>历史记录文件]
+        U[Localization Files<br/>多语言文件]
+    end
+
+    subgraph "工具层 (Utils)"
+        V[Calculator Name Translator<br/>计算器名称翻译]
+        W[Error Message Translator<br/>错误信息翻译]
+        X[Sidebar Order Config<br/>侧边栏排序配置]
+    end
+
+    E --> L
+    E --> M
+    E --> N
+    E --> O
+    E --> P
+    E --> Q
+    G --> R
+    F --> K
+    K --> S
+    R --> T
+    H --> U
+    E --> V
+    E --> W
+    B --> X
+
+    style A fill:#e1f5ff
+    style H fill:#fff4e6
+    style I fill:#fff4e6
+    style J fill:#fff4e6
+    style K fill:#fff4e6
+    style L fill:#f3e5f5
+    style M fill:#f3e5f5
+    style N fill:#f3e5f5
+    style O fill:#f3e5f5
+    style P fill:#f3e5f5
+    style Q fill:#f3e5f5
+    style R fill:#f3e5f5
+    style S fill:#e8f5e9
+    style T fill:#e8f5e9
+    style U fill:#e8f5e9
+```
+
+### 数据流图
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant UI as 界面层
+    participant Provider as 状态管理
+    participant Service as 业务服务
+    participant Storage as 数据存储
+
+    User->>UI: 输入IP地址/子网信息
+    UI->>Provider: 更新输入状态
+    Provider->>UI: 触发界面更新
+    
+    User->>UI: 点击计算按钮
+    UI->>Service: 调用计算服务
+    Service->>Service: 执行计算逻辑
+    Service->>Provider: 返回计算结果
+    Provider->>UI: 更新结果状态
+    UI->>User: 显示计算结果
+    
+    User->>UI: 保存到历史记录
+    UI->>Service: 调用历史服务
+    Service->>Storage: 写入文件系统
+    Storage->>Service: 确认保存
+    Service->>Provider: 更新历史列表
+    Provider->>UI: 刷新历史界面
+```
+
+### 状态管理架构
+
+```mermaid
+graph LR
+    subgraph "Provider 状态管理"
+        A[LocaleProvider<br/>语言状态] --> B[当前语言<br/>Locale]
+        C[ThemeProvider<br/>主题状态] --> D[主题模式<br/>颜色主题]
+        E[CalculatorStateProvider<br/>计算器状态] --> F[输入数据<br/>计算结果]
+        G[CalculatorSettingsProvider<br/>应用设置] --> H[窗口尺寸<br/>历史限制<br/>排序顺序]
+    end
+
+    subgraph "数据持久化"
+        I[SharedPreferences] --> G
+        J[文件系统] --> K[历史记录文件<br/>history.json]
+    end
+
+    subgraph "UI 响应"
+        L[MainScreen] --> A
+        L --> C
+        M[Calculator Screens] --> E
+        N[Settings Screen] --> G
+        O[History Screen] --> K
+    end
+
+    A --> L
+    C --> L
+    E --> M
+    G --> N
+    K --> O
+
+    style A fill:#fff4e6
+    style C fill:#fff4e6
+    style E fill:#fff4e6
+    style G fill:#fff4e6
+    style I fill:#e8f5e9
+    style J fill:#e8f5e9
+```
+
+### 计算服务架构
+
+```mermaid
+graph TB
+    subgraph "计算器服务层"
+        A[IP Calculator Service<br/>IP地址计算] --> B[网络地址计算<br/>广播地址计算<br/>可用IP范围]
+        C[Subnet Calculator Service<br/>子网掩码计算] --> D[根据主机数计算<br/>根据掩码计算<br/>二进制/十六进制转换]
+        E[Base Converter Service<br/>进制转换] --> F[二进制转换<br/>十进制转换<br/>十六进制转换]
+        G[Network Merge Service<br/>路由聚合] --> H[Summarization算法<br/>Merge算法<br/>CIDR合并]
+        I[Network Split Service<br/>超网拆分] --> J[地址块拆分<br/>子网划分]
+        K[IP Inclusion Service<br/>IP包含检测] --> L[CIDR包含检测<br/>IP范围检测]
+    end
+
+    subgraph "输入验证"
+        M[输入验证器] --> A
+        M --> C
+        M --> E
+        M --> G
+        M --> I
+        M --> K
+    end
+
+    subgraph "错误处理"
+        N[错误信息翻译器] --> O[多语言错误提示]
+    end
+
+    A --> N
+    C --> N
+    E --> N
+    G --> N
+    I --> N
+    K --> N
+
+    style A fill:#f3e5f5
+    style C fill:#f3e5f5
+    style E fill:#f3e5f5
+    style G fill:#f3e5f5
+    style I fill:#f3e5f5
+    style K fill:#f3e5f5
+    style M fill:#fff4e6
+    style N fill:#ffebee
+```
+
+### 多语言支持架构
+
+```mermaid
+graph TB
+    subgraph "本地化文件"
+        A[app_zh.arb<br/>简体中文] --> B[AppLocalizations<br/>本地化类]
+        C[app_zh_TW.arb<br/>繁体中文] --> B
+        D[app_en.arb<br/>英文] --> B
+        E[app_ja.arb<br/>日文] --> B
+    end
+
+    subgraph "语言管理"
+        F[LocaleProvider] --> G[当前语言设置]
+        G --> H[系统语言检测]
+        G --> I[用户手动选择]
+    end
+
+    subgraph "应用使用"
+        J[UI组件] --> B
+        K[错误信息] --> B
+        L[设置界面] --> B
+    end
+
+    B --> F
+    F --> J
+    F --> K
+    F --> L
+
+    style A fill:#e8f5e9
+    style C fill:#e8f5e9
+    style D fill:#e8f5e9
+    style E fill:#e8f5e9
+    style F fill:#fff4e6
+    style B fill:#e1f5ff
+```
+
+## 🚀 自动化部署与打包流程图
+
+### 完整 CI/CD 流程
+
+```mermaid
+graph TB
+    Start([开始]) --> Check{检查触发条件}
+    
+    Check -->|Push to main| WebBuild[构建 Web 版本]
+    Check -->|Tag Release| WindowsBuild[构建 Windows 版本]
+    Check -->|Both| FullBuild[构建所有版本]
+    
+    WebBuild --> WebTest[Web 构建测试]
+    WindowsBuild --> WindowsTest[Windows 构建测试]
+    FullBuild --> WebTest
+    FullBuild --> WindowsTest
+    
+    WebTest -->|失败| WebError[Web 构建失败]
+    WindowsTest -->|失败| WindowsError[Windows 构建失败]
+    
+    WebTest -->|成功| WebDeploy[部署到 GitHub Pages]
+    WindowsTest -->|成功| WindowsPackage[打包 Windows 安装程序]
+    
+    WebDeploy --> WebVerify[验证 Web 部署]
+    WindowsPackage --> WindowsVerify[验证 Windows 包]
+    
+    WebVerify -->|失败| WebError
+    WindowsVerify -->|失败| WindowsError
+    
+    WebVerify -->|成功| WebSuccess[Web 部署成功]
+    WindowsVerify -->|成功| WindowsSuccess[Windows 打包成功]
+    
+    WebError --> Notify[发送通知]
+    WindowsError --> Notify
+    WebSuccess --> Notify
+    WindowsSuccess --> Notify
+    
+    Notify --> End([结束])
+    
+    style Start fill:#e1f5ff
+    style End fill:#e8f5e9
+    style WebError fill:#ffebee
+    style WindowsError fill:#ffebee
+    style WebSuccess fill:#e8f5e9
+    style WindowsSuccess fill:#e8f5e9
+```
+
+### Web 部署详细流程
+
+```mermaid
+graph LR
+    A[代码提交] --> B[GitHub Actions 触发]
+    B --> C[检出代码]
+    C --> D[安装 Flutter SDK]
+    D --> E[安装依赖<br/>flutter pub get]
+    E --> F[构建 Web 版本<br/>flutter build web]
+    F --> G[优化构建产物]
+    G --> H[部署到 GitHub Pages]
+    H --> I[更新 SEO Meta 标签]
+    I --> J[验证部署]
+    J --> K{部署成功?}
+    K -->|是| L[发送成功通知]
+    K -->|否| M[发送失败通知]
+    L --> N[完成]
+    M --> O[回滚/修复]
+    
+    style A fill:#e1f5ff
+    style N fill:#e8f5e9
+    style M fill:#ffebee
+    style O fill:#fff4e6
+```
+
+### Windows 打包详细流程
+
+```mermaid
+graph TB
+    A[代码提交/创建 Tag] --> B[GitHub Actions 触发]
+    B --> C[检出代码]
+    C --> D[安装 Flutter SDK]
+    D --> E[安装 Windows 工具链]
+    E --> F[安装依赖<br/>flutter pub get]
+    F --> G[构建 Windows 版本<br/>flutter build windows --release]
+    G --> H[收集构建产物]
+    H --> I[创建安装程序<br/>Inno Setup]
+    I --> J[生成安装包<br/>.exe 文件]
+    J --> K[创建 Release]
+    K --> L[上传安装包到 GitHub Releases]
+    L --> M[添加 Release 说明]
+    M --> N[验证发布]
+    N --> O{发布成功?}
+    O -->|是| P[发送成功通知]
+    O -->|否| Q[发送失败通知]
+    P --> R[完成]
+    Q --> S[回滚/修复]
+    
+    style A fill:#e1f5ff
+    style R fill:#e8f5e9
+    style Q fill:#ffebee
+    style S fill:#fff4e6
+```
+
+### 构建产物结构
+
+```mermaid
+graph TB
+    subgraph "Web 构建产物"
+        A[build/web/] --> B[index.html<br/>入口文件]
+        A --> C[main.dart.js<br/>主应用代码]
+        A --> D[assets/<br/>资源文件]
+        A --> E[icons/<br/>图标文件]
+        A --> F[manifest.json<br/>PWA 配置]
+    end
+
+    subgraph "Windows 构建产物"
+        G[build/windows/x64/runner/Release/] --> H[network_calculator.exe<br/>可执行文件]
+        G --> I[data/<br/>数据文件]
+        G --> J[flutter_windows.dll<br/>Flutter 运行时]
+        G --> K[其他依赖 DLL]
+    end
+
+    subgraph "安装程序"
+        L[installer/] --> M[network_calculator_setup.exe<br/>安装程序]
+        M --> N[Inno Setup 脚本<br/>innosetup_script.iss]
+    end
+
+    style A fill:#e1f5ff
+    style G fill:#e1f5ff
+    style L fill:#fff4e6
+```
+
+### GitHub Actions 工作流
+
+```mermaid
+graph TB
+    subgraph "触发条件"
+        A[Push to main] --> B[Web 部署工作流]
+        C[Create Tag v*] --> D[Windows 打包工作流]
+        E[Manual Dispatch] --> F[手动触发工作流]
+    end
+
+    subgraph "Web 部署工作流"
+        B --> G[Setup Flutter]
+        G --> H[Install Dependencies]
+        H --> I[Build Web]
+        I --> J[Deploy to GitHub Pages]
+        J --> K[Update SEO Meta]
+    end
+
+    subgraph "Windows 打包工作流"
+        D --> L[Setup Flutter]
+        L --> M[Setup Windows]
+        M --> N[Install Dependencies]
+        N --> O[Build Windows]
+        O --> P[Create Installer]
+        P --> Q[Create Release]
+        Q --> R[Upload to Releases]
+    end
+
+    subgraph "通知"
+        K --> S[Success Notification]
+        R --> S
+        F --> T[Status Notification]
+    end
+
+    style A fill:#e1f5ff
+    style C fill:#e1f5ff
+    style E fill:#e1f5ff
+    style S fill:#e8f5e9
+    style T fill:#fff4e6
+```
+
+### 部署环境配置
+
+```mermaid
+graph LR
+    subgraph "开发环境"
+        A[本地开发] --> B[Flutter SDK]
+        B --> C[VS Code / Android Studio]
+        C --> D[热重载调试]
+    end
+
+    subgraph "构建环境"
+        E[GitHub Actions Runner] --> F[Ubuntu Latest<br/>Web 构建]
+        E --> G[Windows Latest<br/>Windows 构建]
+        F --> H[Flutter SDK]
+        G --> H
+        H --> I[构建工具链]
+    end
+
+    subgraph "部署环境"
+        J[GitHub Pages] --> K[静态文件托管]
+        L[GitHub Releases] --> M[安装包分发]
+    end
+
+    D --> E
+    I --> J
+    I --> L
+
+    style A fill:#e1f5ff
+    style E fill:#fff4e6
+    style J fill:#e8f5e9
+    style L fill:#e8f5e9
+```
+
+## 📝 说明
+
+### 技术栈说明
+
+- **框架**: Flutter 3.0+ (跨平台框架)
+- **状态管理**: Provider (响应式状态管理)
+- **本地化**: flutter_localizations + intl (多语言支持)
+- **数据存储**: SharedPreferences (应用设置) + 文件系统 (历史记录)
+- **UI 组件**: Material Design 3 (现代化 UI)
+- **构建工具**: Flutter Build System
+- **部署平台**: GitHub Pages (Web) + GitHub Releases (Windows)
+
+### 关键特性
+
+1. **模块化架构**: 清晰的层次分离，便于维护和扩展
+2. **状态管理**: 使用 Provider 实现响应式状态管理
+3. **多语言支持**: 支持中文、英文、日文等多种语言
+4. **数据持久化**: 设置和历史记录持久化存储
+5. **跨平台**: 同一套代码支持 Web 和 Windows 平台
+6. **自动化部署**: 通过 GitHub Actions 实现自动化构建和部署
+
+### 部署说明
+
+- **Web 部署**: 自动部署到 GitHub Pages，支持 SEO 优化
+- **Windows 打包**: 自动构建并创建安装程序，发布到 GitHub Releases
+- **版本管理**: 通过 Git Tags 管理版本发布
+- **通知机制**: 部署成功/失败时发送通知
+

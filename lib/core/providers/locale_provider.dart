@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' as ui;
+import '../config/app_config.dart';
 
 class LocaleProvider with ChangeNotifier {
   Locale? _locale; // null 表示跟随系统
-  bool _followSystem = true;
+  bool _followSystem = AppConfig.defaultFollowSystemLocale;
 
   /// 获取当前实际使用的语言（如果跟随系统则返回系统语言）
   Locale get locale {
@@ -25,30 +26,41 @@ class LocaleProvider with ChangeNotifier {
   }
 
   /// 获取系统默认语言
+  /// 如果系统语言是中文或日文，返回对应语言；否则默认返回英文
   Locale _getSystemLocale() {
     final systemLocales = ui.PlatformDispatcher.instance.locales;
     if (systemLocales.isNotEmpty) {
       final systemLocale = systemLocales.first;
+      final languageCode = systemLocale.languageCode;
+      
       // 如果系统语言是中文
-      if (systemLocale.languageCode == 'zh') {
+      if (languageCode == 'zh') {
         // 如果是繁体中文地区，返回繁体中文
-        if (systemLocale.countryCode == 'TW' || systemLocale.countryCode == 'HK' || systemLocale.countryCode == 'MO') {
+        if (systemLocale.countryCode == 'TW' || 
+            systemLocale.countryCode == 'HK' || 
+            systemLocale.countryCode == 'MO') {
           return const Locale('zh', 'TW');
         }
         // 其他中文地区返回简体中文
         return const Locale('zh');
       }
+      
       // 如果系统语言是日语
-      if (systemLocale.languageCode == 'ja') {
+      if (languageCode == 'ja') {
         return const Locale('ja');
       }
+      
+      // 其他所有语言（非中文、非日文）默认返回英文
+      return const Locale('en');
     }
-    // 其他语言默认返回英文
+    
+    // 如果无法获取系统语言，默认返回英文
     return const Locale('en');
   }
 
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
+    // SharedPreferences 在 Web 上会自动处理 'flutter.' 前缀
     final followSystemSetting = prefs.getBool('follow_system_locale');
     final localeCode = prefs.getString('locale');
     

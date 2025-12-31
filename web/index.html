@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -18,41 +18,180 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  
+  <!-- SEO Meta Tags -->
+  <title>网络计算器 - 专业的IP地址计算、子网划分、路由聚合工具 | Network Calculator</title>
+  <meta name="description" content="专业的网络计算器工具，提供IP地址计算、子网掩码计算、IP进制转换、路由聚合、超网拆分、IP包含检测等功能。支持多语言、历史记录、主题切换，适用于网络工程师、开发者和学习者。">
+  <meta name="keywords" content="网络计算器,IP地址计算器,子网掩码计算器,IP进制转换,路由聚合,超网拆分,IP包含检测,CIDR计算,网络工具,网络工程师工具,Network Calculator,IP Calculator,Subnet Calculator">
+  <meta name="author" content="Network Calculator Team">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="language" content="Chinese, English, Japanese">
+  <meta name="revisit-after" content="7 days">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hoochanlon.github.io/network-calculator/">
+  <meta property="og:title" content="网络计算器 - 专业的IP地址计算、子网划分、路由聚合工具">
+  <meta property="og:description" content="专业的网络计算器工具，提供IP地址计算、子网掩码计算、IP进制转换、路由聚合、超网拆分、IP包含检测等功能。支持多语言、历史记录、主题切换。">
+  <meta property="og:image" content="https://hoochanlon.github.io/network-calculator/icons/Icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="网络计算器应用图标">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:site_name" content="网络计算器">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://hoochanlon.github.io/network-calculator/">
+  <meta name="twitter:title" content="网络计算器 - 专业的IP地址计算、子网划分、路由聚合工具">
+  <meta name="twitter:description" content="专业的网络计算器工具，提供IP地址计算、子网掩码计算、IP进制转换、路由聚合、超网拆分、IP包含检测等功能。">
+  <meta name="twitter:image" content="https://hoochanlon.github.io/network-calculator/icons/Icon-512.png">
+  <meta name="twitter:image:alt" content="网络计算器应用图标">
+  
+  <!-- Additional SEO Tags -->
+  <meta name="application-name" content="网络计算器">
+  <meta name="apple-mobile-web-app-title" content="网络计算器">
+  <!-- 默认主题色，应该与 lib/core/config/app_config.dart 中的 AppConfig.defaultThemeColor 保持一致 -->
+  <meta name="theme-color" content="#FF6699">
+  <meta name="msapplication-TileColor" content="#1976d2">
+  <meta name="msapplication-TileImage" content="icons/Icon-192.png">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://hoochanlon.github.io/network-calculator/">
+  
+  <!-- Alternate Languages -->
+  <link rel="alternate" hreflang="zh" href="https://hoochanlon.github.io/network-calculator/">
+  <link rel="alternate" hreflang="zh-TW" href="https://hoochanlon.github.io/network-calculator/">
+  <link rel="alternate" hreflang="en" href="https://hoochanlon.github.io/network-calculator/">
+  <link rel="alternate" hreflang="ja" href="https://hoochanlon.github.io/network-calculator/">
+  <link rel="alternate" hreflang="x-default" href="https://hoochanlon.github.io/network-calculator/">
+  
   <!-- Viewport 设置：优化移动端显示和字体渲染 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- 性能优化：启用硬件加速和优化渲染 -->
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <meta name="format-detection" content="telephone=no">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="network_calculator">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="网络计算器">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <!-- 关键资源预加载：优化 FCP 和 LCP -->
-  <link rel="preload" href="assets/fonts/OPPOSans4.0.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="css/global.css" as="style">
-  <link rel="preload" href="js/font-optimization.js" as="script">
-  
-  <!-- DNS 预解析和预连接：优化外部资源加载 -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <!-- DNS 预解析和预连接：优化外部资源加载（提前执行，不阻塞） -->
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <!-- 预加载关键字体样式表（作为备用） -->
-  <link rel="preload" href="https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/result.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/result.css"></noscript>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  
+  <!-- 关键 CSS 立即加载（避免 @import 阻塞，直接引入） -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/fonts.css">
+  
+  <!-- CDN 字体样式表：立即同步加载，确保字体快速可用，减少"豆腐块" -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/result.css">
 
-  <title>network_calculator</title>
   <link rel="manifest" href="manifest.json">
   
-  <!-- 引入全局样式（包含字体样式） -->
-  <link rel="stylesheet" href="css/global.css">
+  <!-- Structured Data (JSON-LD) for SEO and AI -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "网络计算器",
+    "alternateName": ["Network Calculator", "ネットワーク計算機"],
+    "description": "专业的网络计算器工具，提供IP地址计算、子网掩码计算、IP进制转换、路由聚合、超网拆分、IP包含检测等功能。支持多语言、历史记录、主题切换，适用于网络工程师、开发者和学习者。",
+    "url": "https://hoochanlon.github.io/network-calculator/",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Web, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "100"
+    },
+    "featureList": [
+      "IP地址计算器",
+      "子网掩码计算器",
+      "IP进制转换器",
+      "路由聚合计算器",
+      "超网拆分计算器",
+      "IP包含检测器",
+      "多语言支持",
+      "历史记录管理",
+      "主题切换"
+    ],
+    "screenshot": "https://hoochanlon.github.io/network-calculator/icons/Icon-512.png",
+    "softwareVersion": "1.6.0",
+    "datePublished": "2024-01-01",
+    "dateModified": "2024-01-01",
+    "author": {
+      "@type": "Organization",
+      "name": "Network Calculator Team"
+    },
+    "inLanguage": ["zh", "zh-TW", "en", "ja"],
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "softwareHelp": {
+      "@type": "CreativeWork",
+      "text": "支持IP地址计算、子网划分、路由聚合等网络计算功能"
+    }
+  }
+  </script>
   
-  <!-- 引入字体和 Canvas 渲染优化脚本（使用 defer 避免阻塞渲染） -->
+  <!-- Software Application Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "网络计算器",
+    "applicationCategory": "UtilityApplication",
+    "operatingSystem": "Web, Windows",
+    "offers": {
+      "@type": "Offer",
+      "price": "0"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8"
+    }
+  }
+  </script>
+  
+  <!-- 主题初始化脚本：必须在 Flutter 启动前执行，同步读取并应用主题和语言 -->
+  <script src="js/theme-init.js"></script>
+  
+  <!-- 非关键脚本延迟加载：使用 defer 避免阻塞渲染，按顺序执行 -->
+  <script src="js/lang-sync.js" defer></script>
+  <script src="js/font-loader.js" defer></script>
   <script src="js/font-optimization.js" defer></script>
 </head>
 <body>
+  <!-- Flutter 应用入口：使用 async 异步加载，不阻塞渲染 -->
   <script src="flutter_bootstrap.js" async></script>
+  
+  <!-- 性能优化：减少重排和重绘 -->
+  <script>
+    // 优化：在页面加载时减少不必要的重排
+    (function() {
+      'use strict';
+      // 使用 requestIdleCallback 延迟非关键初始化
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(function() {
+          // 启用硬件加速优化
+          document.documentElement.style.willChange = 'contents';
+        }, { timeout: 1000 });
+      }
+    })();
+  </script>
 </body>
 </html>

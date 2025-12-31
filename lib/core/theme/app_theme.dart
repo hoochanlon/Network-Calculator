@@ -113,6 +113,12 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         contentTextStyle: AppFonts.createStyle(
           fontSize: 14,
+          color: Colors.white, // 确保文字颜色为白色，在深色背景上可见
+        ),
+        backgroundColor: const Color(0xFF323232), // 深色背景
+        behavior: SnackBarBehavior.floating, // 使用浮动样式，避免被遮挡
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );
@@ -226,6 +232,12 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         contentTextStyle: AppFonts.createStyle(
           fontSize: 14,
+          color: Colors.white, // 确保文字颜色为白色，在深色背景上可见
+        ),
+        backgroundColor: const Color(0xFF323232), // 深色背景
+        behavior: SnackBarBehavior.floating, // 使用浮动样式，避免被遮挡
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

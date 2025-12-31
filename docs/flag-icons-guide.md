@@ -1,0 +1,119 @@
+# 国旗图标使用指南
+
+## 当前实现方式
+
+目前使用 **Unicode 国旗 Emoji** 方式，这是最简单且无需额外资源的方案：
+
+- 🇨🇳 简体中文 (zh)
+- 🇹🇼 繁体中文 (zh_TW)
+- 🇺🇸 英文 (en)
+- 🇯🇵 日文 (ja)
+- 🌐 跟随系统
+
+### 优点
+- ✅ 无需下载资源文件
+- ✅ 无需额外依赖包
+- ✅ 跨平台兼容性好
+- ✅ 文件体积小
+
+### 缺点
+- ⚠️ 某些旧系统可能显示为字母组合（如 CN、TW）
+- ⚠️ 样式受系统字体影响
+
+## 其他可选方案
+
+### 方案 1: 使用 SVG 图标文件
+
+#### 获取资源
+1. **Flagpedia.asia** - https://flagpedia.asia/download/icons
+   - 提供所有国家的国旗 SVG/PNG 图标
+   - 支持多种尺寸（16x11, 24x16, 32x22, 48x33, 64x43, 128x86）
+   - 免费使用
+
+2. **Country Flags API** - https://countryflagsapi.com/
+   - 提供 RESTful API
+   - 支持 PNG、SVG 格式
+   - 可在线获取
+
+3. **Flaticon** - https://www.flaticon.com/
+   - 提供矢量图标
+   - 需要注册账号
+   - 部分免费
+
+#### 实现步骤
+1. 下载国旗 SVG 文件到 `assets/images/icons/flags/`
+2. 在 `pubspec.yaml` 中添加资源路径
+3. 使用 `SvgPicture.asset()` 加载图标
+
+```dart
+// 示例代码
+SvgPicture.asset(
+  'assets/images/icons/flags/cn.svg',
+  width: 24,
+  height: 16,
+)
+```
+
+### 方案 2: 使用 Flutter 包
+
+#### 推荐的包
+1. **country_flags** - https://pub.dev/packages/country_flags
+   ```yaml
+   dependencies:
+     country_flags: ^2.0.0
+   ```
+
+2. **flutter_svg** (已安装) - 配合 SVG 文件使用
+
+#### 使用示例
+```dart
+import 'package:country_flags/country_flags.dart';
+
+CountryFlag(
+  countryCode: 'CN',
+  height: 20,
+  width: 30,
+)
+```
+
+### 方案 3: 使用在线 CDN
+
+如果应用支持网络访问，可以使用在线 CDN：
+
+```dart
+Image.network(
+  'https://flagcdn.com/w40/cn.png',
+  width: 24,
+  height: 16,
+)
+```
+
+## 推荐方案对比
+
+| 方案 | 优点 | 缺点 | 推荐度 |
+|------|------|------|--------|
+| Unicode Emoji | 简单、无需资源 | 兼容性一般 | ⭐⭐⭐⭐ |
+| SVG 文件 | 样式统一、可定制 | 需要下载资源 | ⭐⭐⭐⭐⭐ |
+| Flutter 包 | 开箱即用 | 增加依赖 | ⭐⭐⭐ |
+| 在线 CDN | 无需本地资源 | 需要网络 | ⭐⭐ |
+
+## 当前实现代码位置
+
+- 语言选择对话框：`lib/ui/screens/settings_screen.dart`
+- 国旗 emoji 函数：`_getFlagEmoji(Locale locale)`
+
+## 如何切换到 SVG 方案
+
+如果需要使用 SVG 图标文件：
+
+1. 下载国旗 SVG 文件到 `assets/images/icons/flags/`
+2. 更新 `pubspec.yaml` 添加资源路径
+3. 修改 `_getFlagEmoji()` 函数为 `_getFlagIcon()` 返回 `Widget`
+4. 使用 `SvgPicture.asset()` 加载图标
+
+## 资源下载链接
+
+- **Flagpedia.asia**: https://flagpedia.asia/download/icons
+- **Country Flags API**: https://countryflagsapi.com/
+- **ISO 3166-1 国家代码**: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+

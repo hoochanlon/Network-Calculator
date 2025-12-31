@@ -170,7 +170,7 @@ abstract class AppLocalizations {
   /// No description provided for @chinese.
   ///
   /// In zh, this message translates to:
-  /// **'中文'**
+  /// **'中文（中国）'**
   String get chinese;
 
   /// No description provided for @english.
@@ -188,7 +188,7 @@ abstract class AppLocalizations {
   /// No description provided for @traditionalChinese.
   ///
   /// In zh, this message translates to:
-  /// **'繁體中文'**
+  /// **'繁體中文（台灣）'**
   String get traditionalChinese;
 
   /// No description provided for @followSystem.
@@ -812,38 +812,74 @@ abstract class AppLocalizations {
   /// No description provided for @aboutFeature1.
   ///
   /// In zh, this message translates to:
-  /// **'• IP地址规划计算'**
+  /// **'IP地址规划计算'**
   String get aboutFeature1;
 
   /// No description provided for @aboutFeature2.
   ///
   /// In zh, this message translates to:
-  /// **'• IP地址进制转换'**
+  /// **'IP地址进制转换'**
   String get aboutFeature2;
 
   /// No description provided for @aboutFeature3.
   ///
   /// In zh, this message translates to:
-  /// **'• IP地址归属网段检测'**
+  /// **'IP地址归属网段检测'**
   String get aboutFeature3;
 
   /// No description provided for @aboutFeature4.
   ///
   /// In zh, this message translates to:
-  /// **'• 子网掩码与主机数换算'**
+  /// **'子网掩码与主机数换算'**
   String get aboutFeature4;
 
   /// No description provided for @aboutFeature5.
   ///
   /// In zh, this message translates to:
-  /// **'• 路由聚合及超网拆分'**
+  /// **'路由聚合及超网拆分'**
   String get aboutFeature5;
 
   /// No description provided for @aboutFeature6.
   ///
   /// In zh, this message translates to:
-  /// **'• 计算历史记录管理'**
+  /// **'计算历史记录管理'**
   String get aboutFeature6;
+
+  /// No description provided for @aboutDesignAdvantages.
+  ///
+  /// In zh, this message translates to:
+  /// **'设计优点包括：'**
+  String get aboutDesignAdvantages;
+
+  /// No description provided for @aboutDesignAdvantage1.
+  ///
+  /// In zh, this message translates to:
+  /// **'简洁直观的用户界面'**
+  String get aboutDesignAdvantage1;
+
+  /// No description provided for @aboutDesignAdvantage2.
+  ///
+  /// In zh, this message translates to:
+  /// **'多语言国际化支持'**
+  String get aboutDesignAdvantage2;
+
+  /// No description provided for @aboutDesignAdvantage3.
+  ///
+  /// In zh, this message translates to:
+  /// **'深色/浅色主题切换'**
+  String get aboutDesignAdvantage3;
+
+  /// No description provided for @aboutDesignAdvantage4.
+  ///
+  /// In zh, this message translates to:
+  /// **'响应式布局设计'**
+  String get aboutDesignAdvantage4;
+
+  /// No description provided for @aboutDesignAdvantage5.
+  ///
+  /// In zh, this message translates to:
+  /// **'快速高效的计算性能'**
+  String get aboutDesignAdvantage5;
 
   /// No description provided for @aboutTargetUsers.
   ///
@@ -1276,6 +1312,48 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'Web 平台不支持自定义目录选择，将使用浏览器默认存储位置'**
   String get webPlatformStorageInfo;
+
+  /// No description provided for @windowSize.
+  ///
+  /// In zh, this message translates to:
+  /// **'窗口尺寸'**
+  String get windowSize;
+
+  /// No description provided for @windowSizeDescription.
+  ///
+  /// In zh, this message translates to:
+  /// **'设置软件窗口的宽度和高度'**
+  String get windowSizeDescription;
+
+  /// No description provided for @windowWidth.
+  ///
+  /// In zh, this message translates to:
+  /// **'窗口宽度'**
+  String get windowWidth;
+
+  /// No description provided for @windowHeight.
+  ///
+  /// In zh, this message translates to:
+  /// **'窗口高度'**
+  String get windowHeight;
+
+  /// No description provided for @windowSizeHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入尺寸（最小：800x700）'**
+  String get windowSizeHint;
+
+  /// No description provided for @windowSizeSaved.
+  ///
+  /// In zh, this message translates to:
+  /// **'窗口尺寸已保存，重启应用后生效'**
+  String get windowSizeSaved;
+
+  /// No description provided for @minWindowSize.
+  ///
+  /// In zh, this message translates to:
+  /// **'最小窗口尺寸：800x700'**
+  String get minWindowSize;
 }
 
 class _AppLocalizationsDelegate

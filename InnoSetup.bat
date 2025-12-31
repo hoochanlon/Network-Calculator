@@ -61,6 +61,7 @@ echo ========================================
 echo 下一步操作：
 echo ========================================
 echo.
+echo 0. 软件在 https://github.com/jrsoftware/issrc 处下载
 echo 1. 打开 Inno Setup Compiler
 echo 2. 选择 File ^> Open
 echo 3. 打开项目根目录下的 innosetup_script.iss

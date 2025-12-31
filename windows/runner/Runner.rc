@@ -89,14 +89,19 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "network_calculator" "\0"
+            VALUE "CompanyName", "Hoochanlon" "\0"
+            VALUE "FileDescription", "Network Calculator - Professional IP address calculation tool" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "network_calculator" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 Hoochanlon. All rights reserved." "\0"
             VALUE "OriginalFilename", "network_calculator.exe" "\0"
-            VALUE "ProductName", "network_calculator" "\0"
+            VALUE "ProductName", "Network Calculator" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
+            VALUE "Comments", "Professional network calculator tool for IP address planning and calculation" "\0"
+            VALUE "ProductURL", "https://github.com/hoochanlon/network-calculator" "\0"
+            VALUE "HelpLink", "https://github.com/hoochanlon" "\0"
+            VALUE "SupportLink", "https://github.com/hoochanlon/network-calculator" "\0"
+            VALUE "UpdateURL", "https://github.com/hoochanlon/network-calculator" "\0"
         END
     END
     BLOCK "VarFileInfo"

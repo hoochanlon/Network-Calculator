@@ -183,11 +183,16 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                     Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 400),
-                        child: Card(
-                          elevation: 0,
-                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                          shape: RoundedRectangleBorder(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(8),
+                            // 移除阴影，避免夜间模式下的阴影边角问题
+                            boxShadow: [],
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                              width: 0.5,
+                            ),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(4),
@@ -232,16 +237,17 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
                               style: SegmentedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                                 minimumSize: const Size(0, 44),
-                                side: BorderSide(
-                                  color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
-                                  width: 1,
-                                ),
-                                backgroundColor: Theme.of(context).colorScheme.surface,
+                                side: BorderSide.none, // 移除按钮之间的边框
+                                backgroundColor: Colors.transparent, // 使用透明背景，让容器颜色显示
                                 foregroundColor: Theme.of(context).colorScheme.onSurface,
                                 selectedBackgroundColor: Theme.of(context).colorScheme.primary,
                                 selectedForegroundColor: Theme.of(context).colorScheme.onPrimary,
                                 elevation: 0,
                                 shadowColor: Colors.transparent,
+                                // 确保没有阴影
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
                               ),
                             ),
                           ),

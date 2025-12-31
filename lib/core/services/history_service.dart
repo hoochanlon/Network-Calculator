@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import '../providers/calculator_settings_provider.dart';
+import '../config/app_config.dart';
 import 'dart:io' as io;
 
 class HistoryRecord {
@@ -39,25 +40,27 @@ class HistoryRecord {
 
 class HistoryService {
   static const String _historyKey = 'calculation_history';
-  static const String _historyFileName = 'history.json';
+  
+  // 使用 AppConfig 中的配置
+  static String get _historyFileName => AppConfig.historyFileName;
 
   // 获取默认历史记录存储目录
   static Future<String> getDefaultStoragePath() async {
     if (kIsWeb) {
-      return 'Web Storage';
+      return AppConfig.webStorageText;
     }
     final directory = await getApplicationDocumentsDirectory();
-    final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}network_calculator');
+    final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}${AppConfig.historyStorageDirectoryName}');
     return historyDir.path;
   }
 
   // 获取默认历史记录文件完整路径
   static Future<String> getDefaultStorageFilePath() async {
     if (kIsWeb) {
-      return 'Web Storage';
+      return AppConfig.webStorageText;
     }
     final directory = await getApplicationDocumentsDirectory();
-    final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}network_calculator');
+    final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}${AppConfig.historyStorageDirectoryName}');
     final filePath = '${historyDir.path}${io.Platform.pathSeparator}$_historyFileName';
     // 规范化路径，统一使用系统路径分隔符
     if (io.Platform.isWindows) {
@@ -85,7 +88,7 @@ class HistoryService {
     } else {
       // 使用默认应用文档目录
       directory = await getApplicationDocumentsDirectory();
-      final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}network_calculator');
+      final historyDir = io.Directory('${directory.path}${io.Platform.pathSeparator}${AppConfig.historyStorageDirectoryName}');
       if (!await historyDir.exists()) {
         await historyDir.create(recursive: true);
       }

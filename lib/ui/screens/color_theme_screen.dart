@@ -13,10 +13,19 @@ class ColorThemeScreen extends StatefulWidget {
 }
 
 class _ColorThemeScreenState extends State<ColorThemeScreen> {
+  // 缓存当前选中的主题ID，避免不必要的重建
+  String? _cachedSelectedThemeId;
+  
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final themeProvider = Provider.of<ThemeProvider>(context);
+    
+    // 只在主题真正改变时更新缓存
+    final currentThemeId = themeProvider.currentColorTheme.id;
+    if (_cachedSelectedThemeId != currentThemeId) {
+      _cachedSelectedThemeId = currentThemeId;
+    }
 
     return Scaffold(
       body: Column(
@@ -64,12 +73,13 @@ class _ColorThemeScreenState extends State<ColorThemeScreen> {
     ThemeProvider themeProvider,
     AppLocalizations l10n,
   ) {
-    final currentTheme = themeProvider.currentColorTheme;
+    // 使用缓存的选中主题ID，减少不必要的比较
+    final currentThemeId = _cachedSelectedThemeId ?? themeProvider.currentColorTheme.id;
     final widgets = <Widget>[];
 
     for (int i = 0; i < themes.length; i++) {
       final theme = themes[i];
-      final isSelected = currentTheme.id == theme.id;
+      final isSelected = currentThemeId == theme.id;
 
       widgets.add(
         ListTile(
@@ -93,7 +103,19 @@ class _ColorThemeScreenState extends State<ColorThemeScreen> {
               : null,
           selected: isSelected,
           onTap: () {
-            themeProvider.setColorTheme(theme);
+            // 优化：如果已经选中，不执行操作
+            if (isSelected) return;
+            
+            // 立即更新缓存，提供即时反馈
+            setState(() {
+              _cachedSelectedThemeId = theme.id;
+            });
+            
+            // 使用 requestAnimationFrame 优化，在下一帧更新主题
+            // 这样可以让UI先响应点击，然后再更新主题，减少卡顿感
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              themeProvider.setColorTheme(theme);
+            });
           },
         ),
       );

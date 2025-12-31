@@ -4,11 +4,14 @@ import 'package:network_calculator/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/providers/locale_provider.dart';
 import '../../core/providers/theme_provider.dart';
 import '../../core/providers/calculator_settings_provider.dart';
 import '../../core/services/history_service.dart';
+import '../../core/config/app_config.dart';
 import '../widgets/screen_title_bar.dart';
+import '../widgets/app_switch.dart';
 import 'about_screen.dart';
 import 'color_theme_screen.dart';
 import 'settings_dialogs.dart';
@@ -21,7 +24,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int _historyLimit = 8000;
+  int _historyLimit = AppConfig.defaultHistoryLimit;
   String? _historyStoragePath;
   String _defaultStoragePath = '';
   String _defaultStorageFilePath = '';
@@ -29,6 +32,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _showColorTheme = false;
   bool _sidebarDragEnabled = false;
   bool _showAdvanced = false; // 高级设置展开状态
+  double _windowWidth = AppConfig.defaultWindowWidth;
+  double _windowHeight = AppConfig.defaultWindowHeight;
 
   @override
   void initState() {
@@ -48,6 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       CalculatorSettingsProvider.getHistoryStoragePath(),
       HistoryService.getDefaultStoragePath(),
       HistoryService.getDefaultStorageFilePath(),
+      CalculatorSettingsProvider.getWindowWidth(),
+      CalculatorSettingsProvider.getWindowHeight(),
     ]);
     
     if (mounted) {
@@ -57,6 +64,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _historyStoragePath = results[2] as String?;
         _defaultStoragePath = results[3] as String;
         _defaultStorageFilePath = results[4] as String;
+        _windowWidth = results[5] as double;
+        _windowHeight = results[6] as double;
       });
     }
   }
@@ -95,6 +104,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() {
         _defaultStoragePath = value;
         _defaultStorageFilePath = filePath;
+      });
+    }
+  }
+
+  Future<void> _loadWindowSize() async {
+    final width = await CalculatorSettingsProvider.getWindowWidth();
+    final height = await CalculatorSettingsProvider.getWindowHeight();
+    if (mounted) {
+      setState(() {
+        _windowWidth = width;
+        _windowHeight = height;
       });
     }
   }
@@ -154,20 +174,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.all(16),
           cacheExtent: 500, // 增加缓存范围，提升滚动性能
           children: [
-        Card(
-          child: Column(
-            children: [
+            Card(
+              child: Column(
+                children: [
               ListTile(
                 leading: const Icon(Icons.language),
                 title: Text(l10n.language),
-                subtitle: Text(
-                  localeProvider.followSystem
-                      ? l10n.followSystem
-                      : localeProvider.locale.languageCode == 'zh'
-                          ? (localeProvider.locale.countryCode == 'TW' ? l10n.traditionalChinese : l10n.chinese)
-                          : localeProvider.locale.languageCode == 'ja'
-                              ? l10n.japanese
-                              : l10n.english,
+                subtitle: Row(
+                  children: [
+                    if (!localeProvider.followSystem)
+                      _getFlagWidget(localeProvider.locale, size: 16),
+                    if (!localeProvider.followSystem) const SizedBox(width: 8),
+                    Text(
+                      localeProvider.followSystem
+                          ? l10n.followSystem
+                          : localeProvider.locale.languageCode == 'zh'
+                              ? (localeProvider.locale.countryCode == 'TW' ? l10n.traditionalChinese : l10n.chinese)
+                              : localeProvider.locale.languageCode == 'ja'
+                                  ? l10n.japanese
+                                  : l10n.english,
+                    ),
+                  ],
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
@@ -187,60 +214,105 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           RadioListTile<Locale?>(
-                            title: Text(l10n.chinese),
+                            title: Row(
+                              children: [
+                                _getFlagWidget(const Locale('zh'), size: 24),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(l10n.chinese),
+                                ),
+                              ],
+                            ),
                             value: const Locale('zh'),
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             onChanged: (value) {
                               localeProvider.setLocale(value);
                               Navigator.pop(context);
                             },
                           ),
                           RadioListTile<Locale?>(
-                            title: Text(l10n.traditionalChinese),
+                            title: Row(
+                              children: [
+                                _getFlagWidget(const Locale('zh', 'TW'), size: 24),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(l10n.traditionalChinese),
+                                ),
+                              ],
+                            ),
                             value: const Locale('zh', 'TW'),
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             onChanged: (value) {
                               localeProvider.setLocale(value);
                               Navigator.pop(context);
                             },
                           ),
                           RadioListTile<Locale?>(
-                            title: Text(l10n.english),
+                            title: Row(
+                              children: [
+                                _getFlagWidget(const Locale('en'), size: 24),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(l10n.english),
+                                ),
+                              ],
+                            ),
                             value: const Locale('en'),
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             onChanged: (value) {
                               localeProvider.setLocale(value);
                               Navigator.pop(context);
                             },
                           ),
                           RadioListTile<Locale?>(
-                            title: Text(l10n.japanese),
+                            title: Row(
+                              children: [
+                                _getFlagWidget(const Locale('ja'), size: 24),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(l10n.japanese),
+                                ),
+                              ],
+                            ),
                             value: const Locale('ja'),
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             onChanged: (value) {
                               localeProvider.setLocale(value);
                               Navigator.pop(context);
                             },
                           ),
                           RadioListTile<Locale?>(
-                            title: Text(l10n.followSystem),
+                            title: Row(
+                              children: [
+                                const Icon(Icons.public, size: 20),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(l10n.followSystem),
+                                ),
+                              ],
+                            ),
                             value: null,
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             onChanged: (value) {
                               localeProvider.setLocale(value);
                               Navigator.pop(context);
@@ -248,7 +320,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ],
                       ),
-                      contentPadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
+                      contentPadding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
                     ),
                   );
                 },
@@ -344,13 +416,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(),
               // 高级设置分组
-              ExpansionTile(
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
                 leading: const Icon(Symbols.science),
                 title: Text(l10n.advancedSettings),
                 subtitle: Text(l10n.advanced),
                 trailing: Icon(
                   _showAdvanced ? Icons.expand_less : Icons.expand_more,
-                  size: 20,
+                    size: 24,
                 ),
                 initiallyExpanded: _showAdvanced,
                 onExpansionChanged: (expanded) {
@@ -389,7 +465,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Switch(
+                        // 使用美化的开关按钮组件
+                        AppSwitch(
                           value: _sidebarDragEnabled,
                           onChanged: (value) {
                             // 立即更新 UI，异步保存
@@ -403,13 +480,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ],
                     ),
                   ),
-                  const Divider(height: 1),
+                  // 窗口尺寸设置（仅桌面平台）
+                  if (!kIsWeb)
+                    ListTile(
+                      leading: const Icon(Icons.aspect_ratio),
+                      title: Text(l10n.windowSize),
+                      subtitle: Text('${l10n.windowWidth}: ${_windowWidth.toInt()}px, ${l10n.windowHeight}: ${_windowHeight.toInt()}px'),
+                      // trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        SettingsDialogsBuilder.showWindowSizeDialog(
+                          context,
+                          l10n,
+                          _windowWidth,
+                          _windowHeight,
+                          () {
+                            _loadWindowSize();
+                          },
+                        );
+                      },
+                    ),
+                  if (!kIsWeb) const Divider(height: 1),
                   // 历史记录数量限制
                   ListTile(
                     leading: const Icon(Icons.history),
                     title: Text(l10n.historyLimit),
                     subtitle: Text('${l10n.historyLimitDescription}\n${l10n.currentLimit}: $_historyLimit ${l10n.entries}'),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    // trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
                       SettingsDialogsBuilder.showHistoryLimitDialog(
                         context,
@@ -419,7 +515,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       );
                     },
                   ),
-                  const Divider(height: 1),
                   // 数据记录读写目录
                   ListTile(
                     leading: const Icon(Icons.folder),
@@ -428,7 +523,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       kIsWeb
                           ? l10n.webPlatformNotSupported
                           : (_historyStoragePath != null
-                              ? '${_historyStoragePath}${_historyStoragePath!.contains('/') ? '/' : '\\'}history.json'
+                              ? '${_historyStoragePath}${_historyStoragePath!.contains('/') ? '/' : '\\'}${AppConfig.historyFileName}'
                               : _defaultStorageFilePath),
                     ),
                     trailing: kIsWeb
@@ -474,6 +569,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           },
                   ),
                 ],
+                ),
               ),
             ],
           ),
@@ -491,7 +587,60 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
         ),
-          ],
+      ],
+        ),
+      ),
+    );
+  }
+
+  /// 获取国旗 SVG 文件路径（基于语言代码）
+  String _getFlagPath(Locale locale) {
+    final languageCode = locale.languageCode;
+    final countryCode = locale.countryCode;
+    
+    // 根据语言代码和国家代码返回对应的国旗 SVG 路径
+    if (languageCode == 'zh') {
+      if (countryCode == 'TW' || countryCode == 'HK' || countryCode == 'MO') {
+        return 'assets/images/icons/country-flags/flagpedia.asia/tw.svg';
+      }
+      return 'assets/images/icons/country-flags/flagpedia.asia/cn.svg';
+    } else if (languageCode == 'en') {
+      return 'assets/images/icons/country-flags/flagpedia.asia/us.svg';
+    } else if (languageCode == 'ja') {
+      return 'assets/images/icons/country-flags/flagpedia.asia/jp.svg';
+    }
+    
+    // 默认返回地球图标（使用 EU 图标或系统图标）
+    return 'assets/images/icons/country-flags/flagpedia.asia/eu.svg';
+  }
+
+  /// 获取国旗 Widget（基于语言代码）
+  Widget _getFlagWidget(Locale locale, {double size = 20}) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final flagHeight = size * 0.67; // 国旗比例约为 3:2
+    final borderWidth = kIsWeb ? 1.0 : 0.8;
+    final borderColor = isLight ? Colors.grey.shade400 : Colors.grey.shade600;
+    final flagPath = _getFlagPath(locale);
+    
+    return SizedBox(
+      width: size,
+      height: flagHeight,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: borderColor,
+            width: borderWidth,
+          ),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(1.5),
+          child: SvgPicture.asset(
+            flagPath,
+            fit: BoxFit.cover,
+            width: size,
+            height: flagHeight,
+          ),
         ),
       ),
     );

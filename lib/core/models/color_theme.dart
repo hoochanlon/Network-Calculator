@@ -18,7 +18,6 @@ class ColorTheme {
     id: 'netease_red',
     name: 'Netease Red',
     primaryColor: Color(0xFFEC4141),
-    isDefault: true,
   );
 
   static const ColorTheme facebookBlue = ColorTheme(
@@ -43,6 +42,7 @@ class ColorTheme {
     id: 'bilibili_pink',
     name: 'BiliBili Pink',
     primaryColor: Color(0xFFFF6699),
+    isDefault: true,
   );
 
   static List<ColorTheme> get presets => [

@@ -42,7 +42,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get language => '语言';
 
   @override
-  String get chinese => '中文';
+  String get chinese => '中文（中国）';
 
   @override
   String get english => 'English';
@@ -51,7 +51,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文';
+  String get traditionalChinese => '繁體中文（台灣）';
 
   @override
   String get followSystem => '跟随系统';
@@ -365,22 +365,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutFeatures => '主要功能包括：';
 
   @override
-  String get aboutFeature1 => '• IP地址规划计算';
+  String get aboutFeature1 => 'IP地址规划计算';
 
   @override
-  String get aboutFeature2 => '• IP地址进制转换';
+  String get aboutFeature2 => 'IP地址进制转换';
 
   @override
-  String get aboutFeature3 => '• IP地址归属网段检测';
+  String get aboutFeature3 => 'IP地址归属网段检测';
 
   @override
-  String get aboutFeature4 => '• 子网掩码与主机数换算';
+  String get aboutFeature4 => '子网掩码与主机数换算';
 
   @override
-  String get aboutFeature5 => '• 路由聚合及超网拆分';
+  String get aboutFeature5 => '路由聚合及超网拆分';
 
   @override
-  String get aboutFeature6 => '• 计算历史记录管理';
+  String get aboutFeature6 => '计算历史记录管理';
+
+  @override
+  String get aboutDesignAdvantages => '设计优点包括：';
+
+  @override
+  String get aboutDesignAdvantage1 => '简洁直观的用户界面';
+
+  @override
+  String get aboutDesignAdvantage2 => '多语言国际化支持';
+
+  @override
+  String get aboutDesignAdvantage3 => '深色/浅色主题切换';
+
+  @override
+  String get aboutDesignAdvantage4 => '响应式布局设计';
+
+  @override
+  String get aboutDesignAdvantage5 => '快速高效的计算性能';
 
   @override
   String get aboutTargetUsers => '该工具适合网络工程师、开发者和学习者。';
@@ -599,6 +617,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get webPlatformStorageInfo => 'Web 平台不支持自定义目录选择，将使用浏览器默认存储位置';
+
+  @override
+  String get windowSize => '窗口尺寸';
+
+  @override
+  String get windowSizeDescription => '设置软件窗口的宽度和高度';
+
+  @override
+  String get windowWidth => '窗口宽度';
+
+  @override
+  String get windowHeight => '窗口高度';
+
+  @override
+  String get windowSizeHint => '请输入尺寸（最小：800x700）';
+
+  @override
+  String get windowSizeSaved => '窗口尺寸已保存，重启应用后生效';
+
+  @override
+  String get minWindowSize => '最小窗口尺寸：800x700';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -639,7 +678,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get language => '語言';
 
   @override
-  String get chinese => '中文';
+  String get chinese => '中文（中國）';
 
   @override
   String get english => 'English';
@@ -648,7 +687,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文';
+  String get traditionalChinese => '繁體中文（台灣）';
 
   @override
   String get followSystem => '跟隨系統';
@@ -962,22 +1001,40 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get aboutFeatures => '主要功能包括：';
 
   @override
-  String get aboutFeature1 => '• IP位址規劃計算';
+  String get aboutFeature1 => 'IP位址規劃計算';
 
   @override
-  String get aboutFeature2 => '• IP位址進制轉換';
+  String get aboutFeature2 => 'IP位址進制轉換';
 
   @override
-  String get aboutFeature3 => '• IP位址歸屬網段檢測';
+  String get aboutFeature3 => 'IP位址歸屬網段檢測';
 
   @override
-  String get aboutFeature4 => '• 子網路遮罩與主機數換算';
+  String get aboutFeature4 => '子網路遮罩與主機數換算';
 
   @override
-  String get aboutFeature5 => '• 路由聚合及超網拆分';
+  String get aboutFeature5 => '路由聚合及超網拆分';
 
   @override
-  String get aboutFeature6 => '• 計算歷史記錄管理';
+  String get aboutFeature6 => '計算歷史記錄管理';
+
+  @override
+  String get aboutDesignAdvantages => '設計優點包括：';
+
+  @override
+  String get aboutDesignAdvantage1 => '簡潔直觀的使用者介面';
+
+  @override
+  String get aboutDesignAdvantage2 => '多語言國際化支援';
+
+  @override
+  String get aboutDesignAdvantage3 => '深色/淺色主題切換';
+
+  @override
+  String get aboutDesignAdvantage4 => '響應式佈局設計';
+
+  @override
+  String get aboutDesignAdvantage5 => '快速高效的計算效能';
 
   @override
   String get aboutTargetUsers => '該工具適合網路工程師、開發者和學習者。';
@@ -1196,4 +1253,25 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get webPlatformStorageInfo => 'Web 平台不支援自訂目錄選擇，將使用瀏覽器預設儲存位置';
+
+  @override
+  String get windowSize => '視窗尺寸';
+
+  @override
+  String get windowSizeDescription => '設定軟體視窗的寬度和高度';
+
+  @override
+  String get windowWidth => '視窗寬度';
+
+  @override
+  String get windowHeight => '視窗高度';
+
+  @override
+  String get windowSizeHint => '請輸入尺寸（最小：800x700）';
+
+  @override
+  String get windowSizeSaved => '視窗尺寸已儲存，重啟應用後生效';
+
+  @override
+  String get minWindowSize => '最小視窗尺寸：800x700';
 }

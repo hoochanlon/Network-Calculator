@@ -31,7 +31,7 @@ class MainSocialFooterBuilder {
             child: GestureDetector(
               onTap: () => _launchURL(context, 'https://hoochanlon.github.io'),
               child: SvgPicture.asset(
-                'assets/images/blog.svg',
+                'assets/images/icons/social-icons/blog.svg',
                 width: 20,
                 height: 20,
                 colorFilter: ColorFilter.mode(
@@ -48,7 +48,7 @@ class MainSocialFooterBuilder {
             child: GestureDetector(
               onTap: () => _launchURL(context, 'https://github.com/hoochanlon'),
               child: SvgPicture.asset(
-                'assets/images/github.svg',
+                'assets/images/icons/social-icons/github.svg',
                 width: 20,
                 height: 20,
                 colorFilter: ColorFilter.mode(
@@ -65,7 +65,7 @@ class MainSocialFooterBuilder {
             child: GestureDetector(
               onTap: () => _launchURL(context, 'https://bsky.app/profile/hoochanlon.bsky.social'),
               child: SvgPicture.asset(
-                'assets/images/bluesky.svg',
+                'assets/images/icons/social-icons/bluesky.svg',
                 width: 20,
                 height: 20,
                 colorFilter: ColorFilter.mode(
@@ -82,7 +82,7 @@ class MainSocialFooterBuilder {
             child: GestureDetector(
               onTap: () => _launchURL(context, 'mailto:hoochanlon@outlook.com'),
               child: SvgPicture.asset(
-                'assets/images/email.svg',
+                'assets/images/icons/social-icons/email.svg',
                 width: 20,
                 height: 20,
                 colorFilter: ColorFilter.mode(

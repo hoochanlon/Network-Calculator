@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/calculator_name_translator.dart' show CalculatorKeys;
+import '../utils/sidebar_order_config.dart' show SidebarOrderConfig;
+import '../config/app_config.dart';
 
 class CalculatorOrderNotifier extends ChangeNotifier {
   void notifyOrderChanged() {
@@ -18,7 +20,15 @@ class CalculatorSettingsProvider {
   static const String _keyHistoryLimit = 'history_limit';
   static const String _keyHistoryStoragePath = 'history_storage_path';
   static const String _keyHistoryMigrated = 'history_migrated_to_file';
-  static const int _defaultHistoryLimit = 8000;
+  static const String _keyWindowWidth = 'window_width';
+  static const String _keyWindowHeight = 'window_height';
+  
+  // 使用 AppConfig 中的默认值
+  static int get _defaultHistoryLimit => AppConfig.defaultHistoryLimit;
+  static double get _defaultWindowWidth => AppConfig.defaultWindowWidth;
+  static double get _defaultWindowHeight => AppConfig.defaultWindowHeight;
+  static double get _minWindowWidth => AppConfig.minWindowWidth;
+  static double get _minWindowHeight => AppConfig.minWindowHeight;
   static final CalculatorOrderNotifier _orderNotifier = CalculatorOrderNotifier();
   
   static CalculatorOrderNotifier get orderNotifier => _orderNotifier;
@@ -34,17 +44,11 @@ class CalculatorSettingsProvider {
   ];
 
   /// 默认侧边栏顺序（包括所有项）
-  static const List<String> defaultSidebarOrder = [
-    'ip_calculator',
-    'subnet_calculator',
-    'base_converter',
-    'network_merge',
-    'network_split',
-    'ip_inclusion_checker',
-    'history',
-    'references',
-    'settings',
-  ];
+  /// 
+  /// 已迁移到 [SidebarOrderConfig.defaultOrder]，保留此属性以保持向后兼容。
+  /// 新代码应使用 [SidebarOrderConfig.getDefaultOrder()] 获取默认顺序。
+  @Deprecated('使用 SidebarOrderConfig.getDefaultOrder() 代替')
+  static List<String> get defaultSidebarOrder => SidebarOrderConfig.getDefaultOrder();
 
   /// 是否保留计算器的输入和结果
   static Future<bool> getPreserveInputs() async {
@@ -94,23 +98,20 @@ class CalculatorSettingsProvider {
     List<String> order;
     
     if (orderJson == null) {
-      // 如果没有保存的侧边栏顺序，尝试从旧的计算器顺序迁移
-      final calculatorOrder = await getCalculatorOrder();
-      // 将旧的计算器顺序与默认的特殊项顺序合并
-      order = <String>[];
-      order.addAll(calculatorOrder);
-      // 添加特殊项（如果还没有）
-      for (final specialKey in ['history', 'references', 'settings']) {
-        if (!order.contains(specialKey)) {
-          order.add(specialKey);
-        }
-      }
+      // 如果没有保存的侧边栏顺序，直接使用默认顺序
+      // 这样修改 SidebarOrderConfig.defaultOrder 后可以立即生效
+      order = SidebarOrderConfig.getDefaultOrder();
     } else {
       try {
         final List<dynamic> orderList = json.decode(orderJson);
         order = orderList.map((e) => e.toString()).toList();
+        // 验证并合并顺序，确保包含所有必需的项目
+        if (!SidebarOrderConfig.isValidOrder(order)) {
+          order = SidebarOrderConfig.mergeOrder(order);
+        }
       } catch (e) {
-        order = List<String>.from(defaultSidebarOrder);
+        // 解析失败时使用默认顺序
+        order = SidebarOrderConfig.getDefaultOrder();
       }
     }
     
@@ -141,8 +142,9 @@ class CalculatorSettingsProvider {
 
   /// 设置历史记录限制数量
   static Future<void> setHistoryLimit(int limit) async {
-    if (limit < 10) limit = 10; // 最小限制为10
-    if (limit > 100000) limit = 100000; // 最大限制为100000
+    // 使用 AppConfig 中的限制值
+    if (limit < AppConfig.minHistoryLimit) limit = AppConfig.minHistoryLimit;
+    if (limit > AppConfig.maxHistoryLimit) limit = AppConfig.maxHistoryLimit;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_keyHistoryLimit, limit);
   }
@@ -269,6 +271,38 @@ class CalculatorSettingsProvider {
     await prefs.setBool(_keySidebarDragEnabled, enabled);
     _orderNotifier.notifyOrderChanged();
   }
+
+  /// 获取窗口宽度
+  static Future<double> getWindowWidth() async {
+    final prefs = await SharedPreferences.getInstance();
+    final width = prefs.getDouble(_keyWindowWidth) ?? _defaultWindowWidth;
+    // 确保不小于最小宽度
+    return width < _minWindowWidth ? _minWindowWidth : width;
+  }
+
+  /// 获取窗口高度
+  static Future<double> getWindowHeight() async {
+    final prefs = await SharedPreferences.getInstance();
+    final height = prefs.getDouble(_keyWindowHeight) ?? _defaultWindowHeight;
+    // 确保不小于最小高度
+    return height < _minWindowHeight ? _minWindowHeight : height;
+  }
+
+  /// 设置窗口尺寸
+  static Future<void> setWindowSize(double width, double height) async {
+    final prefs = await SharedPreferences.getInstance();
+    // 确保不小于最小尺寸
+    final finalWidth = width < _minWindowWidth ? _minWindowWidth : width;
+    final finalHeight = height < _minWindowHeight ? _minWindowHeight : height;
+    await prefs.setDouble(_keyWindowWidth, finalWidth);
+    await prefs.setDouble(_keyWindowHeight, finalHeight);
+  }
+
+  /// 获取最小窗口宽度
+  static double get minWindowWidth => _minWindowWidth;
+
+  /// 获取最小窗口高度
+  static double get minWindowHeight => _minWindowHeight;
 }
 
 

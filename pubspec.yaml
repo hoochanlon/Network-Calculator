@@ -23,6 +23,7 @@ dependencies:
   path_provider_windows: ^2.3.0
   shared_preferences_windows: ^2.4.1
   url_launcher_windows: ^3.1.5
+  window_manager: ^0.3.9
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,16 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/icons/
+    - assets/images/icons/app-icons/
+    - assets/images/icons/social-icons/
+    - assets/images/icons/country-flags/
+    - assets/images/icons/country-flags/flagpedia.asia/
+    - assets/images/icons/country-flags/flagpedia.asia/cn.svg
+    - assets/images/icons/country-flags/flagpedia.asia/tw.svg
+    - assets/images/icons/country-flags/flagpedia.asia/us.svg
+    - assets/images/icons/country-flags/flagpedia.asia/jp.svg
+    - assets/images/icons/country-flags/flagpedia.asia/eu.svg
     - assets/fonts/
 
   fonts:

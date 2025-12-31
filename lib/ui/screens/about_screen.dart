@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:material_symbols_icons/symbols.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:network_calculator/l10n/app_localizations.dart';
-import '../widgets/screen_title_bar.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -42,7 +40,7 @@ class AboutScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SvgPicture.asset(
-                        'assets/images/ncalc.svg',
+                        'assets/images/icons/app-icons/ncalc.svg',
                         width: 64,
                         height: 64,
                         colorFilter: ColorFilter.mode(
@@ -130,6 +128,45 @@ class AboutScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
+                        l10n.aboutDesignAdvantages,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            l10n.aboutDesignAdvantage1,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            l10n.aboutDesignAdvantage2,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            l10n.aboutDesignAdvantage3,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            l10n.aboutDesignAdvantage4,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            l10n.aboutDesignAdvantage5,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
                         l10n.aboutTargetUsers,
                         style: Theme.of(context).textTheme.bodyMedium,
                         textAlign: TextAlign.center,
@@ -144,49 +181,49 @@ class AboutScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () => _launchURL(context, 'https://github.com/hoochanlon'),
-                              child: SvgPicture.asset(
-                                'assets/images/github.svg',
-                                width: 40,
-                                height: 40,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context).iconTheme.color ?? Colors.black,
-                                  BlendMode.srcIn,
+                          InkWell(
+                            onTap: () => _launchURL(context, 'https://github.com/hoochanlon'),
+                            borderRadius: BorderRadius.circular(8),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: SvgPicture.asset(
+                                  'assets/images/icons/social-icons/github.svg',
+                                  width: 40,
+                                  height: 40,
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 16),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () => _launchURL(context, 'mailto:hoochanlon@outlook.com'),
-                              child: SvgPicture.asset(
-                                'assets/images/email.svg',
-                                width: 40,
-                                height: 40,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context).iconTheme.color ?? Colors.black,
-                                  BlendMode.srcIn,
+                          InkWell(
+                            onTap: () => _launchURL(context, 'mailto:hoochanlon@outlook.com'),
+                            borderRadius: BorderRadius.circular(8),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: SvgPicture.asset(
+                                  'assets/images/icons/social-icons/email.svg',
+                                  width: 40,
+                                  height: 40,
                                 ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 16),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () => _launchURL(context, 'https://bsky.app/profile/hoochanlon.bsky.social'),
-                              child: SvgPicture.asset(
-                                'assets/images/bluesky.svg',
-                                width: 40,
-                                height: 40,
-                                colorFilter: ColorFilter.mode(
-                                  Theme.of(context).iconTheme.color ?? Colors.black,
-                                  BlendMode.srcIn,
+                          InkWell(
+                            onTap: () => _launchURL(context, 'https://bsky.app/profile/hoochanlon.bsky.social'),
+                            borderRadius: BorderRadius.circular(8),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: SvgPicture.asset(
+                                  'assets/images/icons/social-icons/bluesky.svg',
+                                  width: 40,
+                                  height: 40,
                                 ),
                               ),
                             ),

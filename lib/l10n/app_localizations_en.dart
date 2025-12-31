@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
-  String get chinese => '中文';
+  String get chinese => '中文（中国）';
 
   @override
   String get english => 'English';
@@ -51,7 +51,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文';
+  String get traditionalChinese => '繁體中文（台灣）';
 
   @override
   String get followSystem => 'Follow System';
@@ -377,22 +377,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutFeatures => 'Main features include:';
 
   @override
-  String get aboutFeature1 => '• IP address planning and calculation';
+  String get aboutFeature1 => 'IP address planning and calculation';
 
   @override
-  String get aboutFeature2 => '• IP address base conversion';
+  String get aboutFeature2 => 'IP address base conversion';
 
   @override
-  String get aboutFeature3 => '• IP address network segment detection';
+  String get aboutFeature3 => 'IP address network segment detection';
 
   @override
-  String get aboutFeature4 => '• Subnet mask and host count conversion';
+  String get aboutFeature4 => 'Subnet mask and host count conversion';
 
   @override
-  String get aboutFeature5 => '• Route aggregation and supernet splitting';
+  String get aboutFeature5 => 'Route aggregation and supernet splitting';
 
   @override
-  String get aboutFeature6 => '• Calculation history management';
+  String get aboutFeature6 => 'Calculation history management';
+
+  @override
+  String get aboutDesignAdvantages => 'Design advantages include:';
+
+  @override
+  String get aboutDesignAdvantage1 => 'Clean and intuitive user interface';
+
+  @override
+  String get aboutDesignAdvantage2 =>
+      'Multi-language internationalization support';
+
+  @override
+  String get aboutDesignAdvantage3 => 'Dark/light theme switching';
+
+  @override
+  String get aboutDesignAdvantage4 => 'Responsive layout design';
+
+  @override
+  String get aboutDesignAdvantage5 =>
+      'Fast and efficient calculation performance';
 
   @override
   String get aboutTargetUsers =>
@@ -631,4 +651,27 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get webPlatformStorageInfo =>
       'Custom directory selection is not supported on Web platform, browser default storage will be used';
+
+  @override
+  String get windowSize => 'Window Size';
+
+  @override
+  String get windowSizeDescription =>
+      'Set the width and height of the application window';
+
+  @override
+  String get windowWidth => 'Window Width';
+
+  @override
+  String get windowHeight => 'Window Height';
+
+  @override
+  String get windowSizeHint => 'Please enter size (minimum: 800x700)';
+
+  @override
+  String get windowSizeSaved =>
+      'Window size saved, will take effect after restarting the application';
+
+  @override
+  String get minWindowSize => 'Minimum window size: 800x700';
 }

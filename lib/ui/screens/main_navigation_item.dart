@@ -41,10 +41,9 @@ class MainNavigationItemBuilder {
     
     return InkWell(
       onTap: onTap,
-      // “设置”等特殊项不再支持长按锁定，只对普通计算器项生效
-      onLongPress: (item.calculatorKey != null &&
-              sidebarDragEnabled &&
-              item.calculatorKey != CalculatorKeys.settings)
+      // 锁定功能需要依赖侧边栏拖拽排序开关
+      // 所有有 calculatorKey 的项都支持长按锁定（但需要启用拖拽排序）
+      onLongPress: (item.calculatorKey != null && sidebarDragEnabled)
           ? () async {
         // 获取当前锁定状态
         final currentLocked = await CalculatorSettingsProvider.isItemLocked(item.calculatorKey!);
@@ -86,7 +85,7 @@ class MainNavigationItemBuilder {
                   color: Theme.of(context).primaryColor.withOpacity(0.3),
                   width: 1,
                 )
-              : isLocked
+              : (isLocked && sidebarDragEnabled)
                   ? Border.all(
                       color: Theme.of(context).colorScheme.error.withOpacity(0.3),
                       width: 1,
@@ -114,8 +113,8 @@ class MainNavigationItemBuilder {
                 ),
               ),
             ),
-            // 锁图标（如果被锁定；“设置”等特殊项不显示锁图标）
-            if (isLocked && item.calculatorKey != CalculatorKeys.settings)
+            // 锁图标（仅在启用拖拽排序且被锁定时显示）
+            if (isLocked && sidebarDragEnabled)
               Padding(
                 padding: const EdgeInsets.only(left: 8, right: 4),
                 child: Icon(

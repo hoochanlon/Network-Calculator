@@ -112,53 +112,61 @@
   
   /**
    * 初始化优化
-   * 优化：延迟非关键优化，优先保证首屏渲染
+   * 优化：大幅延迟非关键优化，优先保证首屏渲染性能
    */
   function initOptimizations() {
-    // 立即优化已存在的 Canvas（关键路径）
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        // 使用 requestIdleCallback 延迟非关键操作
-        if (window.requestIdleCallback) {
-          window.requestIdleCallback(function() {
-            optimizeCanvases();
-            ensureFontLoaded();
-          });
-        } else {
-          // 降级方案
-          setTimeout(function() {
-            optimizeCanvases();
-            ensureFontLoaded();
-          }, 100);
-        }
-      });
-    } else {
-      // 如果 DOM 已加载，立即执行关键优化
-      optimizeCanvases();
-      // 延迟非关键优化
+    // 延迟所有优化操作，避免阻塞首屏渲染
+    const delayOptimization = function() {
       if (window.requestIdleCallback) {
-        window.requestIdleCallback(ensureFontLoaded);
+        window.requestIdleCallback(function() {
+          optimizeCanvases();
+          ensureFontLoaded();
+        }, { timeout: 3000 }); // 延迟到 3 秒后，确保首屏已渲染
       } else {
-        setTimeout(ensureFontLoaded, 100);
+        // 降级方案：延迟更长时间
+        setTimeout(function() {
+          optimizeCanvases();
+          ensureFontLoaded();
+        }, 2000);
       }
+    };
+    
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', delayOptimization);
+    } else {
+      delayOptimization();
     }
     
     // Flutter 初始化后再次优化（使用 MutationObserver 监听 Canvas 创建）
-    // 使用防抖优化，避免频繁触发
+    // 使用防抖优化，大幅降低检查频率，减少性能开销
     let observerTimeout;
+    let lastCheckTime = 0;
+    const CHECK_INTERVAL = 2000; // 从 200ms 增加到 2 秒，大幅减少检查频率
+    
     const observer = new MutationObserver(function(mutations) {
+      const now = Date.now();
+      // 限制检查频率，避免频繁触发
+      if (now - lastCheckTime < CHECK_INTERVAL) {
+        return;
+      }
+      lastCheckTime = now;
+      
       clearTimeout(observerTimeout);
       observerTimeout = setTimeout(function() {
         if (window.requestIdleCallback) {
-          window.requestIdleCallback(optimizeCanvases);
+          window.requestIdleCallback(optimizeCanvases, { timeout: 1000 });
         } else {
-          optimizeCanvases();
+          setTimeout(optimizeCanvases, 500);
         }
-        // iOS 上定期检查字体应用（降低频率）
-        if (isIOS && Math.random() < 0.1) { // 只处理 10% 的变更
-          ensureFontLoaded();
+        // iOS 上定期检查字体应用（大幅降低频率）
+        if (isIOS && Math.random() < 0.05) { // 从 10% 降低到 5%
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(ensureFontLoaded, { timeout: 1000 });
+          } else {
+            setTimeout(ensureFontLoaded, 500);
+          }
         }
-      }, 200);
+      }, 500); // 增加防抖延迟
     });
     
     // 观察 body 的变化，以便捕获动态创建的 Canvas
@@ -184,33 +192,42 @@
       });
     }
     
-    // iOS 上额外等待 Flutter 初始化（延迟执行）
+    // iOS 上额外等待 Flutter 初始化（大幅延迟执行，避免影响性能）
     if (isIOS) {
       window.addEventListener('load', function() {
+        // 延迟到页面完全加载后 3 秒再执行，确保不影响用户体验
         if (window.requestIdleCallback) {
           window.requestIdleCallback(function() {
             ensureFontLoaded();
             optimizeCanvases();
-          }, { timeout: 1000 });
+          }, { timeout: 5000 }); // 从 1 秒增加到 5 秒
         } else {
           setTimeout(function() {
             ensureFontLoaded();
             optimizeCanvases();
-          }, 500);
+          }, 3000); // 从 500ms 增加到 3 秒
         }
       });
     }
   }
   
-  // 延迟初始化，避免阻塞首屏渲染
+  // 大幅延迟初始化，避免阻塞首屏渲染
+  // 使用 requestIdleCallback 确保在浏览器空闲时执行
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initOptimizations);
+    document.addEventListener('DOMContentLoaded', function() {
+      // 延迟执行，确保首屏渲染完成
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(initOptimizations, { timeout: 2000 });
+      } else {
+        setTimeout(initOptimizations, 1000);
+      }
+    });
   } else {
-    // 如果 DOM 已加载，使用 requestIdleCallback 延迟执行
+    // 如果 DOM 已加载，延迟执行
     if (window.requestIdleCallback) {
-      window.requestIdleCallback(initOptimizations);
+      window.requestIdleCallback(initOptimizations, { timeout: 2000 });
     } else {
-      setTimeout(initOptimizations, 0);
+      setTimeout(initOptimizations, 1000);
     }
   }
 })();

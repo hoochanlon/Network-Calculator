@@ -12,22 +12,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appTitle => 'ネットワーク計算機';
 
   @override
-  String get ipCalculator => 'IPアドレス計算機';
+  String get ipCalculator => 'IPアドレス';
 
   @override
-  String get subnetCalculator => 'サブネットマスク計算機';
+  String get subnetCalculator => 'サブネットマスク';
 
   @override
-  String get baseConverter => 'IP進数変換機';
+  String get baseConverter => 'IP進数変換';
 
   @override
-  String get networkMerge => 'ルート集約計算機';
+  String get networkMerge => 'ルート集約';
 
   @override
-  String get networkSplit => 'スーパーネット分割計算機';
+  String get networkSplit => 'スーパーネット分割';
 
   @override
-  String get ipInclusionChecker => 'IP包含検出機';
+  String get ipInclusionChecker => 'IP包含検出';
 
   @override
   String get history => '履歴';
@@ -42,7 +42,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get language => '言語';
 
   @override
-  String get chinese => '中文';
+  String get chinese => '中文（中国）';
 
   @override
   String get english => 'English';
@@ -51,7 +51,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文';
+  String get traditionalChinese => '繁體中文（台灣）';
 
   @override
   String get followSystem => 'システムに従う';
@@ -367,22 +367,40 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutFeatures => '主な機能：';
 
   @override
-  String get aboutFeature1 => '• IPアドレス計画と計算';
+  String get aboutFeature1 => 'IPアドレス計画と計算';
 
   @override
-  String get aboutFeature2 => '• IPアドレス進数変換';
+  String get aboutFeature2 => 'IPアドレス進数変換';
 
   @override
-  String get aboutFeature3 => '• IPアドレスネットワークセグメント検出';
+  String get aboutFeature3 => 'IPアドレスネットワークセグメント検出';
 
   @override
-  String get aboutFeature4 => '• サブネットマスクとホスト数の変換';
+  String get aboutFeature4 => 'サブネットマスクとホスト数の変換';
 
   @override
-  String get aboutFeature5 => '• ルート集約とスーパーネット分割';
+  String get aboutFeature5 => 'ルート集約とスーパーネット分割';
 
   @override
-  String get aboutFeature6 => '• 計算履歴管理';
+  String get aboutFeature6 => '計算履歴管理';
+
+  @override
+  String get aboutDesignAdvantages => 'デザインの利点：';
+
+  @override
+  String get aboutDesignAdvantage1 => 'シンプルで直感的なユーザーインターフェース';
+
+  @override
+  String get aboutDesignAdvantage2 => '多言語国際化サポート';
+
+  @override
+  String get aboutDesignAdvantage3 => 'ダーク/ライトテーマ切り替え';
+
+  @override
+  String get aboutDesignAdvantage4 => 'レスポンシブレイアウトデザイン';
+
+  @override
+  String get aboutDesignAdvantage5 => '高速で効率的な計算パフォーマンス';
 
   @override
   String get aboutTargetUsers => 'このツールは、ネットワークエンジニア、開発者、学習者に適しています。';
@@ -607,4 +625,25 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get webPlatformStorageInfo =>
       'Web プラットフォームではカスタムディレクトリの選択はサポートされていません。ブラウザのデフォルトストレージが使用されます';
+
+  @override
+  String get windowSize => 'ウィンドウサイズ';
+
+  @override
+  String get windowSizeDescription => 'アプリケーションウィンドウの幅と高さを設定';
+
+  @override
+  String get windowWidth => 'ウィンドウ幅';
+
+  @override
+  String get windowHeight => 'ウィンドウ高さ';
+
+  @override
+  String get windowSizeHint => 'サイズを入力してください（最小：800x700）';
+
+  @override
+  String get windowSizeSaved => 'ウィンドウサイズが保存されました。アプリケーションを再起動すると有効になります';
+
+  @override
+  String get minWindowSize => '最小ウィンドウサイズ：800x700';
 }

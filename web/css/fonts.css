@@ -3,13 +3,18 @@
  * 定义 OPPOSans 字体的加载和应用
  */
 
-/* 字体映射：优先使用本地字体文件，iOS Safari 兼容性更好 */
-/* 本地字体文件路径（Flutter Web 构建后的路径） */
+/* 引入 CDN 字体（字体文件过大，使用 CDN 优化加载） */
+/* 注意：CDN 字体通过 HTML 中的 link 标签异步加载，避免 @import 阻塞渲染 */
+/* result.css 中的字体家族名称是 "OPPO Sans 4.0" */
+
+/* 字体映射：优先使用 CDN 字体，确保快速加载和覆盖所有字符 */
+/* 本地字体文件作为备用（iOS Safari 兼容性更好） */
 @font-face {
   font-family: "OPPOSans";
   src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
-  /* 使用 swap 策略，平衡性能和字体质量，避免阻塞 FCP */
-  font-display: swap;
+  /* 使用 fallback 策略：在短时间内（100ms）显示回退字体，然后切换到自定义字体 */
+  /* 这样可以减少"豆腐块"显示时间，同时不阻塞首屏渲染 */
+  font-display: fallback;
   font-weight: 400;
   font-style: normal;
   /* 针对高 DPR 设备优化 */
@@ -19,7 +24,7 @@
 @font-face {
   font-family: "OPPOSans";
   src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
-  font-display: swap;
+  font-display: fallback;
   font-weight: 500;
   font-style: normal;
   font-feature-settings: "kern" 1, "liga" 1;
@@ -28,7 +33,7 @@
 @font-face {
   font-family: "OPPOSans";
   src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
-  font-display: swap;
+  font-display: fallback;
   font-weight: 600;
   font-style: normal;
   font-feature-settings: "kern" 1, "liga" 1;
@@ -37,32 +42,24 @@
 @font-face {
   font-family: "OPPOSans";
   src: url("../assets/fonts/OPPOSans4.0.ttf") format("truetype");
-  font-display: swap;
+  font-display: fallback;
   font-weight: 700;
   font-style: normal;
   font-feature-settings: "kern" 1, "liga" 1;
 }
 
-/* CDN 字体作为备用（如果本地字体加载失败） */
-@font-face {
-  font-family: "OPPOSans";
-  src: local("OPPO Sans 4.0"), 
-       url("https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/OPPOSans4-Regular.woff2") format("woff2"),
-       url("https://cdn.jsdelivr.net/gh/hoochanlon/fonts@main/public/OPPOSans4/OPPOSans4-Regular.woff") format("woff");
-  font-display: swap;
-  font-weight: 400 700;
-  /* 仅在本地字体不可用时使用 */
-  unicode-range: U+0000-00FF, U+0100-024F, U+0250-02FF, U+0300-03FF, U+0400-04FF, U+0500-05FF, U+0600-06FF, U+0700-074F, U+0750-077F, U+0780-07BF, U+07C0-07FF, U+0800-083F, U+0840-085F, U+0860-086F, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F, U+2C60-2C7F, U+2C80-2CFF, U+2D00-2D2F, U+2D30-2D7F, U+2D80-2DDF, U+2DE0-2DFF, U+2E00-2E7F, U+2E80-2EFF, U+2F00-2FDF, U+3000-303F, U+3040-309F, U+30A0-30FF, U+3100-312F, U+3130-318F, U+3190-319F, U+31A0-31BF, U+31C0-31EF, U+31F0-31FF, U+3200-32FF, U+3300-33FF, U+3400-4DBF, U+4DC0-4DFF, U+4E00-9FFF, U+A000-A48F, U+A490-A4CF, U+A500-A63F, U+A640-A69F, U+A700-A71F, U+A720-A7FF, U+A800-A82F, U+A840-A87F, U+A880-A8DF, U+A900-A92F, U+A930-A95F, U+A960-A97F, U+A980-A9DF, U+AA00-AA5F, U+AA60-AA7F, U+AA80-AADF, U+AAE0-AAFF, U+AB00-AB2F, U+AB30-AB6F, U+ABC0-ABFF, U+AC00-D7AF, U+D7B0-D7FF, U+F900-FAFF, U+FB00-FB4F, U+FB50-FDFF, U+FE00-FE0F, U+FE10-FE1F, U+FE20-FE2F, U+FE30-FE4F, U+FE50-FE6F, U+FE70-FEFF, U+FF00-FFEF, U+FFF0-FFFF;
-}
+/* CDN 字体作为主要字体源（result.css 中已定义，这里不再重复） */
+/* 注意：result.css 中的字体使用 font-display: swap，确保快速显示 */
 
-/* 全局字体设置 - 优化字体回退策略，iOS Safari 优先使用 OPPOSans */
+/* 全局字体设置 - 优化字体回退策略，优先使用 CDN 的 "OPPO Sans 4.0" 字体 */
 html, body, 
 div, span, p, a, h1, h2, h3, h4, h5, h6,
 input, textarea, button, select, label,
 table, th, td, tr,
 ul, ol, li {
   /* iOS Safari 需要明确指定字体，避免回退到系统字体 */
-  font-family: "OPPOSans", "OPPO Sans 4.0", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* 通用字体回退：优先使用 OPPO Sans 4.0，然后根据语言回退到合适的系统字体 */
+  font-family: "OPPO Sans 4.0", "OPPOSans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -75,9 +72,33 @@ ul, ol, li {
   font-feature-settings: "kern" 1, "liga" 1;
 }
 
+/* 中文（简体）字体优化 */
+html:lang(zh), body:lang(zh),
+[lang="zh"] {
+  font-family: "OPPO Sans 4.0", "OPPOSans", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", "SimHei", "SimSun", sans-serif;
+}
+
+/* 中文（繁体）字体优化 */
+html:lang(zh-TW), body:lang(zh-TW),
+[lang="zh-TW"] {
+  font-family: "OPPO Sans 4.0", "OPPOSans", "Microsoft JhengHei", "PingFang TC", "Hiragino Sans CNS", "WenQuanYi Zen Hei", "MingLiU", sans-serif;
+}
+
+/* 日文字体优化 */
+html:lang(ja), body:lang(ja),
+[lang="ja"] {
+  font-family: "OPPO Sans 4.0", "OPPOSans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "Hiragino Sans", "Yu Gothic", "Meiryo", "MS PGothic", sans-serif;
+}
+
+/* 英文字体优化 */
+html:lang(en), body:lang(en),
+[lang="en"] {
+  font-family: "OPPO Sans 4.0", "OPPOSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 /* Flutter 视图的字体平滑 - iOS Safari 优化 */
 flutter-view {
-  font-family: "OPPOSans", "OPPO Sans 4.0", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "OPPO Sans 4.0", "OPPOSans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -88,6 +109,27 @@ flutter-view {
   /* 针对高 DPR 设备的字体渲染优化 */
   -webkit-font-feature-settings: "kern" 1, "liga" 1;
   font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Flutter 视图的多语言字体支持 */
+flutter-view[lang="zh"],
+flutter-view:lang(zh) {
+  font-family: "OPPO Sans 4.0", "OPPOSans", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+}
+
+flutter-view[lang="zh-TW"],
+flutter-view:lang(zh-TW) {
+  font-family: "OPPO Sans 4.0", "OPPOSans", "Microsoft JhengHei", "PingFang TC", "Hiragino Sans CNS", "WenQuanYi Zen Hei", sans-serif;
+}
+
+flutter-view[lang="ja"],
+flutter-view:lang(ja) {
+  font-family: "OPPO Sans 4.0", "OPPOSans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+}
+
+flutter-view[lang="en"],
+flutter-view:lang(en) {
+  font-family: "OPPO Sans 4.0", "OPPOSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* 移动端高 DPR 设备特定优化 */

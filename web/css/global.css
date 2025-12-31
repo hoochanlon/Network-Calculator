@@ -1,7 +1,26 @@
 /* 
  * 全局样式配置
- * 导入字体样式
+ * 注意：字体样式已通过 fonts.css 直接引入，避免 @import 阻塞渲染
  */
 
-@import url('fonts.css');
+/* 确保Flutter Web中所有可点击元素显示手形光标 */
+flutter-view,
+canvas,
+[role="button"],
+button,
+a {
+  cursor: pointer;
+}
+
+/* 确保MouseRegion的cursor样式在部署后也能正确应用 */
+.flutter-view,
+canvas[data-flutter-view] {
+  cursor: inherit;
+}
+
+/* 针对社交图标等可点击SVG元素 */
+svg[data-clickable="true"],
+.flutter-view svg {
+  cursor: pointer !important;
+}
 

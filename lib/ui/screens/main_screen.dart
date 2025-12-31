@@ -150,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Row(
             children: [
               SvgPicture.asset(
-                'assets/images/ncalc.svg',
+                'assets/images/icons/app-icons/ncalc.svg',
                 width: 28,
                 height: 28,
                 colorFilter: ColorFilter.mode(
@@ -232,10 +232,6 @@ class _MainScreenState extends State<MainScreen> {
               : Future.value(false),
           builder: (context, lockSnapshot) {
             bool isLocked = lockSnapshot.data ?? false;
-            // “设置”等特殊项不显示锁状态
-            if (item.calculatorKey == CalculatorKeys.settings) {
-              isLocked = false;
-            }
             return MainNavigationItemBuilder.buildNavigationItem(
               context,
               item,
@@ -285,7 +281,7 @@ class _MainScreenState extends State<MainScreen> {
         title: Row(
           children: [
             SvgPicture.asset(
-              'assets/images/ncalc.svg',
+              'assets/images/icons/app-icons/ncalc.svg',
               width: 24,
               height: 24,
               colorFilter: ColorFilter.mode(

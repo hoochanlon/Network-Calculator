@@ -3,12 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:network_calculator/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_fonts.dart';
 import 'core/providers/locale_provider.dart';
 import 'core/providers/theme_provider.dart';
 import 'core/providers/calculator_state_provider.dart';
+import 'core/providers/calculator_settings_provider.dart';
 import 'ui/screens/main_screen.dart';
 
 void main() async {
@@ -18,7 +20,41 @@ void main() async {
   // Web 端也需要预加载，特别是 iOS Safari 需要确保字体正确加载
   await _preloadFonts();
   
+  // 初始化窗口尺寸（仅桌面平台）
+  if (!kIsWeb) {
+    await _initializeWindow();
+  }
+  
   runApp(const MyApp());
+}
+
+/// 初始化窗口尺寸
+Future<void> _initializeWindow() async {
+  try {
+    await windowManager.ensureInitialized();
+    
+    // 获取保存的窗口尺寸
+    final width = await CalculatorSettingsProvider.getWindowWidth();
+    final height = await CalculatorSettingsProvider.getWindowHeight();
+    final minWidth = CalculatorSettingsProvider.minWindowWidth;
+    final minHeight = CalculatorSettingsProvider.minWindowHeight;
+    
+    // 设置最小窗口尺寸
+    await windowManager.setMinimumSize(Size(minWidth, minHeight));
+    
+    // 设置窗口尺寸
+    await windowManager.setSize(Size(width, height));
+    
+    // 居中显示窗口
+    await windowManager.center();
+    
+    // 显示窗口
+    await windowManager.show();
+    await windowManager.focus();
+  } catch (e) {
+    // 窗口初始化失败不影响应用启动
+    debugPrint('Window initialization failed: $e');
+  }
 }
 
 /// 预加载字体资源
