@@ -189,7 +189,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       localeProvider.followSystem
                           ? l10n.followSystem
                           : localeProvider.locale.languageCode == 'zh'
-                              ? (localeProvider.locale.countryCode == 'TW' ? l10n.traditionalChinese : l10n.chinese)
+                              ? ((localeProvider.locale.countryCode == 'HK' ||
+                                      localeProvider.locale.countryCode == 'TW' ||
+                                      localeProvider.locale.countryCode == 'MO')
+                                  ? l10n.traditionalChinese
+                                  : l10n.chinese)
                               : localeProvider.locale.languageCode == 'ja'
                                   ? l10n.japanese
                                   : l10n.english,
@@ -237,14 +241,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           RadioListTile<Locale?>(
                             title: Row(
                               children: [
-                                _getFlagWidget(const Locale('zh', 'TW'), size: 24),
+                                _getFlagWidget(const Locale('zh', 'HK'), size: 24),
                                 const SizedBox(width: 12),
                                 Flexible(
                                   child: Text(l10n.traditionalChinese),
                                 ),
                               ],
                             ),
-                            value: const Locale('zh', 'TW'),
+                            value: const Locale('zh', 'HK'),
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -601,7 +605,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // 根据语言代码和国家代码返回对应的国旗 SVG 路径
     if (languageCode == 'zh') {
       if (countryCode == 'TW' || countryCode == 'HK' || countryCode == 'MO') {
-        return 'assets/images/icons/country-flags/flagpedia.asia/tw.svg';
+        return 'assets/images/icons/country-flags/flagpedia.asia/hk.svg';
       }
       return 'assets/images/icons/country-flags/flagpedia.asia/cn.svg';
     } else if (languageCode == 'en') {

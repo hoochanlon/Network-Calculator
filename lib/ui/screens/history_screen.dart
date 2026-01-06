@@ -11,6 +11,8 @@ import '../../core/providers/calculator_state_provider.dart';
 import '../../core/utils/calculator_name_translator.dart';
 import '../../core/theme/app_fonts.dart';
 import '../widgets/screen_title_bar.dart';
+import '../web/history_download_stub.dart'
+    if (dart.library.html) '../web/history_download_web.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -225,15 +227,29 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
   Future<void> _exportHistory() async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      final filePath = await HistoryService.exportHistory();
-      if (filePath != null) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${l10n.exportSuccess}: $filePath'),
-              duration: const Duration(seconds: 3),
-            ),
-          );
+      final result = await HistoryService.exportHistory();
+      if (result != null) {
+        if (kIsWeb) {
+          // Web：result 是 JSON 内容，触发浏览器下载
+          downloadHistoryJson(result);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.exportSuccess),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
+        } else {
+          // 桌面端：result 是文件路径
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${l10n.exportSuccess}: $result'),
+                duration: const Duration(seconds: 3),
+              ),
+            );
+          }
         }
       } else {
         if (mounted) {

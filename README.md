@@ -52,6 +52,10 @@ flutter clean && flutter pub get
 
 ### 2. 运行项目
 
+```bash
+flutter clean && flutter pub get
+```
+
 **桌面版 (Windows):**
 
 ```bash

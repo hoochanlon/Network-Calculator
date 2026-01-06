@@ -45,13 +45,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chinese => '中文（中国）';
 
   @override
-  String get english => 'English';
+  String get english => 'English (US)';
 
   @override
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文（台灣）';
+  String get traditionalChinese => '繁體中文（中國香港）';
 
   @override
   String get followSystem => 'Follow System';

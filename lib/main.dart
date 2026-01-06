@@ -133,7 +133,8 @@ class MyApp extends StatelessWidget {
                   ],
                   supportedLocales: const [
                     Locale('zh'), // 简体中文
-                    Locale('zh', 'TW'), // 繁体中文
+                    Locale('zh', 'HK'), // 繁体中文（中国香港）
+                    Locale('zh', 'TW'), // 繁体中文（台湾，映射同一翻译）
                     Locale('en'), // 英文
                     Locale('ja'), // 日语
                   ],

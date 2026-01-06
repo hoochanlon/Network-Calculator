@@ -81,7 +81,17 @@ class _NetworkMergeScreenState extends State<NetworkMergeScreen> {
         _isInitialized = true;
       });
     } else {
-      _isInitialized = true;
+      // 如果没有保存的状态，确保界面被清空
+      if (mounted) {
+        setState(() {
+          _inputController.clear();
+          _result = null;
+          _selectedAlgorithm = MergeAlgorithm.summarization;
+          _isInitialized = true;
+        });
+      } else {
+        _isInitialized = true;
+      }
     }
   }
 

@@ -39,7 +39,7 @@ class LocaleProvider with ChangeNotifier {
         if (systemLocale.countryCode == 'TW' || 
             systemLocale.countryCode == 'HK' || 
             systemLocale.countryCode == 'MO') {
-          return const Locale('zh', 'TW');
+          return const Locale('zh', 'HK');
         }
         // 其他中文地区返回简体中文
         return const Locale('zh');
@@ -67,7 +67,7 @@ class LocaleProvider with ChangeNotifier {
     if (followSystemSetting == false && localeCode != null) {
       // 用户明确设置了语言
       _followSystem = false;
-      // 解析语言代码（支持 zh_TW 格式）
+      // 解析语言代码（支持 zh_HK 格式）
       final parts = localeCode.split('_');
       if (parts.length == 2) {
         _locale = Locale(parts[0], parts[1]);
@@ -92,7 +92,7 @@ class LocaleProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('follow_system_locale', _followSystem);
     if (locale != null) {
-      // 保存完整的语言代码（包括国家代码，如 zh_TW）
+      // 保存完整的语言代码（包括国家代码，如 zh_HK）
       final localeString = locale.countryCode != null 
           ? '${locale.languageCode}_${locale.countryCode}'
           : locale.languageCode;

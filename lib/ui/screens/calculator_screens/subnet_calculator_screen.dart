@@ -82,7 +82,17 @@ class _SubnetCalculatorScreenState extends State<SubnetCalculatorScreen> {
         _isInitialized = true;
       });
     } else {
-      _isInitialized = true;
+      // 如果没有保存的状态，确保界面被清空
+      if (mounted) {
+        setState(() {
+          _hostsController.clear();
+          _subnetController.clear();
+          _result = null;
+          _isInitialized = true;
+        });
+      } else {
+        _isInitialized = true;
+      }
     }
   }
 

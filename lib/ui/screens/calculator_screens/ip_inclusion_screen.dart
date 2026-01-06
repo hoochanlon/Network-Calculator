@@ -82,7 +82,17 @@ class _IpInclusionScreenState extends State<IpInclusionScreen> {
         _isInitialized = true;
       });
     } else {
-      _isInitialized = true;
+      // 如果没有保存的状态，确保界面被清空
+      if (mounted) {
+        setState(() {
+          _cidr1Controller.clear();
+          _cidr2Controller.clear();
+          _result = null;
+          _isInitialized = true;
+        });
+      } else {
+        _isInitialized = true;
+      }
     }
   }
 

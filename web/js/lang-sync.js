@@ -10,8 +10,10 @@
   // 语言代码映射：Flutter Locale -> HTML lang 属性
   const localeMap = {
     'zh': 'zh',
-    'zh_TW': 'zh-TW',
-    'zh-TW': 'zh-TW',
+    'zh_HK': 'zh-HK',
+    'zh-HK': 'zh-HK',
+    'zh_TW': 'zh-HK',
+    'zh-TW': 'zh-HK',
     'en': 'en',
     'ja': 'ja'
   };
@@ -48,7 +50,7 @@
       // 确定目标语言
       let targetLang = 'zh'; // 默认语言
       if (localeCode) {
-        // 处理格式：可能是 "zh_TW" 或 "zh-TW" 或 "zh"
+        // 处理格式：可能是 "zh_HK" 或 "zh-HK" 或 "zh"（兼容历史的 zh_TW/zh-TW，统一映射为 zh-HK）
         const normalized = localeCode.replace('_', '-');
         targetLang = localeMap[localeCode] || localeMap[normalized] || normalized.split('-')[0];
       }

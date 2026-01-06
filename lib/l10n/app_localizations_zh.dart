@@ -45,13 +45,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chinese => '中文（中国）';
 
   @override
-  String get english => 'English';
+  String get english => 'English（美国）';
 
   @override
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文（台灣）';
+  String get traditionalChinese => '繁體中文（中國香港）';
 
   @override
   String get followSystem => '跟随系统';
@@ -640,9 +640,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get minWindowSize => '最小窗口尺寸：800x700';
 }
 
-/// The translations for Chinese, as used in Taiwan (`zh_TW`).
-class AppLocalizationsZhTw extends AppLocalizationsZh {
-  AppLocalizationsZhTw() : super('zh_TW');
+/// The translations for Chinese, as used in Hong Kong (`zh_HK`).
+class AppLocalizationsZhHk extends AppLocalizationsZh {
+  AppLocalizationsZhHk() : super('zh_HK');
 
   @override
   String get appTitle => '網路計算器';
@@ -681,13 +681,13 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get chinese => '中文（中國）';
 
   @override
-  String get english => 'English';
+  String get english => 'English（美國）';
 
   @override
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文（台灣）';
+  String get traditionalChinese => '繁體中文（中國香港）';
 
   @override
   String get followSystem => '跟隨系統';

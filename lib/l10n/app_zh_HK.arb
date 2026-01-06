@@ -1,5 +1,5 @@
 {
-  "@@locale": "zh_TW",
+  "@@locale": "zh_HK",
   "appTitle": "網路計算器",
   "@appTitle": {
     "description": "應用程式標題"
@@ -15,9 +15,9 @@
   "about": "關於",
   "language": "語言",
   "chinese": "中文（中國）",
-  "english": "English",
+  "english": "English（美國）",
   "japanese": "日本語",
-  "traditionalChinese": "繁體中文（台灣）",
+  "traditionalChinese": "繁體中文（中國香港）",
   "followSystem": "跟隨系統",
   "preserveInputs": "保留輸入和結果",
   "preserveInputsDescription": "切換計算器時保留輸入內容和計算結果",
