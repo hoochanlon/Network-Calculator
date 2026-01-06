@@ -62,20 +62,10 @@ env.bak/
 venv.bak/
 
 # macOS specific
-.AppleDouble
-.LSOverride
-.Spotlight-V100
-.Trashes
-.fseventsd
-Icon?
-._*
+
 
 # Xcode / CocoaPods / macOS build artifacts
-macos/Runner.xcworkspace/xcuserdata/
-macos/Runner.xcodeproj/project.xcworkspace/xcuserdata/
-macos/Runner.xcodeproj/xcuserdata/
-DerivedData/
-Pods/
+
 
 # History files
 history.json
