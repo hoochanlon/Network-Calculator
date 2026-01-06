@@ -287,8 +287,8 @@ class HistoryService {
         // 写入文件；如果当前目录不可写，自动降级到应用文档目录再写
         Future<String> _writeTo(io.Directory dir) async {
           final filePath = '${dir.path}${io.Platform.pathSeparator}$fileName';
-          final file = io.File(filePath);
-          await file.writeAsString(historyJson, encoding: utf8);
+        final file = io.File(filePath);
+        await file.writeAsString(historyJson, encoding: utf8);
           return file.path;
         }
 
