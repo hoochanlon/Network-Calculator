@@ -2,7 +2,7 @@
 
 ![](./assets/images/demo/2025-12-31-12-17-06.png)
 
-一个现代化的网络计算器应用，提供专业的 IP 地址计算、子网划分、路由聚合等功能，采用 Flutter 开发，支持 Windows 桌面和 Web 平台。
+一个现代化的网络计算器应用，提供专业的 IP 地址计算、子网划分、路由聚合等功能，采用 Flutter 开发，支持 Windows 桌面、macOS 桌面和 Web 平台。
 
 **语言 / Language / げんご**: [简体中文](README.md) | [English](README_EN.md) | [日本語](README_JA.md)
 
@@ -62,6 +62,12 @@ flutter clean && flutter pub get
 flutter run -d windows
 ```
 
+**桌面版 (macOS):**
+
+```bash
+flutter run -d macos
+```
+
 **Web 版:**
 
 ```bash
@@ -92,7 +98,7 @@ flutter run -d chrome
 
 ## 📦 发布
 
-### 1. 可执行程序制作
+### 1. 可执行程序制作（Windows）
 
 **构建 Windows 桌面应用:**
 
@@ -112,14 +118,37 @@ InnoSetup.bat
 EnigmaVirtualBox.bat
 ```
 
-### 2. web 部署
+### 2. macOS DMG 安装包
+
+**一键准备 macOS 环境（除 Homebrew / Xcode 外）:**
+
+```bash
+cd /Users/chanlonhoo/Documents/GitHub/network-calculator
+chmod +x scripts/setup_macos_env.sh
+./scripts/setup_macos_env.sh
+```
+
+**一键构建 macOS .app + DMG 安装包:**
+
+```bash
+cd /Users/chanlonhoo/Documents/GitHub/network-calculator
+./scripts/build_macos_dmg.sh
+```
+
+生成的安装包位于：
+
+```bash
+dist/Network-Calculator.dmg
+```
+
+### 3. web 部署
 
 **构建 Web 应用:**
 ```bash
 flutter build web --release
 ```
 
-1. Setting > Pages > Build and deployment > Action 
+1. Setting > Pages > Build and deployment > Action
 2. 发布到 Github Pages
 
     ```bash

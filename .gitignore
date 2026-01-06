@@ -4,10 +4,13 @@
 *.pyc
 *.swp
 .DS_Store
+**/.DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -33,6 +36,7 @@ migrate_working_dir/
 build/
 installer/
 test/
+dist/
 
 # Symbolication related
 app.*.symbols
@@ -56,6 +60,22 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# macOS specific
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+.fseventsd
+Icon?
+._*
+
+# Xcode / CocoaPods / macOS build artifacts
+macos/Runner.xcworkspace/xcuserdata/
+macos/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+macos/Runner.xcodeproj/xcuserdata/
+DerivedData/
+Pods/
 
 # History files
 history.json

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import '../providers/calculator_settings_provider.dart';
@@ -40,7 +40,7 @@ class HistoryRecord {
 
 class HistoryService {
   static const String _historyKey = 'calculation_history';
-  
+
   // 使用 AppConfig 中的配置
   static String get _historyFileName => AppConfig.historyFileName;
 
@@ -76,7 +76,7 @@ class HistoryService {
       throw UnsupportedError('File operations are not supported on Web platform');
     }
     io.Directory directory;
-    
+
     // 优先使用自定义存储路径
     final customPath = await CalculatorSettingsProvider.getHistoryStoragePath();
     if (customPath != null && customPath.isNotEmpty) {
@@ -94,7 +94,7 @@ class HistoryService {
       }
       directory = historyDir;
     }
-    
+
     return io.File('${directory.path}${io.Platform.pathSeparator}$_historyFileName');
   }
 
@@ -109,18 +109,18 @@ class HistoryService {
 
       final prefs = await SharedPreferences.getInstance();
       final historyJson = prefs.getString(_historyKey);
-      
+
       if (historyJson != null && historyJson.isNotEmpty) {
         // 读取旧数据
         final List<dynamic> historyList = json.decode(historyJson);
         final history = historyList.map((item) => HistoryRecord.fromJson(item as Map<String, dynamic>)).toList();
-        
+
         // 保存到文件
         await saveHistory(history);
-        
+
         // 标记已迁移
         await CalculatorSettingsProvider.markHistoryMigrated();
-        
+
         // 可选：清除 SharedPreferences 中的数据（保留作为备份）
         // await prefs.remove(_historyKey);
       } else {
@@ -148,7 +148,7 @@ class HistoryService {
         // 桌面平台：使用文件系统
         // 先尝试迁移旧数据
         await _migrateFromSharedPreferences();
-        
+
         final file = await _getHistoryFile();
         if (!await file.exists()) {
           return [];
@@ -168,7 +168,7 @@ class HistoryService {
   static Future<void> saveHistory(List<HistoryRecord> history) async {
     try {
       final historyJson = json.encode(history.map((record) => record.toJson()).toList());
-      
+
       if (kIsWeb) {
         // Web 平台：使用 SharedPreferences
         final prefs = await SharedPreferences.getInstance();
@@ -231,41 +231,101 @@ class HistoryService {
         return null;
       }
 
-      final historyJson = json.encode(history.map((record) => record.toJson()).toList());
-      
+      final historyJson = json.encode(
+        history.map((record) => record.toJson()).toList(),
+      );
+
       if (kIsWeb) {
-        // Web 平台：触发下载
-        // 注意：实际下载功能需要在 UI 层实现，这里返回 JSON 内容
+        // Web 平台：返回 JSON，由 UI 负责触发下载
         return historyJson;
       } else {
         // 桌面平台：保存到文件
-        // 获取导出目录（使用默认下载目录）
         io.Directory? directory;
-        if (io.Platform.isWindows) {
-          directory = io.Directory('${io.Platform.environment['USERPROFILE']}\\Downloads');
-        } else if (io.Platform.isMacOS) {
-          directory = io.Directory('${io.Platform.environment['HOME']}/Downloads');
-        } else if (io.Platform.isLinux) {
-          directory = io.Directory('${io.Platform.environment['HOME']}/Downloads');
-        } else {
-          directory = await getApplicationDocumentsDirectory();
+
+        // 1. 优先尝试“下载”目录（macOS / Windows / Linux 都支持）
+        try {
+          final downloadsDir = await getDownloadsDirectory();
+          if (downloadsDir != null && await downloadsDir.exists()) {
+            directory = downloadsDir;
+          }
+        } catch (_) {
+          // 忽略，后面会自动降级到应用文档目录
         }
 
-        if (!await directory.exists()) {
-          directory = await getApplicationDocumentsDirectory();
+        // 2. 兼容部分环境（如 macOS 调试容器）拿不到 Downloads，尝试手动拼 HOME/Downloads
+        if (directory == null) {
+          final home = io.Platform.environment['HOME'];
+          if (home != null && home.isNotEmpty) {
+            final homeDownloads = io.Directory('$home${io.Platform.pathSeparator}Downloads');
+            if (await homeDownloads.exists()) {
+              directory = homeDownloads;
+            }
+          }
         }
 
-        final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-        // 使用 Platform.pathSeparator 确保路径分隔符统一
-        final fileName = 'network_calculator_history_$timestamp.json';
-        final filePath = '${directory.path}${io.Platform.pathSeparator}$fileName';
-        final file = io.File(filePath);
-        await file.writeAsString(historyJson, encoding: utf8);
-        
-        // 规范化路径，统一使用系统路径分隔符（Windows使用\，Unix使用/）
-        return file.path.replaceAll(RegExp(r'[/\\]'), io.Platform.pathSeparator);
+        // 3. 确保目录存在，否则创建；若创建失败则降级为应用文档目录
+        if (directory != null && !await directory.exists()) {
+          try {
+            await directory.create(recursive: true);
+          } catch (_) {
+            directory = null;
+          }
+        }
+
+        // 4. 如果仍为空，降级到应用文档目录（始终可写）
+        final appDocsDir = await getApplicationDocumentsDirectory();
+        directory ??= appDocsDir;
+
+        final timestamp = DateTime.now()
+            .toIso8601String()
+            .replaceAll(':', '-')
+            .split('.')[0];
+        const filePrefix = 'network_calculator_history_';
+        const fileExt = '.json';
+        final fileName = '$filePrefix$timestamp$fileExt';
+
+        // 写入文件；如果当前目录不可写，自动降级到应用文档目录再写
+        Future<String> _writeTo(io.Directory dir) async {
+          final filePath = '${dir.path}${io.Platform.pathSeparator}$fileName';
+          final file = io.File(filePath);
+          await file.writeAsString(historyJson, encoding: utf8);
+          return file.path;
+        }
+
+        String writtenPath;
+        try {
+          writtenPath = await _writeTo(directory);
+        } catch (e) {
+          // 如果不是应用文档目录，则降级再试一次
+          if (directory.path != appDocsDir.path) {
+            try {
+              writtenPath = await _writeTo(appDocsDir);
+            } catch (e2) {
+              debugPrint('Export history failed after fallback: $e2');
+              return null;
+            }
+          } else {
+            debugPrint('Export history failed: $e');
+            return null;
+          }
+        }
+
+        // 导出成功后，在 macOS 上自动打开所在目录，方便用户查找
+        try {
+          if (io.Platform.isMacOS) {
+            final dirPath = io.Directory(writtenPath).parent.path;
+            await io.Process.run('open', [dirPath]);
+          }
+        } catch (e) {
+          // 打开目录失败不影响导出结果
+          debugPrint('Open export directory failed: $e');
+        }
+
+        // 规范化路径，仅用于展示（Windows 使用 \，Unix 使用 /）
+        return writtenPath.replaceAll(RegExp(r'[/\\]'), io.Platform.pathSeparator);
       }
     } catch (e) {
+      debugPrint('Export history failed: $e');
       return null;
     }
   }
@@ -284,6 +344,7 @@ class HistoryService {
       final content = await file.readAsString(encoding: utf8);
       return await importHistoryFromContent(content);
     } catch (e) {
+      debugPrint('Import history failed: $e');
       return false;
     }
   }
@@ -296,7 +357,7 @@ class HistoryService {
       }
 
       final List<dynamic> historyList = json.decode(content);
-      
+
       if (historyList.isEmpty) {
         return false;
       }
@@ -306,9 +367,9 @@ class HistoryService {
         if (item is! Map<String, dynamic>) {
           return false;
         }
-        if (!item.containsKey('calculator') || 
-            !item.containsKey('inputs') || 
-            !item.containsKey('result') || 
+        if (!item.containsKey('calculator') ||
+            !item.containsKey('inputs') ||
+            !item.containsKey('result') ||
             !item.containsKey('timestamp')) {
           return false;
         }
@@ -320,35 +381,36 @@ class HistoryService {
           .toList();
 
       final existingHistory = await loadHistory();
-      
+
       // 合并历史记录，去重（基于时间戳和结果）
       final Map<String, HistoryRecord> uniqueRecords = {};
-      
+
       // 先添加现有记录
       for (var record in existingHistory) {
         final key = '${record.timestamp.toIso8601String()}_${record.result}';
         uniqueRecords[key] = record;
       }
-      
+
       // 添加导入的记录
       for (var record in importedHistory) {
         final key = '${record.timestamp.toIso8601String()}_${record.result}';
         uniqueRecords[key] = record;
       }
-      
+
       // 转换为列表并按时间排序
       final mergedHistory = uniqueRecords.values.toList()
         ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      
+
       // 限制数量
       final limit = await CalculatorSettingsProvider.getHistoryLimit();
       if (mergedHistory.length > limit) {
         mergedHistory.removeRange(limit, mergedHistory.length);
       }
-      
+
       await saveHistory(mergedHistory);
       return true;
     } catch (e) {
+      debugPrint('Import history from content failed: $e');
       return false;
     }
   }

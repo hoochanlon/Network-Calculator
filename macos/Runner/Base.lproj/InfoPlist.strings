@@ -1,0 +1,4 @@
+/* Default (English) app name */
+"CFBundleName" = "Network Calculator";
+"CFBundleDisplayName" = "Network Calculator";
+

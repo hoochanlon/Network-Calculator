@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:network_calculator/l10n/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -212,7 +212,7 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
     if (confirmed == true) {
       final stateProvider = Provider.of<CalculatorStateProvider>(context, listen: false);
       await stateProvider.clearAllStates();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -270,14 +270,16 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
   Future<void> _importHistory() async {
     final l10n = AppLocalizations.of(context)!;
     try {
+      debugPrint('History import: opening file picker...');
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
+      debugPrint('History import: file picker result = ${result != null}');
 
       if (result != null) {
         bool success = false;
-        
+
         if (kIsWeb) {
           // Web 平台：使用文件内容（bytes）
           final file = result.files.single;
@@ -287,13 +289,22 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
             success = await HistoryService.importHistoryFromContent(content);
           }
         } else {
-          // 桌面平台：使用文件路径
-          final filePath = result.files.single.path;
+          // 桌面平台：优先使用文件路径；部分环境（如沙盒）可能拿不到路径，此时回退到 bytes
+          final file = result.files.single;
+          final filePath = file.path;
           if (filePath != null) {
+            // 正常桌面环境：直接使用文件路径读取
             success = await HistoryService.importHistory(filePath);
+          } else if (file.bytes != null) {
+            // 沙盒环境：没有路径，但有文件内容，按 Web 方式处理
+            final content = utf8.decode(file.bytes!);
+            success = await HistoryService.importHistoryFromContent(content);
+          } else {
+            // 理论上不会到这里，记录一条日志便于排查
+            debugPrint('History import failed: no path and no bytes from FilePicker.');
           }
         }
-        
+
         if (mounted) {
           if (success) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -307,7 +318,9 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
           }
         }
       }
-    } catch (e) {
+    } catch (e, stack) {
+      debugPrint('History import exception: $e');
+      debugPrint(stack.toString());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.importFailed)),
@@ -563,10 +576,10 @@ class HistoryScreenState extends State<HistoryScreen> with WidgetsBindingObserve
 
   IconData _getCalculatorIcon(String calculator) {
     // 支持键值和旧格式（向后兼容）
-    final key = CalculatorNameTranslator.isKey(calculator) 
-        ? calculator 
+    final key = CalculatorNameTranslator.isKey(calculator)
+        ? calculator
         : CalculatorNameTranslator.toKey(calculator, AppLocalizations.of(context)!);
-    
+
     switch (key) {
       case CalculatorKeys.ipCalculator:
         return Symbols.bring_your_own_ip;

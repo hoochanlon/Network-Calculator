@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -15,16 +15,16 @@ import 'ui/screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // 预加载字体，优化启动性能和字体渲染
   // Web 端也需要预加载，特别是 iOS Safari 需要确保字体正确加载
   await _preloadFonts();
-  
+
   // 初始化窗口尺寸（仅桌面平台）
   if (!kIsWeb) {
     await _initializeWindow();
   }
-  
+
   runApp(const MyApp());
 }
 
@@ -32,22 +32,22 @@ void main() async {
 Future<void> _initializeWindow() async {
   try {
     await windowManager.ensureInitialized();
-    
+
     // 获取保存的窗口尺寸
     final width = await CalculatorSettingsProvider.getWindowWidth();
     final height = await CalculatorSettingsProvider.getWindowHeight();
     final minWidth = CalculatorSettingsProvider.minWindowWidth;
     final minHeight = CalculatorSettingsProvider.minWindowHeight;
-    
+
     // 设置最小窗口尺寸
     await windowManager.setMinimumSize(Size(minWidth, minHeight));
-    
+
     // 设置窗口尺寸
     await windowManager.setSize(Size(width, height));
-    
+
     // 居中显示窗口
     await windowManager.center();
-    
+
     // 显示窗口
     await windowManager.show();
     await windowManager.focus();
@@ -66,7 +66,7 @@ Future<void> _preloadFonts() async {
     final fontLoader = FontLoader(AppFonts.primaryFontFamily);
     fontLoader.addFont(_loadFont('assets/fonts/OPPOSans4.0.ttf'));
     await fontLoader.load();
-    
+
     // 在 Web 端，额外等待一小段时间确保字体完全加载（iOS Safari 需要）
     if (kIsWeb) {
       await Future.delayed(const Duration(milliseconds: 100));
@@ -138,7 +138,9 @@ class MyApp extends StatelessWidget {
                     Locale('en'), // 英文
                     Locale('ja'), // 日语
                   ],
-                  home: const MainScreen(),
+                  home: (!kIsWeb && defaultTargetPlatform == TargetPlatform.macOS)
+                      ? const _MacSplashWrapper()
+                      : const MainScreen(),
                 ),
               );
             },
@@ -149,3 +151,106 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// macOS 专用启动过渡界面
+/// 其它平台直接进入 MainScreen，不显示此界面
+class _MacSplashWrapper extends StatefulWidget {
+  const _MacSplashWrapper({super.key});
+
+  @override
+  State<_MacSplashWrapper> createState() => _MacSplashWrapperState();
+}
+
+class _MacSplashWrapperState extends State<_MacSplashWrapper>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+  )..forward();
+
+  bool _showSplash = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // 启动后短暂展示 Splash，再切换到主界面
+    Future.delayed(const Duration(milliseconds: 900), () {
+      if (mounted) {
+        setState(() {
+          _showSplash = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_showSplash) {
+      return const MainScreen();
+    }
+
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: FadeTransition(
+        opacity: CurvedAnimation(
+          parent: _controller,
+          curve: Curves.easeOut,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 使用应用图标作为启动图
+              ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/images/icons/app-icons/ncalc.png',
+                  width: 96,
+                  height: 96,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                AppLocalizations.of(context)?.appTitle ?? 'Network Calculator',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Builder(
+                builder: (context) {
+                  final localeCode = Localizations.localeOf(context).languageCode;
+                  String loadingText;
+                  switch (localeCode) {
+                    case 'zh':
+                      loadingText = '正在启动…';
+                      break;
+                    case 'ja':
+                      loadingText = '起動中…';
+                      break;
+                    default:
+                      loadingText = 'Starting…';
+                  }
+                  return Text(
+                    loadingText,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
