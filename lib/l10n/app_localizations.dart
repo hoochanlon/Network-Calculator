@@ -98,7 +98,7 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('ja'),
     Locale('zh'),
-    Locale('zh', 'HK')
+    Locale('zh', 'TW')
   ];
 
   /// 应用程序标题
@@ -188,7 +188,7 @@ abstract class AppLocalizations {
   /// No description provided for @traditionalChinese.
   ///
   /// In zh, this message translates to:
-  /// **'繁體中文（中國香港）'**
+  /// **'正體中文（台灣）'**
   String get traditionalChinese;
 
   /// No description provided for @followSystem.
@@ -1379,8 +1379,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'zh':
       {
         switch (locale.countryCode) {
-          case 'HK':
-            return AppLocalizationsZhHk();
+          case 'TW':
+            return AppLocalizationsZhTw();
         }
         break;
       }

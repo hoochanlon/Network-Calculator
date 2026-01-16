@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       CalculatorSettingsProvider.getWindowWidth(),
       CalculatorSettingsProvider.getWindowHeight(),
     ]);
-    
+
     if (mounted) {
       setState(() {
         _sidebarDragEnabled = results[0] as bool;
@@ -189,8 +189,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       localeProvider.followSystem
                           ? l10n.followSystem
                           : localeProvider.locale.languageCode == 'zh'
-                              ? ((localeProvider.locale.countryCode == 'HK' ||
-                                      localeProvider.locale.countryCode == 'TW' ||
+                              ? ((localeProvider.locale.countryCode == 'TW' ||
+                                      localeProvider.locale.countryCode == 'HK' ||
                                       localeProvider.locale.countryCode == 'MO')
                                   ? l10n.traditionalChinese
                                   : l10n.chinese)
@@ -241,14 +241,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           RadioListTile<Locale?>(
                             title: Row(
                               children: [
-                                _getFlagWidget(const Locale('zh', 'HK'), size: 24),
+                                _getFlagWidget(const Locale('zh', 'TW'), size: 24),
                                 const SizedBox(width: 12),
                                 Flexible(
                                   child: Text(l10n.traditionalChinese),
                                 ),
                               ],
                             ),
-                            value: const Locale('zh', 'HK'),
+                            value: const Locale('zh', 'TW'),
                             groupValue: localeProvider.followSystem ? null : localeProvider.userLocale,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -601,11 +601,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _getFlagPath(Locale locale) {
     final languageCode = locale.languageCode;
     final countryCode = locale.countryCode;
-    
+
     // 根据语言代码和国家代码返回对应的国旗 SVG 路径
     if (languageCode == 'zh') {
       if (countryCode == 'TW' || countryCode == 'HK' || countryCode == 'MO') {
-        return 'assets/images/icons/country-flags/flagpedia.asia/hk.svg';
+        return 'assets/images/icons/country-flags/flagpedia.asia/tw.svg';
       }
       return 'assets/images/icons/country-flags/flagpedia.asia/cn.svg';
     } else if (languageCode == 'en') {
@@ -613,7 +613,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } else if (languageCode == 'ja') {
       return 'assets/images/icons/country-flags/flagpedia.asia/jp.svg';
     }
-    
+
     // 默认返回地球图标（使用 EU 图标或系统图标）
     return 'assets/images/icons/country-flags/flagpedia.asia/eu.svg';
   }
@@ -625,7 +625,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final borderWidth = kIsWeb ? 1.0 : 0.8;
     final borderColor = isLight ? Colors.grey.shade400 : Colors.grey.shade600;
     final flagPath = _getFlagPath(locale);
-    
+
     return SizedBox(
       width: size,
       height: flagHeight,
@@ -653,7 +653,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   /// 选择目录（异步操作，不阻塞 UI）
   Future<void> _selectDirectory(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
-    
+
     // 显示加载指示器
     showDialog(
       context: context,
@@ -662,22 +662,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: CircularProgressIndicator(),
       ),
     );
-    
+
     try {
       // 在后台线程执行文件选择
       final selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      
+
       // 关闭加载指示器
       if (context.mounted) {
         Navigator.pop(context);
       }
-      
+
       if (selectedDirectory != null) {
         // 立即更新 UI
         setState(() {
           _historyStoragePath = selectedDirectory;
         });
-        
+
         // 异步保存，不阻塞 UI
         CalculatorSettingsProvider.setHistoryStoragePath(selectedDirectory).then((_) {
           if (mounted) {
@@ -695,7 +695,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (context.mounted) {
         Navigator.pop(context);
       }
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

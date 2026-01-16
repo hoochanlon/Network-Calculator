@@ -51,7 +51,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get japanese => '日本語';
 
   @override
-  String get traditionalChinese => '繁體中文（中國香港）';
+  String get traditionalChinese => '正體中文（台灣）';
 
   @override
   String get followSystem => 'システムに従う';

@@ -17,7 +17,7 @@
   "chinese": "中文（中国）",
   "english": "English（美国）",
   "japanese": "日本語",
-  "traditionalChinese": "繁體中文（中國香港）",
+  "traditionalChinese": "正體中文（台灣）",
   "followSystem": "跟随系统",
   "preserveInputs": "保留输入和结果",
   "preserveInputsDescription": "切换计算器时保留输入内容和计算结果",

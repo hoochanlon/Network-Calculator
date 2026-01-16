@@ -14,7 +14,7 @@
   "chinese": "中文（中国）",
   "english": "English (US)",
   "japanese": "日本語",
-  "traditionalChinese": "繁體中文（中國香港）",
+  "traditionalChinese": "正體中文（台灣）",
   "followSystem": "Follow System",
   "preserveInputs": "Preserve Inputs and Results",
   "preserveInputsDescription": "Keep input content and calculation results when switching calculators",
